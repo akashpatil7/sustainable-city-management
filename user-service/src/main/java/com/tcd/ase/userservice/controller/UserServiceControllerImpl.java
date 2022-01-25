@@ -26,7 +26,7 @@ public class UserServiceControllerImpl implements UserServiceController {
 		final ResponseEntity<String> response;
 		final String token;
 		Optional<User> user = repository.findById(request.getEmail());
-		if(user.isEmpty()) {
+		if(user != null) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
 		}
 		else {

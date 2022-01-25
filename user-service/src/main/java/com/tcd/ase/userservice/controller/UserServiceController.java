@@ -8,10 +8,13 @@ import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 
 public interface UserServiceController {
+
+	public static String BASE_URL = "/user";
 	
-	@PostMapping(path = "/user/register")
+	@PostMapping(path = BASE_URL + "/register")
 	public ResponseEntity<Void> register(@RequestBody UserRegistrationRequest request);
-	@PostMapping(path = "/user/login")
+
+	@PostMapping(path = BASE_URL + "/login")
 	public ResponseEntity<String> login(@RequestBody UserLoginRequest request);
 
 }
