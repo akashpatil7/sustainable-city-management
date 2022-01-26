@@ -24,7 +24,7 @@ public class AuthenticationFilter implements GatewayFilter {
 		ServerHttpResponse response = exchange.getResponse();
 		JWTokenHelper helper = new JWTokenHelper();
 		final String token;
-		if (routerValidator.isSecured.test(request)) {
+		if (routerValidator.isSecured(request)) {
 			if (!request.getHeaders().containsKey("Authorization")) {
 				response.setStatusCode(HttpStatus.UNAUTHORIZED);
 				return response.setComplete();
