@@ -41,6 +41,15 @@ spring.cloud.gateway.routes:
   - Path=/user/**
   filters:
   - AuthenticationGatewayFilter
+  
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
 
 - id: trends-analysis
   uri: lb://trends-analysis
