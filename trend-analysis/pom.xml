@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tcd.ase</groupId>
-	<artifactId>user-service</artifactId>
+	<artifactId>trend-analysis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user-service</name>
-	<description>Service for user management and authentication</description>
+	<name>trend-analysis</name>
+	<description>Service for trends analysis</description>
 
 	<properties>
 		<java.version>8</java.version>
@@ -54,10 +54,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20211205</version>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
 		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>
