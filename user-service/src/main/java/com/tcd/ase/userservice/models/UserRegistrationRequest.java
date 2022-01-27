@@ -1,5 +1,7 @@
 package com.tcd.ase.userservice.models;
 
+
+
 public class UserRegistrationRequest {
 
 	private String username;
