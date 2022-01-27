@@ -42,6 +42,11 @@ spring.cloud.gateway.routes:
   filters:
   - AuthenticationGatewayFilter
 
+- id: trends-analysis
+  uri: lb://trends-analysis
+  predicates:
+  - Path=/trends/**
+
 security.enable.csrf: false
 
 logging:
