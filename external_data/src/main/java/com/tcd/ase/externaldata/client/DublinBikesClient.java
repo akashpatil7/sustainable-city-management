@@ -1,9 +1,7 @@
 package com.tcd.ase.externaldata.client;
 
-import com.google.gson.Gson;
 import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
-import com.tcd.ase.externaldata.service.ProcessDublinBikesDataServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

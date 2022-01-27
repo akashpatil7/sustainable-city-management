@@ -1,4 +1,4 @@
-package com.tcd.ase.externaldata.service;
+package com.tcd.ase.externaldata.service.impl;
 
 import com.google.gson.Gson;
 
@@ -6,6 +6,7 @@ import com.tcd.ase.externaldata.entity.DublinBikes;
 import com.tcd.ase.externaldata.model.DublinBike;
 
 import com.tcd.ase.externaldata.repository.DublinBikesRepository;
+import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
