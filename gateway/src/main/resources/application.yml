@@ -50,6 +50,7 @@ spring:
           '[/**]':
             allowedOrigins: "*"
             allowedMethods: "*"
+            allowedHeaders: "*"
 
 security.enable.csrf: false
 

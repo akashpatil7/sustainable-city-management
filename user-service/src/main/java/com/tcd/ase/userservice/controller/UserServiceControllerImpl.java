@@ -9,11 +9,13 @@ import com.tcd.ase.utils.JWTokenHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 @RestController
+@CrossOrigin()
 public class UserServiceControllerImpl implements UserServiceController {
 	
 	@Autowired
@@ -22,7 +24,6 @@ public class UserServiceControllerImpl implements UserServiceController {
 	@Override
 	public ResponseEntity<String> login(UserLoginRequest request) {
 		JWTokenHelper helper = new JWTokenHelper();
-		final ResponseEntity<String> response;
 		final String token;
 		Optional<User> user = repository.findById(request.getEmail());
 		if(!user.isPresent()) {
@@ -45,7 +46,7 @@ public class UserServiceControllerImpl implements UserServiceController {
 		ResponseEntity<Void> response = null;
 		User user = mapper.fromRegistrationRequestToEntity(request);
 		repository.save(user);
-		response = new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		response = new ResponseEntity<Void>(HttpStatus.CREATED);
 		return response;
 	}
 

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 @Component
 public class RouterValidator {
