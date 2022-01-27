@@ -1,8 +1,11 @@
 package com.tcd.ase.externaldata.client;
 
+import com.google.gson.Gson;
 import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
+import com.tcd.ase.externaldata.service.ProcessDublinBikesDataServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -16,8 +19,12 @@ public class DublinBikesClient {
     @Autowired
     private ProcessDublinBikesDataService processDublinBikesDataService;
 
+    /*This schedular will trigger after every 5 min */
+
+    @Scheduled(fixedRate = 300000)
     public void extractData() {
         try {
+            System.out.println("In extract data");
             URL url = new URL("https://data.smartdublin.ie/dublinbikes-api/last_snapshot/");//your url i.e fetch data from .
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -28,6 +35,7 @@ public class DublinBikesClient {
             }
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
             BufferedReader br = new BufferedReader(in);
+            System.out.println("Data extracted");
             String output;
             while ((output = br.readLine()) != null) {
                 processDublinBikesDataService.processData(output);
