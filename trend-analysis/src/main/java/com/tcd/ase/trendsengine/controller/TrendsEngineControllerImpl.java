@@ -10,6 +10,7 @@ import com.tcd.ase.trendsengine.repository.TrendsRepository;
 import com.tcd.ase.trendsengine.models.TrendsRequest;
 
 import java.util.Optional;
+import org.json.JSONObject;
 
 @RestController
 public class TrendsEngineControllerImpl implements TrendsEngineController {
@@ -17,36 +18,28 @@ public class TrendsEngineControllerImpl implements TrendsEngineController {
 	@Autowired
 	private TrendsRepository repository;
 
-	/*@Override
-	public ResponseEntity<String> login(TrendsRequest request) {
-		JWTokenHelper helper = new JWTokenHelper();
-		final ResponseEntity<String> response;
-		final String token;
-		Optional<Trends> user = repository.findById(request.getEmail());
-		if(user.isPresent()) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
-		}
-		else {
-			Trends ruser = user.get();
-			if(!request.getPassword().equals(ruser.getPassword())) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
-			}
-			 token = helper.generateToken(ruser.getUserName());
-			return ResponseEntity.status(HttpStatus.OK).body(token);
-		}
-		
-	}*/
-
 	@Override
-	public ResponseEntity<Void> getTrendsData(TrendsRequest request) {
+	public ResponseEntity<String> getTrendsData(TrendsRequest request) {
 		/*UserMapper mapper = new UserMapper();
 		ResponseEntity<Void> response = null;
 		Trends user = mapper.fromRegistrationRequestToEntity(request);
 		repository.save(user);
 		response = new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 		return response;*/
+
+		JSONObject obj = new JSONObject();
+
+		obj.put("name", "foo");
+		obj.put("num", 10);
+		obj.put("balance", 1000.21);
+		obj.put("is_vip", true);
+
+		System.out.print(obj);
+		
+
+
 		System.out.println("getTrendsData - TrendsEngineControllerImp");
-		return null;
+		return ResponseEntity.status(HttpStatus.OK).body(obj.toString());
 	}
 
 

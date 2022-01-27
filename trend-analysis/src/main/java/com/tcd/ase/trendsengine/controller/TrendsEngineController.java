@@ -11,7 +11,7 @@ public interface TrendsEngineController {
 	String BASE_URL = "/trends";
 
 	@PostMapping(path = BASE_URL + "/getTrendsData")
-	public ResponseEntity<Void> getTrendsData(@RequestBody TrendsRequest request);
+	public ResponseEntity<String> getTrendsData(@RequestBody TrendsRequest request);
 
 	//@PostMapping(path = BASE_URL + "/login")
 	//public ResponseEntity<String> login(@RequestBody TrendsRequest request);
