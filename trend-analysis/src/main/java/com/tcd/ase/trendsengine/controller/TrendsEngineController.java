@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.tcd.ase.trendsengine.models.TrendsRequest;
 
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+@RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public interface TrendsEngineController {
 
 	String BASE_URL = "/trends";
