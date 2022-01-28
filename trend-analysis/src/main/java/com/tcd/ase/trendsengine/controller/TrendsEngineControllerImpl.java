@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tcd.ase.trendsengine.repository.TrendsRepository;
 import com.tcd.ase.trendsengine.models.TrendsRequest;
 
-import java.util.Optional;
 import java.io.FileReader;
-import java.util.Iterator;
-import java.net.SocketPermission;
-
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 @RestController
@@ -32,41 +33,47 @@ public class TrendsEngineControllerImpl implements TrendsEngineController {
 		repository.save(user);
 		response = new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 		return response;*/
-
 		JSONParser parser = new JSONParser();
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
 		try {
+			URL url = new URL ("http://192.168.0.94:8050/getDailyAverages");
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json; utf-8");
+			con.setRequestProperty("Accept", "application/json");
+			con.setDoOutput(true);
+
 			JSONArray Jan25 = (JSONArray) parser.parse(new FileReader("src/main/resources/20220125141500.json"));
 			JSONArray Jan27 = (JSONArray) parser.parse(new FileReader("src/main/resources/20220127163500.json"));
 
-			// Iterator<JSONObject> iteratorJan25 = Jan25.iterator();
-			// Iterator<JSONObject> iteratorJan27 = Jan27.iterator();
-			// while (iteratorJan25.hasNext() && iteratorJan27.hasNext()) {
-			// 	System.out.println(iterator.next());
-			// }
+			String jsonInputString = "{ \"1\" : " + Jan25.toString() + ", \"2\" : " + Jan27.toString() + "}";
 
-			//System.out.println(Jan25.get(0).get("bike_stands"));
+			try(OutputStream os = con.getOutputStream()){
+				byte[] input = jsonInputString.getBytes("utf-8");
+				os.write(input, 0, input.length);			
+			}
+	
+			int code = con.getResponseCode();
+			System.out.println(code);
+			
+			try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))){
+				StringBuilder response = new StringBuilder();
+				String responseLine = null;
+				while ((responseLine = br.readLine()) != null) {
+					response.append(responseLine.trim());
+				}
+				//System.out.println(response.toString());
+				return ResponseEntity.status(HttpStatus.OK).body(response.toString());
+			}
+
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-
-
-
-		JSONObject obj = new JSONObject();
-
-		obj.put("name", "foo");
-		obj.put("num", 10);
-		obj.put("balance", 1000.21);
-		obj.put("is_vip", true);
-
-		System.out.print(obj);
 		
-
-
 		System.out.println("getTrendsData - TrendsEngineControllerImp");
-		return ResponseEntity.status(HttpStatus.OK).body(obj.toString());
+		return ResponseEntity.status(HttpStatus.OK).body("");
 	}
 
 
