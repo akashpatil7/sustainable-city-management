@@ -1,0 +1,17 @@
+server.port: 7001
+spring.application.name: external-data
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
+spring.data.mongodb.uri: mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard
+spring.data.mongodb.database: city_dashboard
+

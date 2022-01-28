@@ -4,28 +4,24 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("Dublin_bikes")
+@Document("Dublin_Bikes")
 @Getter
 @Setter
 @Builder()
 public class DublinBikes {
 
-    @Transient
-    public static final String SEQUENCE_NAME = "users_sequence";
-
     @Id
-    private long id;
-    private String harvestTime;
+    private Integer id;
+    private Long harvestTime;
     private Integer stationId;
     private Integer availableBikeStands;
     private Integer bikeStands;
     private Integer availableBikes;
     private Boolean banking;
     private Boolean bonus;
-    private String lastUpdate;
+    private Long lastUpdate;
     private String status;
     private String address;
     private String name;
@@ -37,6 +33,7 @@ public class DublinBikes {
     }
 
     public DublinBikes(DublinBikesBuilder dublinBikesBuilder) {
+        this.id =  dublinBikesBuilder.id;
         this.harvestTime = dublinBikesBuilder.harvestTime;
         this.stationId = dublinBikesBuilder.stationId;
         this.availableBikeStands = dublinBikesBuilder.availableBikeStands;
@@ -74,14 +71,15 @@ public class DublinBikes {
 
     public static class DublinBikesBuilder {
 
-        private String harvestTime;
+        private Integer id;
+        private Long harvestTime;
         private Integer stationId;
         private Integer availableBikeStands;
         private Integer bikeStands;
         private Integer availableBikes;
         private Boolean banking;
         private Boolean bonus;
-        private String lastUpdate;
+        private Long lastUpdate;
         private String status;
         private String address;
         private String name;
@@ -92,7 +90,12 @@ public class DublinBikes {
 
         }
 
-        public DublinBikesBuilder withHarvestTime(String harvestTime) {
+        public DublinBikesBuilder withId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public DublinBikesBuilder withHarvestTime(Long harvestTime) {
             this.harvestTime = harvestTime;
             return this;
         }
@@ -127,7 +130,7 @@ public class DublinBikes {
             return this;
         }
 
-        public DublinBikesBuilder withLastUpdate(String lastUpdate) {
+        public DublinBikesBuilder withLastUpdate(Long lastUpdate) {
             this.lastUpdate = lastUpdate;
             return this;
         }
