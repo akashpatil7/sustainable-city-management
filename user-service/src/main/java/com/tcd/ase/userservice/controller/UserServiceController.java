@@ -3,7 +3,9 @@ package com.tcd.ase.userservice.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 
@@ -15,6 +17,6 @@ public interface UserServiceController {
 	public ResponseEntity<Void> register(@RequestBody UserRegistrationRequest request);
 
 	@PostMapping(path = BASE_URL + "/login")
-	public ResponseEntity<String> login(@RequestBody UserLoginRequest request);
+	public @ResponseBody ResponseEntity<JSONObject> login(@RequestBody UserLoginRequest request);
 
 }
