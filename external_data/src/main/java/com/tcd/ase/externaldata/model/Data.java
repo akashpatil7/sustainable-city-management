@@ -6,16 +6,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
-public class Data1 {
-	private final long seqNo;
+public class Data {
 
 	@Autowired
 	private static volatile Long time;
-
-	// ...
-	public Data1(long i) {
-		this.seqNo = i;
-	}
 
 	public static boolean initialize() {
 		time = System.currentTimeMillis() / 1000;
