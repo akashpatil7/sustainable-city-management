@@ -35,7 +35,7 @@ public class UserRegistrationServiceTest {
         request.setEmail("admin@admin");
         request.setPassword("admin");
 
-        ResponseEntity<Void> response = userRegistrationService.register(request);
+        ResponseEntity response = userRegistrationService.register(request);
         assertNotNull(response);
     }
 
@@ -48,7 +48,7 @@ public class UserRegistrationServiceTest {
 
         when(userRegistrationService.register(userRegistrationRequest)).thenThrow(Exception.class);
 
-        ResponseEntity<Void> response = userRegistrationService.register(userRegistrationRequest);
+        ResponseEntity response = userRegistrationService.register(userRegistrationRequest);
     }
 
 }

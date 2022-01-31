@@ -44,7 +44,7 @@ public class UserLoginServiceTest {
         when(userRepository.findById(user.getUserName())).thenReturn(Optional.of(user));
         when(jwTokenHelper.generateToken(user.getUserName())).thenReturn("token");
 
-        ResponseEntity<String> token = userLoginService.login(userLoginRequest);
+        ResponseEntity token = userLoginService.login(userLoginRequest);
         assertNotNull(token.getBody());
     }
 
@@ -57,7 +57,7 @@ public class UserLoginServiceTest {
         User user = new User();
         when(userRepository.findById(userLoginRequest.getEmail())).thenReturn(Optional.of(user));
 
-        ResponseEntity<String> token = userLoginService.login(userLoginRequest);
+        ResponseEntity<Object> token = userLoginService.login(userLoginRequest);
         assertNotNull(token.getBody());
     }
 }

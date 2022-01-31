@@ -28,13 +28,13 @@ public class UserServiceControllerImpl implements UserServiceController {
 	UserRegistrationService userRegistrationService;
 
 	@Override
-	public ResponseEntity<JSONObject> login(UserLoginRequest request) {
+	public ResponseEntity<Object> login(UserLoginRequest request) {
 
 		return userLoginService.login(request);
 	}
 
 	@Override
-	public ResponseEntity<Void> register(UserRegistrationRequest request) {
+	public ResponseEntity<Object> register(UserRegistrationRequest request) {
 
 		return userRegistrationService.register(request);
 	}

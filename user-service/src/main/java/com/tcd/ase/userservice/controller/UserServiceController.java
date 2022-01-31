@@ -14,9 +14,9 @@ public interface UserServiceController {
 	String BASE_URL = "/user";
 
 	@PostMapping(path = BASE_URL + "/register")
-	public ResponseEntity<Void> register(@RequestBody UserRegistrationRequest request);
+	public ResponseEntity register(@RequestBody UserRegistrationRequest request);
 
 	@PostMapping(path = BASE_URL + "/login")
-	public @ResponseBody ResponseEntity<JSONObject> login(@RequestBody UserLoginRequest request);
+	public @ResponseBody ResponseEntity login(@RequestBody UserLoginRequest request);
 
 }

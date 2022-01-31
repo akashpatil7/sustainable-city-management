@@ -44,11 +44,10 @@ public class UserServiceControllerImplTest {
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setEmail("admin@admin");
         userLoginRequest.setPassword("admin");
-
         when(userLoginService.login(userLoginRequest))
-                .thenReturn((ResponseEntity<String>) ResponseEntity.status(HttpStatus.OK).body("token"));
+                .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.OK).body("token"));
 
-        ResponseEntity<String> response = userServiceController.login(userLoginRequest);
+        ResponseEntity<Object> response = userServiceController.login(userLoginRequest);
         assertNotNull(response.getBody());
     }
 
@@ -62,7 +61,7 @@ public class UserServiceControllerImplTest {
         when(userRegistrationService.register(userRegistrationRequest))
                 .thenReturn(any(ResponseEntity.class));
 
-        ResponseEntity<Void> response = userServiceController.register(userRegistrationRequest);
+        ResponseEntity<Object> response = userServiceController.register(userRegistrationRequest);
     }
 
 }
