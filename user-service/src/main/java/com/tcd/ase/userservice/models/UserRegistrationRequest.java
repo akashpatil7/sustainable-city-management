@@ -1,10 +1,14 @@
 package com.tcd.ase.userservice.models;
 
+
+
 public class UserRegistrationRequest {
 
 	private String username;
 	private String email;
 	private String password;
+
+
 	public String getUsername() {
 		return username;
 	}
@@ -23,5 +27,4 @@ public class UserRegistrationRequest {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
 }

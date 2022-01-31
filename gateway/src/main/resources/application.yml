@@ -41,6 +41,15 @@ spring.cloud.gateway.routes:
   - Path=/user/**
   filters:
   - AuthenticationGatewayFilter
+  
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
 
 security.enable.csrf: false
 

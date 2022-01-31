@@ -3,19 +3,19 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Arrays;
 
 @Component
 public class RouterValidator {
 
-    public static final List<String> openApiEndpoints = List.of(
-            "/user/register",
-            "/user/login"
-    );
+    public static final List<String> openApiEndpoints = Arrays.asList(new String[]{
+                "/user/register",
+                "/user/login"
+    });
 
-    public Predicate<ServerHttpRequest> isSecured =
-            request -> openApiEndpoints
-                    .stream()
-                    .noneMatch(uri -> request.getURI().getPath().contains(uri));
+    public boolean isSecured(ServerHttpRequest request) {
+        return openApiEndpoints.stream()
+                .noneMatch(uri -> request.getURI().getPath().contains(uri));
+    }
 
 }
