@@ -3,13 +3,9 @@ package com.tcd.ase.userservice.service;
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class UserMapperTest {
 
