@@ -9,8 +9,10 @@ import org.mockito.MockitoAnnotations;
 
 import com.tcd.ase.userservice.repository.UserRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -31,23 +33,42 @@ public class UserRegistrationServiceTest {
     public void testRegister(){
         UserRegistrationRequest request = new UserRegistrationRequest();
         request.setUsername("admin");
-        request.setEmail("admin@admin");
+        request.setEmail("admin@dublincity.ie");
         request.setPassword("admin");
 
-        ResponseEntity response = userRegistrationService.register(request);
+        ResponseEntity<Object> response = userRegistrationService.register(request);
         assertNotNull(response);
     }
 
     @Test(expected = Exception.class)
     public void testRegisterFailure(){
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
-        userRegistrationRequest.setEmail("admin@admin");
+        userRegistrationRequest.setEmail("admin@dublincity.ie");
         userRegistrationRequest.setPassword("admin");
         userRegistrationRequest.setUsername("admin");
 
         when(userRegistrationService.register(userRegistrationRequest)).thenThrow(Exception.class);
 
-        ResponseEntity response = userRegistrationService.register(userRegistrationRequest);
+        ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+    }
+
+    @Test
+    public void testRegisterFailureInvalidEmail(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setEmail("admin@admin");
+        userRegistrationRequest.setPassword("admin");
+        userRegistrationRequest.setUsername("admin");
+
+        ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void testRegisterFailureEmptyRequest(){
+        UserRegistrationRequest userRegistrationRequest = null;
+
+        ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
 }
