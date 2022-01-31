@@ -1,5 +1,6 @@
 package com.tcd.ase.userservice.controller;
 
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
@@ -45,10 +46,12 @@ public class UserServiceControllerImplTest {
         userLoginRequest.setEmail("admin@admin");
         userLoginRequest.setPassword("admin");
 
+        JSONObject body=new JSONObject();
+        body.put("token","12345");
         when(userLoginService.login(userLoginRequest))
-                .thenReturn((ResponseEntity<String>) ResponseEntity.status(HttpStatus.OK).body("token"));
+                .thenReturn((ResponseEntity<JSONObject>) ResponseEntity.status(HttpStatus.OK).body(body));
 
-        ResponseEntity<String> response = userServiceController.login(userLoginRequest);
+        ResponseEntity<JSONObject> response = userServiceController.login(userLoginRequest);
         assertNotNull(response.getBody());
     }
 

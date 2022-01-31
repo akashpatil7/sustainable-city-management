@@ -1,5 +1,6 @@
 package com.tcd.ase.userservice.service;
 
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.repository.UserRepository;
@@ -41,10 +42,14 @@ public class UserLoginServiceTest {
         User user = new User();
         user.setPassword("admin");
         user.setUserName("admin");
-        when(userRepository.findById(user.getUserName())).thenReturn(Optional.of(user));
-        when(jwTokenHelper.generateToken(user.getUserName())).thenReturn("token");
 
-        ResponseEntity<String> token = userLoginService.login(userLoginRequest);
+        com.nimbusds.jose.shaded.json.JSONObject body=new JSONObject();
+        body.put("token","12345");
+
+        when(userRepository.findById(user.getUserName())).thenReturn(Optional.of(user));
+        when(jwTokenHelper.generateToken(user.getUserName())).thenReturn("12345");
+
+        ResponseEntity<JSONObject> token = userLoginService.login(userLoginRequest);
         assertNotNull(token.getBody());
     }
 
@@ -57,7 +62,7 @@ public class UserLoginServiceTest {
         User user = new User();
         when(userRepository.findById(userLoginRequest.getEmail())).thenReturn(Optional.of(user));
 
-        ResponseEntity<String> token = userLoginService.login(userLoginRequest);
+        ResponseEntity<JSONObject> token = userLoginService.login(userLoginRequest);
         assertNotNull(token.getBody());
     }
 }

@@ -1,5 +1,6 @@
 package com.tcd.ase.userservice.service;
 
+import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.repository.UserRepository;
@@ -17,20 +18,22 @@ public class UserLoginService {
     @Autowired
     private UserRepository repository;
 
-    public ResponseEntity<String> login(UserLoginRequest request) {
+    public ResponseEntity<JSONObject> login(UserLoginRequest request) {
         JWTokenHelper helper = new JWTokenHelper();
         final String token;
+        JSONObject body=new JSONObject();
         Optional<User> user = repository.findById(request.getEmail());
         if(!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
+            return new ResponseEntity<JSONObject>(body,HttpStatus.FORBIDDEN);
         }
         else {
             User ruser = user.get();
             if(!request.getPassword().equals(ruser.getPassword())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
+                return new ResponseEntity<JSONObject>(body, HttpStatus.FORBIDDEN);
             }
             token = helper.generateToken(ruser.getUserName());
-            return ResponseEntity.status(HttpStatus.OK).body(token);
+            body.put("token", token);
+            return new ResponseEntity<JSONObject>(body,HttpStatus.OK);
         }
     }
 }
