@@ -17,32 +17,33 @@ public class DublinBikesClient {
     @Autowired
     private ProcessDublinBikesDataService processDublinBikesDataService;
 
+    @Value("${dublinBikesLatestDataURL}")
+    private String dublinBikesLatestDataURL;
+
     /*This schedular will trigger after every 5 min */
 
     @Scheduled(fixedRate = 300000)
     public void extractData() {
         try {
-            System.out.println("In extract data");
-            URL url = new URL("https://data.smartdublin.ie/dublinbikes-api/last_snapshot/");//your url i.e fetch data from .
+            System.out.println("Schedular started : dublin bikes latest data");
+            URL url = new URL(dublinBikesLatestDataURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             if (conn.getResponseCode() != 201) {
-                throw new RuntimeException("Failed : HTTP Error code : "
-                        + conn.getResponseCode());
+                throw new RuntimeException("Failed : HTTP Error code : " + conn.getResponseCode());
             }
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
             BufferedReader br = new BufferedReader(in);
-            System.out.println("Data extracted");
             String output;
             while ((output = br.readLine()) != null) {
                 processDublinBikesDataService.processData(output);
             }
             conn.disconnect();
+            System.out.println("Schedular ended : dublin bikes latest data");
 
         } catch (Exception e) {
-            System.out.println("Exception in NetClientGet:- " + e);
+            System.out.println("Exception while extracting dublin bikes data:- " + e.getMessage());
         }
     }
-
 }
