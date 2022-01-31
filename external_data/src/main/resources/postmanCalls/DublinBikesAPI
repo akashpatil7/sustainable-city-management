@@ -1,0 +1,4 @@
+curl -X GET \
+  https://data.smartdublin.ie/dublinbikes-api/last_snapshot/ \
+  -H 'accept: application/json' \
+  -H 'cache-control: no-cache' \

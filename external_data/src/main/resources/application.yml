@@ -15,3 +15,5 @@ eureka:
 spring.data.mongodb.uri: mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard
 spring.data.mongodb.database: city_dashboard
 
+dublinBikesLatestDataURL: https://data.smartdublin.ie/dublinbikes-api/last_snapshot/
+dublinBikesHistoricalDataURL: https://data.smartdublin.ie/dublinbikes-api/historical/?init=
