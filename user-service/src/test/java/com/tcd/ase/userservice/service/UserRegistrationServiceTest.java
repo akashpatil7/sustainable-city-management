@@ -9,7 +9,6 @@ import org.mockito.MockitoAnnotations;
 
 import com.tcd.ase.userservice.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.Assert.assertNotNull;
