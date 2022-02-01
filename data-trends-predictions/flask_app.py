@@ -3,6 +3,7 @@ import pandas as pd
 import py_eureka_client.eureka_client as eureka_client
 from pymongo import MongoClient
 from datetime import datetime
+from bson.json_util import dumps
 
 rest_port = 8050
 eureka_client.init(eureka_server="http://localhost:8761/eureka",
@@ -11,54 +12,36 @@ eureka_client.init(eureka_server="http://localhost:8761/eureka",
 client = MongoClient("mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard")
 app = Flask(__name__)
 
-@app.route("/getDailyAverages", methods=['GET'])
-def getDailyAverages():
-	""" data = request.json
+@app.route("/getCurrentHourAverages", methods=['GET'])
+def getCurrentHourAverages():
 	
-	df1 = pd.DataFrame(data['1'])
-	df1 = df1[['name', 'available_bike_stands', 'bike_stands', 'available_bikes', 'harvest_time']]
-	df1['harvest_time']= pd.to_datetime(df1['harvest_time'])
-	df1 = df1.groupby("name", as_index=False).agg(
-		available_bike_stands=pd.NamedAgg(column='available_bike_stands', aggfunc="mean"),
-		bike_stands=pd.NamedAgg(column='bike_stands', aggfunc="mean"),
-		available_bikes=pd.NamedAgg(column='available_bikes', aggfunc="mean"),
-		harvest_time=pd.NamedAgg(column='harvest_time', aggfunc="max"))
+	print("\n\nGetting the view:AvgHourlyAvailability from MongoDB")
+	AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
 
-	df2 = pd.DataFrame(data['2'])
-	df2 = df2[['name', 'available_bike_stands', 'bike_stands', 'available_bikes', 'harvest_time']]
-	df2['harvest_time']= pd.to_datetime(df2['harvest_time'])
-	df2 = df2.groupby("name", as_index=False).agg(
-		available_bike_stands=pd.NamedAgg(column='available_bike_stands', aggfunc="mean"),
-		bike_stands=pd.NamedAgg(column='bike_stands', aggfunc="mean"),
-		available_bikes=pd.NamedAgg(column='available_bikes', aggfunc="mean"),
-		harvest_time=pd.NamedAgg(column='harvest_time', aggfunc="max"))
+	hourFilter = { '_id.hour': datetime.now().hour }
+	print("Filter: ", hourFilter)
 
-	df = pd.merge(df1,df2,on='name')
-	df["available_bike_stands"] = (df["available_bike_stands_x"] + df["available_bike_stands_y"]) / 2
-	df["bike_stands"] = (df["bike_stands_x"] + df["bike_stands_y"]) / 2
-	df["available_bikes"] = (df["available_bikes_x"] + df["available_bikes_y"]) / 2
-	df["harvest_time"] = df[["harvest_time_x", "harvest_time_y"]].max(axis = 1)
-	df = df[['name', 'bike_stands', 'available_bikes', 'available_bike_stands', 'harvest_time']]
-
- """	
-	print("Getting DublinBikes data from MongoDB")
-	Dublin_Bikes = client.city_dashboard.Dublin_Bikes
-	data = Dublin_Bikes.find(
-		{ },
-		{ 'name': True, 'harvestTime': True, 'availableBikeStands': True, 'bikeStands': True, 'availableBikes': True, '_id': False }
-	)
-
-	print("Calculating averages")
-	df = pd.DataFrame(list(data))
-	df['harvestTime']= pd.to_datetime(df['harvestTime'], unit='s')
-	df['hour'] = pd.to_datetime(df['harvestTime']).dt.hour
-	df = df.loc[df['hour'] == datetime.now().hour]
-	df = df.groupby(['name', 'hour'], as_index=False).mean()
-	df['current_bike_availability'] = round((df['availableBikes'] / df['bikeStands']) * 100, 1)
-	df = df[['name', 'current_bike_availability']]
-
+	data = AvgHourlyAvailability.find(filter = hourFilter)
 	print("Returning data ... ")
-	return df.to_json(orient = 'records')
+
+	return dumps(list(data))
+	
+
+@app.route("/getHourlyAverageForStation", methods=['GET'])
+def getHourlyAverageForStation():
+	
+	station = request.args.get('station')
+
+	print(f"\n\nGetting the view:AvgHourlyAvailability from MongoDB for station '{station}'")
+	AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
+
+	stationFilter = { '_id.name': station }
+	print("Filter: ", stationFilter)
+
+	data = AvgHourlyAvailability.find(filter = stationFilter)
+	print("Returning data ... ")
+
+	return dumps(list(data))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = rest_port)
