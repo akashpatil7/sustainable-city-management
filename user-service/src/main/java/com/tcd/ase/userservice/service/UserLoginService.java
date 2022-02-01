@@ -43,7 +43,7 @@ public class UserLoginService {
             	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("System cannot process request at this time");
             }
             response.setToken(token);
-            return new ResponseEntity(response, HttpStatus.CREATED);
+            return new ResponseEntity<Object>(response, HttpStatus.CREATED);
         }
     }
 }

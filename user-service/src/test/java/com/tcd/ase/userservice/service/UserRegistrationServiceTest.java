@@ -1,10 +1,12 @@
 package com.tcd.ase.userservice.service;
 
+import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.tcd.ase.userservice.repository.UserRepository;
@@ -37,7 +39,7 @@ public class UserRegistrationServiceTest {
         request.setPassword("admin");
 
         ResponseEntity<Object> response = userRegistrationService.register(request);
-        assertNotNull(response);
+        assertEquals(response.getStatusCode(),HttpStatus.OK);
     }
 
     @Test(expected = Exception.class)
@@ -47,9 +49,10 @@ public class UserRegistrationServiceTest {
         userRegistrationRequest.setPassword("admin");
         userRegistrationRequest.setUsername("admin");
 
-        when(userRegistrationService.register(userRegistrationRequest)).thenThrow(Exception.class);
+        when(userRepository.save(Mockito.any())).thenThrow(Exception.class);
 
         ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
