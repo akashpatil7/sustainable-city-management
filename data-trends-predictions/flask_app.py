@@ -52,9 +52,10 @@ def getDailyAverages():
 	df = pd.DataFrame(list(data))
 	df['harvestTime']= pd.to_datetime(df['harvestTime'], unit='s')
 	df['hour'] = pd.to_datetime(df['harvestTime']).dt.hour
+	df = df.loc[df['hour'] == datetime.now().hour]
 	df = df.groupby(['name', 'hour'], as_index=False).mean()
-	df['avg_hourly_bike_availability'] = round((df['availableBikes'] / df['bikeStands']) * 100, 1)
-	df = df[['name', 'hour', 'avg_hourly_bike_availability']]
+	df['current_bike_availability'] = round((df['availableBikes'] / df['bikeStands']) * 100, 1)
+	df = df[['name', 'current_bike_availability']]
 
 	print("Returning data ... ")
 	return df.to_json(orient = 'records')
