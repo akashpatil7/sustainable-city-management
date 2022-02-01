@@ -2,6 +2,7 @@ package com.tcd.ase.userservice.service;
 
 import java.util.Optional;
 
+import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UserLoginService {
             	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("System cannot process request at this time");
             }
             response.setToken(token);
-            return new ResponseEntity<Object>(response, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
     }
 }
