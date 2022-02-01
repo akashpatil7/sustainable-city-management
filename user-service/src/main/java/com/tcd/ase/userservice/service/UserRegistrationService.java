@@ -17,6 +17,10 @@ public class UserRegistrationService {
     private UserRepository repository;
 
     public ResponseEntity<Object> register(UserRegistrationRequest request) {
+        if(request == null ||
+                !request.getEmail().matches("[@dublincity\\.ie]$")){
+            return new ResponseEntity<>("Invalid request",HttpStatus.BAD_REQUEST);
+        }
         UserMapper mapper = new UserMapper();
         ResponseEntity<Object> response = null;
         User user = mapper.fromRegistrationRequestToEntity(request);

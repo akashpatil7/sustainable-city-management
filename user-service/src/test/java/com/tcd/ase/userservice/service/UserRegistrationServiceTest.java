@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.tcd.ase.userservice.repository.UserRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.Assert.*;
@@ -42,7 +43,7 @@ public class UserRegistrationServiceTest {
     @Test(expected = Exception.class)
     public void testRegisterFailure(){
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
-        userRegistrationRequest.setEmail("admin@admin");
+        userRegistrationRequest.setEmail("admin@dublincity.ie");
         userRegistrationRequest.setPassword("admin");
         userRegistrationRequest.setUsername("admin");
 
@@ -50,6 +51,25 @@ public class UserRegistrationServiceTest {
 
         ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
         assertTrue(response.getStatusCode().is4xxClientError());
+    }
+
+    @Test
+    public void testRegisterFailureInvalidEmail(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setEmail("admin@admin");
+        userRegistrationRequest.setPassword("admin");
+        userRegistrationRequest.setUsername("admin");
+
+        ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void testRegisterFailureEmptyRequest(){
+        UserRegistrationRequest userRegistrationRequest = null;
+
+        ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
 }
