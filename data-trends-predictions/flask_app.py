@@ -1,17 +1,19 @@
 from flask import Flask, request
 import pandas as pd
 import py_eureka_client.eureka_client as eureka_client
+from pymongo import MongoClient
+from datetime import datetime
 
 rest_port = 8050
 eureka_client.init(eureka_server="http://localhost:8761/eureka",
                    app_name="py-data-trends-predictions-service",
                    instance_port=rest_port)
-
+client = MongoClient("mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard")
 app = Flask(__name__)
 
-@app.route("/getDailyAverages", methods=['POST'])
+@app.route("/getDailyAverages", methods=['GET'])
 def getDailyAverages():
-	data = request.json
+	""" data = request.json
 	
 	df1 = pd.DataFrame(data['1'])
 	df1 = df1[['name', 'available_bike_stands', 'bike_stands', 'available_bikes', 'harvest_time']]
@@ -38,6 +40,23 @@ def getDailyAverages():
 	df["harvest_time"] = df[["harvest_time_x", "harvest_time_y"]].max(axis = 1)
 	df = df[['name', 'bike_stands', 'available_bikes', 'available_bike_stands', 'harvest_time']]
 
+ """	
+	print("Getting DublinBikes data from MongoDB")
+	Dublin_Bikes = client.city_dashboard.Dublin_Bikes
+	data = Dublin_Bikes.find(
+		{ },
+		{ 'name': True, 'harvestTime': True, 'availableBikeStands': True, 'bikeStands': True, 'availableBikes': True, '_id': False }
+	)
+
+	print("Calculating averages")
+	df = pd.DataFrame(list(data))
+	df['harvestTime']= pd.to_datetime(df['harvestTime'], unit='s')
+	df['hour'] = pd.to_datetime(df['harvestTime']).dt.hour
+	df = df.groupby(['name', 'hour'], as_index=False).mean()
+	df['avg_hourly_bike_availability'] = round((df['availableBikes'] / df['bikeStands']) * 100, 1)
+	df = df[['name', 'hour', 'avg_hourly_bike_availability']]
+
+	print("Returning data ... ")
 	return df.to_json(orient = 'records')
 
 if __name__ == "__main__":
