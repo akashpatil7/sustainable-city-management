@@ -1,7 +1,7 @@
 package com.tcd.ase.userservice.controller;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.models.UserLoginRequest;
+import com.tcd.ase.userservice.models.UserLoginResponse;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import com.tcd.ase.userservice.service.UserLoginService;
 import com.tcd.ase.userservice.service.UserRegistrationService;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import static org.junit.Assert.*;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserServiceControllerImplTest {
@@ -39,26 +38,27 @@ public class UserServiceControllerImplTest {
         userLoginRequest.setEmail("admin@admin");
         userLoginRequest.setPassword("admin");
 
-        JSONObject body=new JSONObject();
-        body.put("token","12345");
+        UserLoginResponse resp=new UserLoginResponse();
+        resp.setToken("12345");
         when(userLoginService.login(userLoginRequest))
-                .thenReturn((ResponseEntity<JSONObject>) ResponseEntity.status(HttpStatus.OK).body(body));
+                .thenReturn(new ResponseEntity<Object>(resp,HttpStatus.OK));
 
-        ResponseEntity<JSONObject> response = userServiceController.login(userLoginRequest);
-        assertNotNull(response.getBody());
+        ResponseEntity<Object> response = userServiceController.login(userLoginRequest);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
     public void testRegister(){
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
-        userRegistrationRequest.setEmail("admin@admin");
+        userRegistrationRequest.setEmail("admin@dublincity.ie");
         userRegistrationRequest.setPassword("admin");
         userRegistrationRequest.setUsername("admin");
 
         when(userRegistrationService.register(userRegistrationRequest))
-                .thenReturn(any(ResponseEntity.class));
+                .thenReturn(new ResponseEntity<Object>(HttpStatus.OK));
 
-        ResponseEntity<Void> response = userServiceController.register(userRegistrationRequest);
+        ResponseEntity<Object> response = userServiceController.register(userRegistrationRequest);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
 }

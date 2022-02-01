@@ -11,7 +11,7 @@ import com.tcd.ase.userservice.repository.UserRepository;
 
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class UserRegistrationServiceTest {
@@ -31,11 +31,12 @@ public class UserRegistrationServiceTest {
     public void testRegister(){
         UserRegistrationRequest request = new UserRegistrationRequest();
         request.setUsername("admin");
-        request.setEmail("admin@admin");
+        request.setEmail("admin@dublincity.ie");
         request.setPassword("admin");
 
-        ResponseEntity<Void> response = userRegistrationService.register(request);
-        assertNotNull(response);
+        ResponseEntity<Object> response = userRegistrationService.register(request);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+
     }
 
     @Test(expected = Exception.class)
@@ -47,7 +48,8 @@ public class UserRegistrationServiceTest {
 
         when(userRegistrationService.register(userRegistrationRequest)).thenThrow(Exception.class);
 
-        ResponseEntity<Void> response = userRegistrationService.register(userRegistrationRequest);
+        ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
+        assertTrue(response.getStatusCode().is4xxClientError());
     }
 
 }

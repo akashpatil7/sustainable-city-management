@@ -1,8 +1,8 @@
 package com.tcd.ase.userservice.service;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserLoginRequest;
+import com.tcd.ase.userservice.models.UserLoginResponse;
 import com.tcd.ase.userservice.repository.UserRepository;
 import com.tcd.ase.utils.JWTokenHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +18,22 @@ public class UserLoginService {
     @Autowired
     private UserRepository repository;
 
-    public ResponseEntity<JSONObject> login(UserLoginRequest request) {
+    public ResponseEntity<Object> login(UserLoginRequest request) {
         JWTokenHelper helper = new JWTokenHelper();
         final String token;
-        JSONObject body=new JSONObject();
         Optional<User> user = repository.findById(request.getEmail());
         if(!user.isPresent()) {
-            return new ResponseEntity<JSONObject>(body,HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Object>("User does not exist",HttpStatus.FORBIDDEN);
         }
         else {
             User ruser = user.get();
             if(!request.getPassword().equals(ruser.getPassword())) {
-                return new ResponseEntity<JSONObject>(body, HttpStatus.FORBIDDEN);
+                return new ResponseEntity<Object>("Incorrect password", HttpStatus.FORBIDDEN);
             }
             token = helper.generateToken(ruser.getUserName());
-            body.put("token", token);
-            return new ResponseEntity<JSONObject>(body,HttpStatus.OK);
+            UserLoginResponse resp = new UserLoginResponse();
+            resp.setToken(token);
+            return new ResponseEntity<Object>(resp,HttpStatus.OK);
         }
     }
 }

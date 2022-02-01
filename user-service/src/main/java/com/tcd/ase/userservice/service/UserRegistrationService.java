@@ -1,5 +1,7 @@
 package com.tcd.ase.userservice.service;
 
+import java.util.Optional;
+
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import com.tcd.ase.userservice.repository.UserRepository;
@@ -14,17 +16,21 @@ public class UserRegistrationService {
     @Autowired
     private UserRepository repository;
 
-    public ResponseEntity<Void> register(UserRegistrationRequest request) {
+    public ResponseEntity<Object> register(UserRegistrationRequest request) {
         UserMapper mapper = new UserMapper();
-        ResponseEntity<Void> response = null;
+        ResponseEntity<Object> response = null;
         User user = mapper.fromRegistrationRequestToEntity(request);
+        Optional<User> existingUser = repository.findById(request.getEmail());
+        if(existingUser.isPresent()) {
+            return new ResponseEntity<Object>("A user with that email already exists.", HttpStatus.FORBIDDEN);
+        }
         try {
             repository.save(user);
         }
         catch(Exception e){
-            System.out.println(e);
+            return new ResponseEntity<Object>("There was an error creating the account.", HttpStatus.FORBIDDEN);
         }
-        response = new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        response = new ResponseEntity<Object>(HttpStatus.OK);
         return response;
     }
 }
