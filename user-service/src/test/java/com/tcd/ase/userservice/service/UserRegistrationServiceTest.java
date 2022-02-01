@@ -1,10 +1,12 @@
 package com.tcd.ase.userservice.service;
 
+import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.tcd.ase.userservice.repository.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.Assert.*;
+
 import static org.mockito.Mockito.when;
 
 public class UserRegistrationServiceTest {
@@ -36,8 +39,7 @@ public class UserRegistrationServiceTest {
         request.setPassword("admin");
 
         ResponseEntity<Object> response = userRegistrationService.register(request);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
-
+        assertEquals(response.getStatusCode(),HttpStatus.OK);
     }
 
     @Test(expected = Exception.class)
@@ -47,10 +49,10 @@ public class UserRegistrationServiceTest {
         userRegistrationRequest.setPassword("admin");
         userRegistrationRequest.setUsername("admin");
 
-        when(userRegistrationService.register(userRegistrationRequest)).thenThrow(Exception.class);
+        when(userRepository.save(Mockito.any())).thenThrow(Exception.class);
 
         ResponseEntity<Object> response = userRegistrationService.register(userRegistrationRequest);
-        assertTrue(response.getStatusCode().is4xxClientError());
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test

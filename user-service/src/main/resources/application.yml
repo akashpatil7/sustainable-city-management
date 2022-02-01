@@ -1,6 +1,8 @@
 server.port: 7001
 spring.application.name: user-service
 app.eureka-server: localhost
+logging:
+    file: ./logs/user-serice.log
 
 eureka:
   client:

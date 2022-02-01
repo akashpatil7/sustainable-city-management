@@ -1,6 +1,5 @@
 package com.tcd.ase.userservice.service;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.repository.UserRepository;
@@ -10,10 +9,12 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -43,14 +44,13 @@ public class UserLoginServiceTest {
         user.setPassword("admin");
         user.setUserName("admin");
 
-        com.nimbusds.jose.shaded.json.JSONObject body=new JSONObject();
-        body.put("token","12345");
-
+        String generatedToken = "12345";
         when(userRepository.findById(user.getUserName())).thenReturn(Optional.of(user));
-        when(jwTokenHelper.generateToken(user.getUserName())).thenReturn("12345");
+        when(jwTokenHelper.generateToken(user.getUserName())).thenReturn(generatedToken);
 
-        ResponseEntity<Object> token = userLoginService.login(userLoginRequest);
-        assertNotNull(token.getBody());
+        ResponseEntity<Object> resp = userLoginService.login(userLoginRequest);
+        assertNotNull("12345",resp.getBody());
+        assertTrue(resp.getStatusCode().is2xxSuccessful());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class UserLoginServiceTest {
         User user = new User();
         when(userRepository.findById(userLoginRequest.getEmail())).thenReturn(Optional.of(user));
 
-        ResponseEntity<Object> token = userLoginService.login(userLoginRequest);
-        assertNotNull(token.getBody());
+        ResponseEntity<Object> resp = userLoginService.login(userLoginRequest);
+        assertEquals(HttpStatus.FORBIDDEN, resp.getStatusCode());
     }
 }
