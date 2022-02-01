@@ -20,7 +20,7 @@ public class UserRegistrationService {
 
     public ResponseEntity<Object> register(UserRegistrationRequest request) {
         if(request == null ||
-                !request.getEmail().matches("[@dublincity\\.ie]$")){
+                !request.getEmail().matches("^[a-zA-Z0-9_.+-]+@dublincity\\.ie$")){
             return new ResponseEntity<>("Invalid request",HttpStatus.BAD_REQUEST);
         }
         UserMapper mapper = new UserMapper();
@@ -30,8 +30,8 @@ public class UserRegistrationService {
         }
         catch(Exception e) {
         	logger.error("Error in UserRegistrationService register method", e);
-            return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Object>("Registration successful",HttpStatus.OK);
     }
 }
