@@ -2,5 +2,5 @@ package com.tcd.ase.externaldata.service;
 
 public interface ProcessDublinBikesDataService {
 
-    void processData(String data);
+	public void processData(String data);
 }
