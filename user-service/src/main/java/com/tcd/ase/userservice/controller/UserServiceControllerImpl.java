@@ -1,6 +1,5 @@
 package com.tcd.ase.userservice.controller;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import com.tcd.ase.userservice.service.UserLoginService;

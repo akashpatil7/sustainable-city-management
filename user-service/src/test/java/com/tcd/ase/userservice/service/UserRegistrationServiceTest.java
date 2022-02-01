@@ -1,6 +1,5 @@
 package com.tcd.ase.userservice.service;
 
-import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import org.junit.Before;
 import org.junit.Test;

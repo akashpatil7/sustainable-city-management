@@ -35,7 +35,7 @@ public class UserLoginService {
         else {
             User ruser = user.get();
             if(!request.getPassword().equals(ruser.getPassword())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(""Incorrect password"");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect password");
             }
             token = helper.generateToken(ruser.getUserName());
             if(token == null || token.isEmpty()) {
