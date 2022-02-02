@@ -17,3 +17,15 @@ spring.data.mongodb.database: city_dashboard
 
 dublinBikesLatestDataURL: https://data.smartdublin.ie/dublinbikes-api/last_snapshot/
 dublinBikesHistoricalDataURL: https://data.smartdublin.ie/dublinbikes-api/historical/?init=
+
+spring.kafka.bootstrap-servers: 127.0.0.1:29092
+
+#application.id=cities_ingestion
+#schema.registry.url=http://127.0.0.1:8081
+
+#input.topic.name=cities
+#input.topic.partitions=1
+#input.topic.replication.factor=1
+#output.topic.name=cities_keyed
+#output.topic.partitions=1
+#output.topic.replication.factor=1

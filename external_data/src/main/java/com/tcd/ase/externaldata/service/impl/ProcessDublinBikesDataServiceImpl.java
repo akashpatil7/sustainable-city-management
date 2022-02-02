@@ -10,10 +10,15 @@ import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesDataService {
@@ -30,6 +35,12 @@ public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesData
 				DublinBike dublinBike = gson.fromJson(jsonArray.getJSONObject(i).toString(), DublinBike.class);
                 dublinBikesRepository.save(convertData(dublinBike));
 			}
+
+			Message<JSONArray> o = MessageBuilder
+					.withPayload(jsonArray)
+					.setHeader(KafkaHeaders.MESSAGE_KEY, Objects.requireNonNull(buyOrders.poll()).getId())
+					.build();
+
 		} catch (JSONException e) {
 			System.err.println(
 					"ProcessDublinBikesDataServiceImpl : error occurred while parsing response from dublin bikes "
