@@ -2,7 +2,6 @@ package com.tcd.ase.userservice.service;
 
 import java.util.Optional;
 
-import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +27,23 @@ public class UserLoginService {
     public ResponseEntity<Object> login(UserLoginRequest request) {
     	logger.info("Processing login request");
         JWTokenHelper helper = new JWTokenHelper();
-        UserLoginResponse response = new UserLoginResponse();
         final String token;
         Optional<User> user = repository.findById(request.getEmail());
         if(!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not exist");
         }
         else {
             User ruser = user.get();
             if(!request.getPassword().equals(ruser.getPassword())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect password");
             }
             token = helper.generateToken(ruser.getUserName());
             if(token == null || token.isEmpty()) {
             	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("System cannot process request at this time");
             }
+            UserLoginResponse response = new UserLoginResponse();
             response.setToken(token);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
         }
     }
 }
