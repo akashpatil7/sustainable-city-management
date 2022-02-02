@@ -14,8 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class UserLoginServiceTest {
@@ -48,8 +47,9 @@ public class UserLoginServiceTest {
         when(userRepository.findById(user.getUserName())).thenReturn(Optional.of(user));
         when(jwTokenHelper.generateToken(user.getUserName())).thenReturn(generatedToken);
 
-        ResponseEntity<Object> token = userLoginService.login(userLoginRequest);
-        assertNotNull("12345",token);
+        ResponseEntity<Object> resp = userLoginService.login(userLoginRequest);
+        assertNotNull("12345",resp.getBody());
+        assertTrue(resp.getStatusCode().is2xxSuccessful());
     }
 
     @Test
@@ -61,7 +61,7 @@ public class UserLoginServiceTest {
         User user = new User();
         when(userRepository.findById(userLoginRequest.getEmail())).thenReturn(Optional.of(user));
 
-        ResponseEntity<Object> token = userLoginService.login(userLoginRequest);
-        assertEquals(HttpStatus.FORBIDDEN, token.getStatusCode());
+        ResponseEntity<Object> resp = userLoginService.login(userLoginRequest);
+        assertEquals(HttpStatus.FORBIDDEN, resp.getStatusCode());
     }
 }

@@ -1,6 +1,5 @@
 package com.tcd.ase.userservice.service;
 
-import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,8 +13,8 @@ import com.tcd.ase.userservice.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
 import static org.mockito.Mockito.when;
 
 public class UserRegistrationServiceTest {

@@ -27,23 +27,23 @@ public class UserLoginService {
     public ResponseEntity<Object> login(UserLoginRequest request) {
     	logger.info("Processing login request");
         JWTokenHelper helper = new JWTokenHelper();
-        UserLoginResponse response = new UserLoginResponse();
         final String token;
         Optional<User> user = repository.findById(request.getEmail());
         if(!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not exist");
         }
         else {
             User ruser = user.get();
             if(!request.getPassword().equals(ruser.getPassword())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or password");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect password");
             }
             token = helper.generateToken(ruser.getUserName());
             if(token == null || token.isEmpty()) {
             	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("System cannot process request at this time");
             }
+            UserLoginResponse response = new UserLoginResponse();
             response.setToken(token);
-            return new ResponseEntity<Object>(response, HttpStatus.CREATED);
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
         }
     }
 }
