@@ -27,18 +27,13 @@ def getCurrentHourAverages():
 	return dumps(list(data))
 	
 
-@app.route("/getHourlyAverageForStation", methods=['GET'])
-def getHourlyAverageForStation():
+@app.route("/getHourlyAverageForAllStation", methods=['GET'])
+def getHourlyAverageForAllStation():
 	
-	station = request.args.get('station')
-
-	print(f"\n\nGetting the view:AvgHourlyAvailability from MongoDB for station '{station}'")
+	print('\n\nGetting the view:AvgHourlyAvailability from MongoDB for all stations')
 	AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
 
-	stationFilter = { '_id.name': station }
-	print("Filter: ", stationFilter)
-
-	data = AvgHourlyAvailability.find(filter = stationFilter)
+	data = AvgHourlyAvailability.find()
 	print("Returning data ... ")
 
 	return dumps(list(data))
