@@ -59,5 +59,24 @@ def getDailyAverages():
 	print("Returning data ... ")
 	return df.to_json(orient = 'records')
 
+@app.route("/getRecommendations", methods=['GET'])
+def getRecommendations():
+	print("Getting DublinBikes data from MongoDB")
+	Dublin_Bikes = client.city_dashboard.Dublin_Bikes
+	mostEmptyBikeStationData = Dublin_Bikes.find(
+		{ },
+		{ 'name': True, 'harvestTime': True, 'availableBikeStands': True, 'bikeStands': True, 'availableBikes': True, '_id': False }
+	).sort([("harvestTime", -1), ("availableBikeStands", 1)]).limit(5)
+
+	mostAvailableBikeStationData = Dublin_Bikes.find(
+		{ },
+		{ 'name': True, 'harvestTime': True, 'availableBikeStands': True, 'bikeStands': True, 'availableBikes': True, '_id': False }
+	).sort([("harvestTime", -1), ("availableBikeStands", -1)]).limit(5)
+
+	print("Calculating recommendations")
+	df1 = pd.DataFrame(list(mostEmptyBikeStationData))
+	df2 = pd.DataFrame(list(mostAvailableBikeStationData))
+	return df1.append(df2).to_json(orient = 'records')
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = rest_port)
