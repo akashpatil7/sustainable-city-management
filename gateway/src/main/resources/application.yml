@@ -57,6 +57,7 @@ spring:
             allowedMethods:
             - GET
             - POST
+            allowedHeaders: "*"
 
 
 
