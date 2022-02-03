@@ -1,4 +1,4 @@
-server.port: 7001
+server.port: 7002
 spring.application.name: trends-analysis
 app.eureka-server: localhost
 
