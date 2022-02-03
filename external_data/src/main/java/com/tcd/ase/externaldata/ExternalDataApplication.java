@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.tcd.ase.externaldata.model.Data;
+import com.tcd.ase.externaldata.service.impl.ProcessDublinBikesDataServiceImpl;
 
 @SpringBootApplication
 @EnableScheduling

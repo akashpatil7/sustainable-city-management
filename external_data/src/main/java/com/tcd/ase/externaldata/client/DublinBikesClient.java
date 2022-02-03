@@ -1,16 +1,15 @@
 package com.tcd.ase.externaldata.client;
 
-import com.tcd.ase.externaldata.model.Data;
-import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
 @Component
 public class DublinBikesClient {
@@ -18,7 +17,7 @@ public class DublinBikesClient {
 	@Autowired
 	private ProcessDublinBikesDataService processDublinBikesDataService;
 
-	/* This schedular will trigger after every 5 min */
+	/* This schedular will trigger after every 2 min */
 
 	@Scheduled(fixedRate = 300000)
 	public void extractData() {
@@ -34,7 +33,7 @@ public class DublinBikesClient {
 			}
 			InputStreamReader in = new InputStreamReader(conn.getInputStream());
 			BufferedReader br = new BufferedReader(in);
-			System.out.println("Data extracted");
+			System.out.println("Data extracted for schduled task");
 			String output;
 			while ((output = br.readLine()) != null) {
 				processDublinBikesDataService.processData(output);
@@ -44,11 +43,6 @@ public class DublinBikesClient {
 		} catch (Exception e) {
 			System.out.println("Exception in NetClientGet:- " + e);
 		}
-	}
-
-	@Scheduled(fixedRate = 10000)
-	public void randomDataTask() {
-		Data.setTime(System.currentTimeMillis() / 1000);
 	}
 
 }
