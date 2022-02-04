@@ -6,6 +6,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
+import reactor.core.publisher.Sinks;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,6 +21,9 @@ public class DublinBikesClient {
 
 	@Value("${dublinBikesLatestDataURL}")
 	private String dublinBikesLatestDataURL;
+
+	@Autowired
+	private Sinks.Many<String> sink;
 
 	/* This schedular will trigger after every 5 min */
 
@@ -37,6 +42,7 @@ public class DublinBikesClient {
 			BufferedReader br = new BufferedReader(in);
 			String output;
 			while ((output = br.readLine()) != null) {
+				this.sink.tryEmitNext(output);
 				processDublinBikesDataService.processData(output);
 			}
 			conn.disconnect();
