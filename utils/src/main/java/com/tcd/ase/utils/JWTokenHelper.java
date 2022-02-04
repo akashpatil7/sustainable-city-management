@@ -5,14 +5,12 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Map;
 import java.util.Properties;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;

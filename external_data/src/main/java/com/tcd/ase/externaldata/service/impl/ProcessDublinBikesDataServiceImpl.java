@@ -1,21 +1,19 @@
 package com.tcd.ase.externaldata.service.impl;
 
-import com.google.gson.Gson;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
-import com.tcd.ase.externaldata.entity.DublinBikes;
-import com.tcd.ase.externaldata.model.Data;
-import com.tcd.ase.externaldata.model.DublinBike;
-
-import com.tcd.ase.externaldata.repository.DublinBikesRepository;
-import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
+import com.google.gson.Gson;
+import com.tcd.ase.externaldata.entity.DublinBikes;
+import com.tcd.ase.externaldata.model.Data;
+import com.tcd.ase.externaldata.model.DublinBike;
+import com.tcd.ase.externaldata.repository.DublinBikesRepository;
+import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
 @Service
 public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesDataService {

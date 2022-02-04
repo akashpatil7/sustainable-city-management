@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
 @Component
 public class DublinBikesClient {
@@ -17,14 +17,16 @@ public class DublinBikesClient {
 	@Autowired
 	private ProcessDublinBikesDataService processDublinBikesDataService;
 
-	/* This schedular will trigger after every 2 min */
+	@Value("${dublinBikesLatestDataURL}")
+	private String dublinBikesLatestDataURL;
+
+	/* This schedular will trigger after every 5 min */
 
 	@Scheduled(fixedRate = 300000)
 	public void extractData() {
 		try {
-			System.out.println("In extract data");
-			URL url = new URL("https://data.smartdublin.ie/dublinbikes-api/last_snapshot/");// your url i.e fetch data
-																							// from .
+			System.out.println("Schedular started : dublin bikes latest data");
+			URL url = new URL(dublinBikesLatestDataURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
@@ -33,16 +35,15 @@ public class DublinBikesClient {
 			}
 			InputStreamReader in = new InputStreamReader(conn.getInputStream());
 			BufferedReader br = new BufferedReader(in);
-			System.out.println("Data extracted for schduled task");
 			String output;
 			while ((output = br.readLine()) != null) {
 				processDublinBikesDataService.processData(output);
 			}
 			conn.disconnect();
+			System.out.println("Schedular ended : dublin bikes latest data");
 
 		} catch (Exception e) {
-			System.out.println("Exception in NetClientGet:- " + e);
+			System.out.println("Exception while extracting dublin bikes data:- " + e.getMessage());
 		}
 	}
-
 }

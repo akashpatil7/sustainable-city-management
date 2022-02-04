@@ -20,8 +20,7 @@ public class Data {
 		String blah = "";
 		try {
 			System.out.println("In Initialize");
-			URL url = new URL("https://data.smartdublin.ie/dublinbikes-api/last_snapshot/");// your url i.e fetch data
-																							// from .
+			URL url = new URL("https://data.smartdublin.ie/dublinbikes-api/last_snapshot/");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
