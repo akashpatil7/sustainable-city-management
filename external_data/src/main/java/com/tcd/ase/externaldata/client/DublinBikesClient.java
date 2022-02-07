@@ -2,6 +2,8 @@ package com.tcd.ase.externaldata.client;
 
 import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,12 +23,14 @@ public class DublinBikesClient {
     @Value("${dublinBikesLatestDataURL}")
     private String dublinBikesLatestDataURL;
 
+    private static final Logger LOGGER = LogManager.getLogger(DublinBikesClient.class);
+
     /*This schedular will trigger after every 5 min */
 
     @Scheduled(fixedRate = 300000)
     public void extractData() {
         try {
-            System.out.println("Schedular started : dublin bikes latest data");
+            LOGGER.info("Schedular started : dublin bikes latest data");
             URL url = new URL(dublinBikesLatestDataURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -41,10 +45,10 @@ public class DublinBikesClient {
                 processDublinBikesDataService.processData(output);
             }
             conn.disconnect();
-            System.out.println("Schedular ended : dublin bikes latest data");
+            LOGGER.info("Schedular ended : dublin bikes latest data");
 
         } catch (Exception e) {
-            System.out.println("Exception while extracting dublin bikes data:- " + e.getMessage());
+            LOGGER.info("Exception occurred while extracting dublin bikes latest data:- " + e.getMessage());
         }
     }
 }
