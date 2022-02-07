@@ -1,5 +1,7 @@
 package com.tcd.ase.userservice.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +21,23 @@ public class UserRegistrationService {
     private UserRepository repository;
 
     public ResponseEntity<Object> register(UserRegistrationRequest request) {
+        if(request == null ||
+                !request.getEmail().matches("^[a-zA-Z0-9_.+-]+@dublincity\\.ie$")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
+        }
         UserMapper mapper = new UserMapper();
         User user = mapper.fromRegistrationRequestToEntity(request);
+        Optional<User> existingUser = repository.findById(request.getEmail());
+        if(existingUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A user with that email already exists.");
+        }
         try {
             repository.save(user);
         }
-        catch(Exception e) {
-        	logger.error("Error in UserRegistrationService register method", e);
-            return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        catch(Exception e){
+          logger.error("Error in UserRegistrationService register method", e);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
-        return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
 }

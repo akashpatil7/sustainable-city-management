@@ -42,14 +42,24 @@ spring.cloud.gateway.routes:
   filters:
   - AuthenticationGatewayFilter
   
+- id: trends-analysis
+  uri: lb://trends-analysis
+  predicates:
+  - Path=/trends/**
+
 spring:
   cloud:
     gateway:
       globalcors:
-        cors-configurations:
+        corsConfigurations:
           '[/**]':
             allowedOrigins: "*"
-            allowedMethods: "*"
+            allowedMethods:
+            - GET
+            - POST
+            allowedHeaders: "*"
+
+
 
 security.enable.csrf: false
 

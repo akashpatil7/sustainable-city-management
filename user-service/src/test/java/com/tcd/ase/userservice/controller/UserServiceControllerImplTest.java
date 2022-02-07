@@ -1,26 +1,18 @@
 package com.tcd.ase.userservice.controller;
 
-import com.tcd.ase.userservice.entity.User;
 import com.tcd.ase.userservice.models.UserLoginRequest;
 import com.tcd.ase.userservice.models.UserRegistrationRequest;
-import com.tcd.ase.userservice.repository.UserRepository;
 import com.tcd.ase.userservice.service.UserLoginService;
 import com.tcd.ase.userservice.service.UserRegistrationService;
-import com.tcd.ase.utils.JWTokenHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import static org.junit.Assert.*;
 
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserServiceControllerImplTest {
@@ -48,20 +40,21 @@ public class UserServiceControllerImplTest {
                 .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.OK).body("token"));
 
         ResponseEntity<Object> response = userServiceController.login(userLoginRequest);
-        assertNotNull(response.getBody());
+        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
     public void testRegister(){
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
-        userRegistrationRequest.setEmail("admin@admin");
+        userRegistrationRequest.setEmail("admin@dublincity.ie");
         userRegistrationRequest.setPassword("admin");
         userRegistrationRequest.setUsername("admin");
 
         when(userRegistrationService.register(userRegistrationRequest))
-                .thenReturn(any(ResponseEntity.class));
+                .thenReturn(new ResponseEntity<Object>(HttpStatus.OK));
 
         ResponseEntity<Object> response = userServiceController.register(userRegistrationRequest);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
 }

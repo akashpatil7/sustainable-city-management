@@ -1,4 +1,4 @@
-server.port: 7001
+server.port: 7002
 spring.application.name: external-data
 app.eureka-server: localhost
 

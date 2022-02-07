@@ -1,19 +1,24 @@
 package com.tcd.ase.externaldata.service.impl;
 
-import com.google.gson.Gson;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.tcd.ase.externaldata.entity.DublinBikes;
-import com.tcd.ase.externaldata.model.DublinBike;
-
-import com.tcd.ase.externaldata.repository.DublinBikesRepository;
-import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import com.google.gson.Gson;
+import com.tcd.ase.externaldata.entity.DublinBikes;
+import com.tcd.ase.externaldata.model.DublinBike;
+import com.tcd.ase.externaldata.model.DublinBikeDTO;
+import com.tcd.ase.externaldata.model.DublinBikeResponseDTO;
+import com.tcd.ase.externaldata.repository.DublinBikesRepository;
+import com.tcd.ase.externaldata.service.ProcessDublinBikesDataService;
+
+import reactor.core.publisher.Sinks;
 
 @Service
 public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesDataService {
@@ -21,14 +26,29 @@ public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesData
 	@Autowired
 	private DublinBikesRepository dublinBikesRepository;
 
+	@Autowired
+	private Sinks.Many<DublinBikeResponseDTO> sink;
+
 	@Override
 	public void processData(final String data) {
 		Gson gson = new Gson();
 		try {
 			JSONArray jsonArray = new JSONArray(data);
-			for (int i = 0; i < jsonArray.length(); i++) {
-				DublinBike dublinBike = gson.fromJson(jsonArray.getJSONObject(i).toString(), DublinBike.class);
-                dublinBikesRepository.save(convertData(dublinBike));
+			DublinBike currentDublinBike = gson.fromJson(jsonArray.getJSONObject(0).toString(), DublinBike.class);
+			Long currentEpoch = convertDateToTimestamp(currentDublinBike.getHarvest_time());
+			DublinBikes latestBikeFromDB = dublinBikesRepository.findFirstByOrderByHarvestTimeDesc().orElse(null);
+			List<DublinBikeDTO> bikeDTO = new ArrayList<>();
+
+			if (latestBikeFromDB != null && currentEpoch > latestBikeFromDB.getHarvestTime()) {
+				System.out.println("Got new Data");
+				for (int i = 0; i < jsonArray.length(); i++) {
+					DublinBike dublinBike = gson.fromJson(jsonArray.getJSONObject(i).toString(), DublinBike.class);
+					dublinBikesRepository.save(convertData(dublinBike));
+					bikeDTO.add(convertDataToDTO(dublinBike));
+				}
+				DublinBikeResponseDTO bikeResponseDTO = new DublinBikeResponseDTO.DublinBikeResponseDTOBuilder()
+						.withBikeDTO(bikeDTO).build();
+				this.sink.tryEmitNext(bikeResponseDTO);
 			}
 		} catch (JSONException e) {
 			System.err.println(
@@ -55,5 +75,17 @@ public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesData
 				.withAddress(dublinBike.getAddress()).withName(dublinBike.getName())
 				.withLatitude(dublinBike.getLatitude()).withLongitude(dublinBike.getLongitude()).build();
 		return bikeData;
+	}
+
+	private DublinBikeDTO convertDataToDTO(DublinBike dublinBike) {
+
+		DublinBikeDTO bikeDataDTO = new DublinBikeDTO.DublinBikeDTOBuilder().withId(dublinBike.getId())
+				.withHarvestTime(dublinBike.getHarvest_time()).withStationId(dublinBike.getStation_id())
+				.withAvailableBikeStands(dublinBike.getAvailable_bike_stands())
+				.withBikeStands(dublinBike.getBike_stands()).withAvailableBikes(dublinBike.getAvailable_bikes())
+				.withLastUpdate(dublinBike.getLast_update()).withStatus(dublinBike.getStatus())
+				.withAddress(dublinBike.getAddress()).withName(dublinBike.getName())
+				.withLatitude(dublinBike.getLatitude()).withLongitude(dublinBike.getLongitude()).build();
+		return bikeDataDTO;
 	}
 }
