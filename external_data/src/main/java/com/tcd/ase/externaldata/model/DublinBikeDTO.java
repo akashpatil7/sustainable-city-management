@@ -7,6 +7,10 @@ import lombok.Data;
 
 @Data
 public class DublinBikeDTO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private LocalDateTime harvestTime;
 	private Integer stationId;

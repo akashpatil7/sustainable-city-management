@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ import reactor.core.publisher.Sinks;
 
 @Service
 public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesDataService {
+	
+	private static Logger logger = LoggerFactory.getLogger(ProcessDublinBikesDataServiceImpl.class);
 
 	@Autowired
 	private DublinBikesRepository dublinBikesRepository;
@@ -31,6 +35,7 @@ public class ProcessDublinBikesDataServiceImpl implements ProcessDublinBikesData
 
 	@Override
 	public void processData(final String data) {
+		logger.info("Comparing the data from the database");
 		Gson gson = new Gson();
 		try {
 			JSONArray jsonArray = new JSONArray(data);

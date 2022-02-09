@@ -47,6 +47,13 @@ spring.cloud.gateway.routes:
   predicates:
   - Path=/trends/**
 
+- id: external-data
+  uri: lb://external-data
+  predicates:
+  - Path=/realTimeData/**
+  filters:
+  - AuthenticationGatewayFilter
+
 spring:
   cloud:
     gateway:
@@ -58,10 +65,6 @@ spring:
             - GET
             - POST
             allowedHeaders: "*"
-
-
-
-security.enable.csrf: false
 
 logging:
   level:
