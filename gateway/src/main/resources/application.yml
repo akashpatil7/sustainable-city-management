@@ -42,10 +42,10 @@ spring.cloud.gateway.routes:
   filters:
   - AuthenticationGatewayFilter
   
-- id: trends-analysis
-  uri: lb://trends-analysis
+- id: py-data-trends-predictions-service
+  uri: lb://py-data-trends-predictions-service
   predicates:
-  - Path=/trends/**
+  - Path=/getCurrentHourAverages/**
 
 - id: external-data
   uri: lb://external-data
