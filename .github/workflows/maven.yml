@@ -22,5 +22,11 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file gateway/pom.xml external_data/pom.xml user-service/pom.xml
+    - name: Build gateway with Maven
+      run: mvn -B package --file gateway/pom.xml
+    - name: Build server with Maven
+      run: mvn -B package --file eurekaserver/pom.xml
+    - name: Build user service with Maven
+      run: mvn -B package --file user-service/pom.xml
+    - name: Build external data with Maven
+      run: mvn -B package --file external-data/pom.xml
