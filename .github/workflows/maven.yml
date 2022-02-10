@@ -24,3 +24,6 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file eurekaserver/pom.xml
+      run: mvn -B package --file gateway/pom.xml
+      run: mvn -B package --file external_data/pom.xml
+      run: mvn -B package --file user-service/pom.xml
