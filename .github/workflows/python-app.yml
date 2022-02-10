@@ -7,7 +7,7 @@ on:
   push:
     branches: [ project-deployment ]
   pull_request:
-    branches: [ deployment ]
+    branches: [ project-deployment ]
 
 jobs:
   build:
