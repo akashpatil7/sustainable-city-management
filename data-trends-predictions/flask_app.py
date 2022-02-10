@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from flask import Flask
 from bson.json_util import dumps
 
+
 rest_port = 8050
 eureka_client.init(eureka_server="http://localhost:8761/eureka",
                    app_name="py-data-trends-predictions-service",
@@ -87,3 +88,4 @@ class Analysis():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=rest_port)
+
