@@ -2,7 +2,11 @@ server.port: 7001
 spring.application.name: user-service
 app.eureka-server: localhost
 logging:
-    file: ./logs/user-serice.log
+    file: 
+       name : logs/user-serice.log
+    level:
+      root: INFO
+      com.tcd.ase: DEBUG
 
 eureka:
   client:
