@@ -25,7 +25,7 @@ jobs:
     - name: Build server with Maven
       run: mvn -B package --file eurekaserver/pom.xml
     - name: Build utils with Maven
-      run: mvn -B package --file utils/pom.xml
+      run: mvn -B install --file utils/pom.xml
     - name: Build gateway with Maven
       run: mvn -B package --file gateway/pom.xml
     - name: Build user service with Maven
