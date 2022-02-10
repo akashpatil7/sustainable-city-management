@@ -1,4 +1,4 @@
-server.port: 7001
+server.port: 7002
 spring.application.name: external-data
 app.eureka-server: localhost
 
@@ -11,6 +11,9 @@ eureka:
   instance:
     leaseRenewalIntervalInSeconds: 5
     leaseExpirationDurationInSeconds: 5
+
+logging:
+  file: ./logs/external_data.log
 
 spring.data.mongodb.uri: mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard
 spring.data.mongodb.database: city_dashboard
