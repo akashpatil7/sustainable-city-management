@@ -1,0 +1,4 @@
+curl -X GET \
+  'https://data.smartdublin.ie/dublinbikes-api/historical/?init=2022-01-13%2008%3A00%3A00' \
+  -H 'accept: application/json' \
+  -H 'cache-control: no-cache' \
