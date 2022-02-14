@@ -19,7 +19,7 @@ public class RealTimeDataProcessorController {
 
     @GetMapping(value = "/realTimeData")
     public void sendDublinBusDataToKakfaTopic() {
-        this.producer.sendMessage();
+        this.producer.getDublinBikeDataFromExternalSource();
     }
 
 }
