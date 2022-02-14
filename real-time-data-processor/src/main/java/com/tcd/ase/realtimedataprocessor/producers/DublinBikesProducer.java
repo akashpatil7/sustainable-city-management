@@ -30,7 +30,7 @@ public class DublinBikesProducer {
 
     public ListenableFuture<SendResult<String,DublinBike[]>> sendMessage(String topic, DublinBike[] message) {
         //logger.info(String.format("#### -> Producing message -> %s", message));
-        this.kakfaTemplate.send(topic, message);
+        return this.kakfaTemplate.send(topic, message);
     }
 
     @Scheduled(fixedRate = 60000)
