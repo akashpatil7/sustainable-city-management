@@ -20,3 +20,4 @@ spring.data.mongodb.database: city_dashboard
 
 dublinBikesLatestDataURL: https://data.smartdublin.ie/dublinbikes-api/last_snapshot/
 dublinBikesHistoricalDataURL: https://data.smartdublin.ie/dublinbikes-api/historical/?init=
+dublinBusDataURL : https://api.nationaltransport.ie/gtfsr/v1?format=json
