@@ -17,72 +17,71 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-class Analysis():
-    @app.route("/getCurrentHourAverages", methods=['GET'])
-    @cross_origin()
-    def getCurrentHourAverages():
+@app.route("/getCurrentHourAverages", methods=['GET'])
+@cross_origin()
+def getCurrentHourAverages():
 
-        print("Testing change to Github branch")
-        print("\n\nGetting the view:AvgHourlyAvailability from MongoDB")
-        AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
+    print("Testing change to Github branch")
+    print("\n\nGetting the view:AvgHourlyAvailability from MongoDB")
+    AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
 
-        hourFilter = {'_id.hour': datetime.now().hour}
-        print("Filter: ", hourFilter)
+    hourFilter = {'_id.hour': datetime.now().hour}
+    print("Filter: ", hourFilter)
 
-        data = AvgHourlyAvailability.find(filter=hourFilter)
-        print("Returning data ... ")
+    data = AvgHourlyAvailability.find(filter=hourFilter)
+    print("Returning data ... ")
 
-        return dumps(list(data))
+    return dumps(list(data))
 
-    @app.route("/getHourlyAverageForAllStation", methods=['GET'])
-    @cross_origin()
-    def getHourlyAverageForAllStation():
+@app.route("/getHourlyAverageForAllStation", methods=['GET'])
+@cross_origin()
+def getHourlyAverageForAllStation():
 
-        print(
-            '\n\nGetting the view:AvgHourlyAvailability from MongoDB for all stations'
-        )
-        AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
+    print(
+        '\n\nGetting the view:AvgHourlyAvailability from MongoDB for all stations'
+    )
+    AvgHourlyAvailability = client.city_dashboard.AvgHourlyAvailability
 
-        data = AvgHourlyAvailability.find()
-        print("Returning data ... ")
+    data = AvgHourlyAvailability.find()
+    print("Returning data ... ")
 
-        return dumps(list(data))
+    return dumps(list(data))
 
-    @app.route("/getRecommendations", methods=['GET'])
-    @cross_origin()
-    def getRecommendations():
-        print("Getting DublinBikes data from MongoDB")
-        Dublin_Bikes = client.city_dashboard.Dublin_Bikes
-        mostEmptyBikeStationData = list(
-            Dublin_Bikes.find({}, {
-                'name': True,
-                'harvestTime': True,
-                'availableBikeStands': True,
-                'bikeStands': True,
-                'availableBikes': True,
-                '_id': False
-            }).sort([("harvestTime", -1),
-                     ("availableBikeStands", 1)]).limit(5))
+@app.route("/getRecommendations", methods=['GET'])
+@cross_origin()
+def getRecommendations():
+    print("Getting DublinBikes data from MongoDB")
+    Dublin_Bikes = client.city_dashboard.Dublin_Bikes
+    mostEmptyBikeStationData = list(
+        Dublin_Bikes.find({}, {
+            'name': True,
+            'harvestTime': True,
+            'availableBikeStands': True,
+            'bikeStands': True,
+            'availableBikes': True,
+            '_id': False
+        }).sort([("harvestTime", -1),
+                    ("availableBikeStands", 1)]).limit(5))
 
-        mostAvailableBikeStationData = list(
-            Dublin_Bikes.find({}, {
-                'name': True,
-                'harvestTime': True,
-                'availableBikeStands': True,
-                'bikeStands': True,
-                'availableBikes': True,
-                '_id': False
-            }).sort([("harvestTime", -1),
-                     ("availableBikeStands", -1)]).limit(5))
+    mostAvailableBikeStationData = list(
+        Dublin_Bikes.find({}, {
+            'name': True,
+            'harvestTime': True,
+            'availableBikeStands': True,
+            'bikeStands': True,
+            'availableBikes': True,
+            '_id': False
+        }).sort([("harvestTime", -1),
+                    ("availableBikeStands", -1)]).limit(5))
 
-        print("Calculating recommendations")
+    print("Calculating recommendations")
 
-        return dumps({
-            'mostEmptyBikeStationData':
-            mostEmptyBikeStationData,
-            'mostAvailableBikeStationData':
-            mostAvailableBikeStationData
-        })
+    return dumps({
+        'mostEmptyBikeStationData':
+        mostEmptyBikeStationData,
+        'mostAvailableBikeStationData':
+        mostAvailableBikeStationData
+    })
 
 
 if __name__ == "__main__":
