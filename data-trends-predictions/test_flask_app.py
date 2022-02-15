@@ -1,9 +1,7 @@
 import unittest
-from flask_app import Analysis
+from flask_app import app
 
 class AnalysisTests(unittest.TestCase):
     def testCurrentHourAverages(self):
-        analysis = Analysis()
-        hourAverages = analysis.getCurrentHourAverages()
-        testHourAverages = analysis.getCurrentHourAverages()
-        self.assertEqual(hourAverages, testHourAverages)
+        response = app.test_client().get('/getCurrentHourAverages')
+        assert response.status_code == 200
