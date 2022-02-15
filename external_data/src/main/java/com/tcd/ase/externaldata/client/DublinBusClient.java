@@ -14,10 +14,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.*;
 
+@Component
 public class DublinBusClient {
 
     @Autowired
@@ -28,11 +30,11 @@ public class DublinBusClient {
 
     private static final Logger LOGGER = LogManager.getLogger(DublinBusClient.class);
 
-    @Scheduled(cron = "* * * * * *")
-    void extractData() {
+    @Scheduled(fixedRate = 10000)
+    public void extractData() {
         try {
-            LOGGER.info("Schedular started : dublin bikes latest data");
-
+            LOGGER.info("Schedular started : dublin bus latest data");
+            //ProcessDublinBusDataService processDublinBusDataService = new ProcessDublinBusDataServiceImpl();
             HttpClient httpclient = HttpClients.createDefault();
             URL url = new URL("https://api.nationaltransport.ie/gtfsr/v1?format=json");
             HttpGet request = new HttpGet(String.valueOf(url));
