@@ -42,10 +42,10 @@ spring.cloud.gateway.routes:
   filters:
   - AuthenticationGatewayFilter
   
-- id: trends-analysis
-  uri: lb://trends-analysis
+- id: trends
+  uri: lb://trends
   predicates:
-  - Path=/trends/**
+  - Path=/getCurrentHourAverages/**
 
 spring:
   cloud:
@@ -68,3 +68,8 @@ logging:
     root: INFO
     org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
     org.springframework.cloud.gateway: TRACE
+
+
+---
+spring.profiles: docker
+app.eureka-server: eureka
