@@ -2,6 +2,7 @@ from datetime import datetime
 import py_eureka_client.eureka_client as eureka_client
 from pymongo import MongoClient
 from flask import Flask
+from flask_cors import CORS, cross_origin
 from bson.json_util import dumps
 
 
@@ -12,11 +13,14 @@ eureka_client.init(eureka_server="http://localhost:8761/eureka",
 client = MongoClient(
     "mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard")
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 class Analysis():
     @app.route("/getCurrentHourAverages", methods=['GET'])
-    def getCurrentHourAverages(self):
+    @cross_origin()
+    def getCurrentHourAverages():
 
         print("Testing change to Github branch")
         print("\n\nGetting the view:AvgHourlyAvailability from MongoDB")
@@ -31,7 +35,8 @@ class Analysis():
         return dumps(list(data))
 
     @app.route("/getHourlyAverageForAllStation", methods=['GET'])
-    def getHourlyAverageForAllStation(self):
+    @cross_origin()
+    def getHourlyAverageForAllStation():
 
         print(
             '\n\nGetting the view:AvgHourlyAvailability from MongoDB for all stations'
@@ -43,15 +48,9 @@ class Analysis():
 
         return dumps(list(data))
 
-    @app.after_request
-    def after_request(self, response):
-        header = response.headers
-        header['Access-Control-Allow-Origin'] = '*'
-        print("After Request triggered")
-        return response
-
     @app.route("/getRecommendations", methods=['GET'])
-    def getRecommendations(self):
+    @cross_origin()
+    def getRecommendations():
         print("Getting DublinBikes data from MongoDB")
         Dublin_Bikes = client.city_dashboard.Dublin_Bikes
         mostEmptyBikeStationData = list(
