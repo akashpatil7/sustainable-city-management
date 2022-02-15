@@ -1,25 +1,26 @@
 package com.tcd.ase.realtimedataprocessor.controller;
 
+import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.DublinBikeResponseDTO;
 import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
+import com.tcd.ase.realtimedataprocessor.service.DublinBikeService;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
 public class RealTimeDataProcessorController {
 
     @Autowired
-    DublinBikesProducer producer;
+    DublinBikeService service;
 
-    @GetMapping(value = "/realTimeData")
-    public void sendDublinBusDataToKakfaTopic() {
-        this.producer.getDublinBikeDataFromExternalSource();
+    @GetMapping(value = "/realTimeData/{dataIndicator}")
+    public void sendDublinBusDataToKakfaTopic(@PathVariable(value = "dataIndicator") final String dataIndicator) {
+        if(dataIndicator.equals("bike"))
+            service.processRealTimeDataForDublinBikes();
+
     }
 
 }

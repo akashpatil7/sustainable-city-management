@@ -18,26 +18,21 @@ import org.apache.logging.log4j.Logger;
 @Service
 public class DublinBikesProducer {
 
-    private static final String topic = "dublinbike";
-
     private static final Logger log = LogManager.getLogger(DublinBikesProducer.class);
-
-    @Value("${dublinBikesLatestDataURL}")
-    private String DUBLIN_BUS_URI;
 
     @Autowired
     private KafkaTemplate<String,DublinBike[]> kakfaTemplate;
 
     public ListenableFuture<SendResult<String,DublinBike[]>> sendMessage(String topic, DublinBike[] message) {
-        //logger.info(String.format("#### -> Producing message -> %s", message));
+        log.info(String.format("#### -> Producing message -> %s", message));
         return this.kakfaTemplate.send(topic, message);
     }
 
-    @Scheduled(fixedRate = 60000)
-    public void getDublinBikeDataFromExternalSource() {
-        RestTemplate restTemplate = new RestTemplate();
-        DublinBike[] dublinBikes = restTemplate.getForObject(DUBLIN_BUS_URI, DublinBike[].class);
-        log.info(dublinBikes.toString());
-        sendMessage(topic, dublinBikes);
-    }
+//    @Scheduled(fixedRate = 60000)
+//    public void getDublinBikeDataFromExternalSource() {
+//        RestTemplate restTemplate = new RestTemplate();
+//        DublinBike[] dublinBikes = restTemplate.getForObject(DUBLIN_BUS_URI, DublinBike[].class);
+//        log.info(dublinBikes.toString());
+//        sendMessage(topic, dublinBikes);
+//    }
 }
