@@ -1,5 +1,5 @@
 import unittest
-from app import app
+from data_app import app
 
 class AnalysisTests(unittest.TestCase):
     def testCurrentHourAverages(self):
