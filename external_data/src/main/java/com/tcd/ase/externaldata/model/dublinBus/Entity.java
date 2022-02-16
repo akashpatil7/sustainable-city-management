@@ -1,5 +1,6 @@
 package com.tcd.ase.externaldata.model.dublinBus;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +8,12 @@ import lombok.Setter;
 @Setter
 public class Entity {
 
-    private String id;
-    private boolean isDeleted;
-    private TripUpdate tripUpdate;
+    @JsonProperty("Id")
+    public String id;
+
+    @JsonProperty("IsDeleted")
+    public boolean isDeleted;
+
+    @JsonProperty("TripUpdate")
+    public TripUpdate tripUpdate;
 }

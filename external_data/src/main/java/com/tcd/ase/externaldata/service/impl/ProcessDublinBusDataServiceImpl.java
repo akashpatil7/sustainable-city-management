@@ -24,13 +24,8 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
     public void processData(String data) {
         //System.out.println(data);
         List<DublinCityBusRoutes> dublinCityBusRoutesList = dublinCityBusRoutesRepository.findAll();
-        Gson gson = new Gson();
-        try {
-            JSONObject jsonObject = new JSONObject(data);
-            DublinBus currentDublinBike = gson.fromJson(jsonObject.toString(), DublinBus.class);
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Object dublinBus = new Gson().fromJson(data, Object.class);
+
         System.out.println("Processing completed");
     }
 }

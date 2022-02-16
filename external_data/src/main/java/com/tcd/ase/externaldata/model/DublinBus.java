@@ -1,16 +1,20 @@
 package com.tcd.ase.externaldata.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tcd.ase.externaldata.model.dublinBus.Entity;
 import com.tcd.ase.externaldata.model.dublinBus.Header;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Getter
 @Setter
 public class DublinBus {
 
-    private Header dublinBusHeader;
-    private List<Entity> entityList;
+    @JsonProperty("Header")
+    public Header header;
+
+    @JsonProperty("Entity")
+    public ArrayList<Entity> entity;
 }

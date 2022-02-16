@@ -1,18 +1,19 @@
 package com.tcd.ase.externaldata.model.dublinBus;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 public class TripUpdate {
 
-    private String tripId;
-    private String routeId;
-    private String startTime;
-    private String startDate;
-    private String scheduleRelationship;
-    private List<StopTimeUpdate> stopSequenceList;
+    @JsonProperty("Trip")
+    public Trip trip;
+
+    @JsonProperty("StopTimeUpdate")
+    public ArrayList<StopTimeUpdate> stopTimeUpdate;
 }
