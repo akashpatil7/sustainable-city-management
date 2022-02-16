@@ -45,7 +45,7 @@ spring.cloud.gateway.routes:
 - id: trends
   uri: lb://trends
   predicates:
-  - Path=/getCurrentHourAverages/**
+  - Path=/getCurrentHourAverages/**, /getHourlyAverageForAllStation/**, /getRecommendations/**
   filters:
   - AuthenticationGatewayFilter
 
