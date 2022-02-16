@@ -23,24 +23,34 @@ public class AuthenticationFilter implements GatewayFilter {
 		ServerHttpRequest request = exchange.getRequest();
 		ServerHttpResponse response = exchange.getResponse();
 		JWTokenHelper helper = new JWTokenHelper();
-		final String token;
+		String token;
 		if (routerValidator.isSecured(request)) {
+			System.out.println("Is secured");
 			if (!request.getHeaders().containsKey("Authorization")) {
-				response.setStatusCode(HttpStatus.UNAUTHORIZED);
-				return response.setComplete();
+				System.out.println("no header");
+				if(!request.getQueryParams().containsKey("Authorization")) {
+					System.out.println("no param");
+					response.setStatusCode(HttpStatus.UNAUTHORIZED);
+					return response.setComplete();
+				}
+				System.out.println("Is param!");
+				token = request.getQueryParams().getFirst("Authorization");
+				exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
 			}
-			String header = request.getHeaders().getFirst("Authorization");
-			if (header != null && header.contains("Bearer")) {
-				token = header.split(" ")[1].trim();
-				if (helper.isValid(token)) {
-					exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
+			else {
+				String header = request.getHeaders().getFirst("Authorization");
+				if (header != null && header.contains("Bearer")) {
+					token = header.split(" ")[1].trim();
+					if (helper.isValid(token)) {
+						exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
+					} else {
+						response.setStatusCode(HttpStatus.UNAUTHORIZED);
+						return response.setComplete();
+					}
 				} else {
 					response.setStatusCode(HttpStatus.UNAUTHORIZED);
 					return response.setComplete();
 				}
-			} else {
-				response.setStatusCode(HttpStatus.UNAUTHORIZED);
-				return response.setComplete();
 			}
 		}
 		return chain.filter(exchange);
