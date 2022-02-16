@@ -11,4 +11,4 @@ COPY . .
 
 ENTRYPOINT [ "python" ]
 
-CMD [ "app.py" ]
+CMD [ "data_app.py" ]

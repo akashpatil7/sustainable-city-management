@@ -34,3 +34,12 @@ services:
     mem_limit: 350m
     ports:
       - "7002:8050"
+      
+  external_data:
+    build: external_data
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "7003:8080"
+    

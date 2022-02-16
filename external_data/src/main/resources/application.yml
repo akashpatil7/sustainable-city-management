@@ -20,3 +20,8 @@ spring.data.mongodb.database: city_dashboard
 
 dublinBikesLatestDataURL: https://data.smartdublin.ie/dublinbikes-api/last_snapshot/
 dublinBikesHistoricalDataURL: https://data.smartdublin.ie/dublinbikes-api/historical/?init=
+
+---
+spring.profiles: docker
+server.port: 8080
+app.eureka-server: eureka
