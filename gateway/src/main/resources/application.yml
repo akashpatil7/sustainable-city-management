@@ -42,10 +42,12 @@ spring.cloud.gateway.routes:
   filters:
   - AuthenticationGatewayFilter
   
-- id: py-data-trends-predictions-service
-  uri: lb://py-data-trends-predictions-service
+- id: trends
+  uri: lb://trends
   predicates:
-  - Path=/getCurrentHourAverages/**
+  - Path=/getCurrentHourAverages/**, /getHourlyAverageForAllStation/**, /getRecommendations/**
+  filters:
+  - AuthenticationGatewayFilter
 
 - id: external-data
   uri: lb://external-data
@@ -66,8 +68,17 @@ spring:
             - POST
             allowedHeaders: "*"
 
+
+
+security.enable.csrf: false
+
 logging:
   level:
     root: INFO
     org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
     org.springframework.cloud.gateway: TRACE
+
+
+---
+spring.profiles: docker
+app.eureka-server: eureka

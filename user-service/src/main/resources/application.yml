@@ -2,11 +2,9 @@ server.port: 7001
 spring.application.name: user-service
 app.eureka-server: localhost
 logging:
-    file: 
-       name : logs/user-serice.log
+    file: ./logs/user-serice.log
     level:
-      root: INFO
-      com.tcd.ase: DEBUG
+     root: INFO
 
 eureka:
   client:
@@ -21,3 +19,7 @@ eureka:
 spring.data.mongodb.uri: mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard
 spring.data.mongodb.database: city_dashboard
 
+---
+spring.profiles: docker
+server.port: 8080
+app.eureka-server: eureka
