@@ -34,8 +34,8 @@ public class DublinBikeService {
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
-        saveDataToDB(dublinBikes);
         producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
+        saveDataToDB(dublinBikes);
     }
 
     public DublinBike[] getDublinBikeDataFromExternalSource() {
