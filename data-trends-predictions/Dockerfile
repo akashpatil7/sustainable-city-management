@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM scmbackend.azurecr.io/trends:v1
 
 EXPOSE 8050
 

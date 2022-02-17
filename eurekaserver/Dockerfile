@@ -1,4 +1,4 @@
-FROM openjdk:12.0.2
+FROM scmbackend.azurecr.io/eureka:v1
 
 EXPOSE 8761
 
