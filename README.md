@@ -19,3 +19,15 @@ Subsequently you can run any individual projects/microservices as required.
 
 - For running the python microservice, inital setup is required first. <br> Run from the main project directory - <b> cd data-trends-predictions </b><br> <b> python3 flask_app.py </b>
    
+```To Run the project with docker run following commands in a sequence - ```<br>
+docker-compose build <br>
+docker-compose up -d <br>
+
+To Build only a particular service/container - <br> 
+docker-compose up -d --no-deps --build <service_name><br>
+
+To Stop all the containers -<br>
+docker-compose stop<br>
+
+To see logs of the service container - <br>
+docker-compose logs <service_name>/<container_name> <br>
