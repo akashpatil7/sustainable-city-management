@@ -8,9 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 public class DublinCityBusRoutes {
 
-    @Id
     private String route_id;
-
     private String agency_id;
     private String route_short_name;
     private String route_long_name;

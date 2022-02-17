@@ -15,5 +15,5 @@ public class Header {
     public String incrementality;
 
     @JsonProperty("Timestamp")
-    public int timestamp;
+    public Double timestamp;
 }

@@ -30,7 +30,7 @@ public class DublinBusClient {
 
     private static final Logger LOGGER = LogManager.getLogger(DublinBusClient.class);
 
-    @Scheduled(fixedRate = 10000)
+    //@Scheduled(fixedRate = 10000)
     public void extractData() {
         try {
             LOGGER.info("Schedular started : dublin bus latest data");
@@ -44,7 +44,7 @@ public class DublinBusClient {
             response = httpclient.execute(request);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                processDublinBusDataService.processData(EntityUtils.toString(entity));
+                //processDublinBusDataService.processData(EntityUtils.toString(entity));
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();
