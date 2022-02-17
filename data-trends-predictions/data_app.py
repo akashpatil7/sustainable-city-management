@@ -4,10 +4,16 @@ from pymongo import MongoClient
 from flask import Flask
 from flask_cors import CORS, cross_origin
 from bson.json_util import dumps
-
+import argparse
 
 rest_port = 8050
-eureka_client.init(eureka_server="http://eureka:8761/eureka",
+parser = argparse.ArgumentParser()
+parser.add_argument('--env', help='Evironment in which to run', type=str)
+args = parser.parse_args()
+host = "localhost"
+if args.env:
+    host = args.env
+eureka_client.init(eureka_server=f'http://{host}:8761/eureka',
                    app_name="trends",
                    instance_port=rest_port)
 client = MongoClient(

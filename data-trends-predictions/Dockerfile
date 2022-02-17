@@ -11,4 +11,4 @@ COPY . .
 
 ENTRYPOINT [ "python" ]
 
-CMD [ "data_app.py" ]
+CMD [ "data_app.py","--env", "eureka"]
