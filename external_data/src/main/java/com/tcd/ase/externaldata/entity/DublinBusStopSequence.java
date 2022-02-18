@@ -19,7 +19,7 @@ public class DublinBusStopSequence {
      @Id
      private String tripId;
      private String routeId;
-     private String startTimestamp;
+     private Long startTimestamp;
      private String scheduleRelationship;
      private ArrayList<StopTimeUpdate> stopTimeUpdate;
 
@@ -50,7 +50,7 @@ public class DublinBusStopSequence {
 
         private String tripId;
         private String routeId;
-        private String startTimestamp;
+        private Long startTimestamp;
         private String scheduleRelationship;
         private ArrayList<StopTimeUpdate> stopTimeUpdate;
 
@@ -68,7 +68,7 @@ public class DublinBusStopSequence {
             return this;
         }
 
-        public DublinBusStopSequenceBuilder withStartTimestamp(String startTimestamp) {
+        public DublinBusStopSequenceBuilder withStartTimestamp(Long startTimestamp) {
             this.startTimestamp = startTimestamp;
             return this;
         }
