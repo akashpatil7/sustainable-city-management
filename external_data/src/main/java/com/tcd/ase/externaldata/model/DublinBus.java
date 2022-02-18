@@ -1,8 +1,8 @@
 package com.tcd.ase.externaldata.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tcd.ase.externaldata.model.dublinBus.Entity;
-import com.tcd.ase.externaldata.model.dublinBus.Header;
+import com.tcd.ase.externaldata.model.bus.Entity;
+import com.tcd.ase.externaldata.model.bus.Header;
 import lombok.Getter;
 import lombok.Setter;
 
