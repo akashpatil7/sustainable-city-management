@@ -1,6 +1,7 @@
 package com.tcd.ase.externaldata.service.impl;
 
 import com.mongodb.client.model.Filters;
+import com.tcd.ase.externaldata.entity.DublinCityBusRoutes;
 import com.tcd.ase.externaldata.model.DublinBus;
 import com.tcd.ase.externaldata.service.ProcessDublinBusDataService;
 import com.tcd.ase.externaldata.entity.DublinBusHistorical;
@@ -49,10 +50,17 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
     @Scheduled(fixedRate = 10000)
     public void processData() {
 
-        Set<String> dublinCityBusRouteIdsList = dublinBusRoutesRepository.findAll()
-                                                .stream()
-                                                .map(i -> i.getRoute_id())
-                                                .collect(Collectors.toSet());
+        List<DublinCityBusRoutes> dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
+
+
+        Set<String> dublinCityBusRouteIdsList = dublinCityBusRoutes
+                .stream()
+                .map(i -> i.getRoute_id())
+                .collect(Collectors.toSet());
+
+        Map<String, String> map = dublinCityBusRoutes
+                .stream()
+                .collect(Collectors.toMap(DublinCityBusRoutes::getRoute_id, DublinCityBusRoutes::getRoute_long_name));
 
 
         RestTemplate restTemplate = new RestTemplate();
@@ -68,12 +76,12 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
                                 .filter(x -> dublinCityBusRouteIdsList
                                             .contains(x.getTripUpdate().getTrip().getRouteId()))
                                 .collect(Collectors.toList());
-        saveToDB(entities);
+        saveToDB(entities, map);
         LOGGER.info("Processing completed for dublin bus response");
     }
 
 
-    void saveToDB(List<Entity> entities) {
+    void saveToDB(List<Entity> entities, Map<String, String> map) {
 
         List<DublinBusStops> DublinBusStopsList = dublinBusStopsRepository.findAll();
 

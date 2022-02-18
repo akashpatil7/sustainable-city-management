@@ -2,7 +2,7 @@ package com.tcd.ase.realtimedataprocessor.models;
 
 public enum DataIndicatorEnum {
     DUBLIN_BIKES("dublin_bike", "https://data.smartdublin.ie/dublinbikes-api/last_snapshot/"),
-    DUBLIN_BUS("dublin_bus", "https://data.smartdublin.ie/dublinbikes-api/last_snapshot/");
+    DUBLIN_BUS("dublin_bus", "https://api.nationaltransport.ie/gtfsr/v1?format=json");
 
     public final String topic;
 
