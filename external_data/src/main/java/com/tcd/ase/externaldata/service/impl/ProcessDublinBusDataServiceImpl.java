@@ -2,11 +2,14 @@ package com.tcd.ase.externaldata.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.tcd.ase.externaldata.entity.DublinBusStopSequence;
 import com.tcd.ase.externaldata.entity.DublinCityBusRoutes;
 import com.tcd.ase.externaldata.model.DublinBike;
 import com.tcd.ase.externaldata.model.DublinBus;
 import com.tcd.ase.externaldata.model.dublinBus.Entity;
 import com.tcd.ase.externaldata.model.dublinBus.Header;
+import com.tcd.ase.externaldata.model.dublinBus.Trip;
+import com.tcd.ase.externaldata.repository.DublinBusStopSequenceRepository;
 import com.tcd.ase.externaldata.repository.DublinCityBusRoutesRepository;
 import com.tcd.ase.externaldata.service.ProcessDublinBusDataService;
 import org.codehaus.jettison.json.JSONArray;
@@ -34,6 +37,9 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
     @Autowired
     private DublinCityBusRoutesRepository dublinCityBusRoutesRepository;
 
+    @Autowired
+    private DublinBusStopSequenceRepository dublinBusStopSequenceRepository;
+
     @Override
     @Scheduled(fixedRate = 10000)
     public void processData() {
@@ -48,12 +54,26 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
         headers.set("x-api-key","2de8ef2694a24e1c82fa92aaeba7d351");
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
         ResponseEntity<DublinBus> dublinBusResponseEntity = restTemplate.exchange("https://api.nationaltransport.ie/gtfsr/v1?format=json", HttpMethod.GET, httpEntity, DublinBus.class, 1);
-        List<Entity> entities = dublinBusResponseEntity.getBody().getEntity().stream().filter(x -> dublinCityBusRoutesList.contains(x.getTripUpdate().getTrip().getRouteId())
-        ).collect(Collectors.toList());
+        List<Entity> entities = dublinBusResponseEntity.getBody().getEntity()
+                                .stream()
+                                .filter(x -> dublinCityBusRoutesList.contains(x.getTripUpdate().getTrip().getRouteId()))
+                                .collect(Collectors.toList());
+        saveToDB(entities);
         System.out.println("Processing completed");
     }
 
-    void processingData() {
-       // Double timestamp = dublinBus.get("Header").get("Timestamp");
+    void saveToDB(List<Entity> entities) {
+        for (Entity busEntity: entities) {
+            Trip trip = busEntity.getTripUpdate().getTrip();
+            DublinBusStopSequence dublinBusStopSequence = new DublinBusStopSequence.DublinBusStopSequenceBuilder()
+                                                                                .withTripId(trip.getTripId())
+                                                                                .withRouteId(trip.getRouteId())
+                                                                                .withStartTimestamp(trip.getStartTime()) //please ignore this I'm still working on timestamp
+                                                                                .withScheduleRelationship(trip.getScheduleRelationship())
+                                                                                .withStopTimeUpdate(busEntity.getTripUpdate().getStopTimeUpdate())
+                                                                                .build();
+            //dublinBusStopSequenceRepository.save(dublinBusStopSequence);
+
+        }
     }
 }
