@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Entity {
+public class DublinBusEntity {
 
     @JsonProperty("Id")
     public String id;

@@ -1,11 +1,11 @@
-package com.tcd.ase.externaldata.entity;
+package com.tcd.ase.externaldata.entity.bus;
 
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("DBus_Stops")
 @Getter
-public class DublinBusStops {
+public class DublinBusStop {
     private String stop_id;
     private String stop_name;
     private String stop_lat;
