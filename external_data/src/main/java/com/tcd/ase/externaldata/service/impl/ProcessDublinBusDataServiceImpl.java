@@ -13,8 +13,6 @@ import com.tcd.ase.externaldata.repository.bus.DublinBusStopsRepository;
 import com.tcd.ase.externaldata.repository.bus.DublinBusRoutesRepository;
 import com.tcd.ase.externaldata.service.ProcessDublinBusDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,6 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,18 +90,21 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
             ArrayList<DublinBusHistoricalStopSequence> updatedStopSequence =
                     Objects.nonNull(currentTripStopSequence) ? getUpdatedStopSequence(currentTripStopSequence) : new ArrayList<>();
 
-            DublinBusHistorical updatedDublinBusEntity =
-                    new DublinBusHistorical.DublinBusHistoricalBuilder()
-                            .withTripId(currentTrip.getTripId())
-                            .withRouteId(currentTrip.getRouteId())
-                            .withRouteShort(currentDublinBusRoute.getRoute_short_name())
-                            .withRouteLong(currentDublinBusRoute.getRoute_long_name())
-                            .withStartTimestamp(convertDateToTimestamp(currentTrip.getStartDate().concat(currentTrip.getStartTime())))
-                            .withScheduleRelationship(currentTrip.getScheduleRelationship())
-                            .withStopSequence(updatedStopSequence)
-                            .build();
+            try {
+                DublinBusHistorical updatedDublinBusEntity = new DublinBusHistorical.DublinBusHistoricalBuilder()
+                        .withTripId(currentTrip.getTripId())
+                        .withRouteId(currentTrip.getRouteId())
+                        .withRouteShort(currentDublinBusRoute.getRoute_short_name())
+                        .withRouteLong(currentDublinBusRoute.getRoute_long_name())
+                        .withStartTimestamp(convertDateToTimestamp(currentTrip.getStartDate().concat(currentTrip.getStartTime())))
+                        .withScheduleRelationship(currentTrip.getScheduleRelationship())
+                        .withStopSequence(updatedStopSequence)
+                        .build();
 
-            updatedDublinBusEntities.add(updatedDublinBusEntity);
+                updatedDublinBusEntities.add(updatedDublinBusEntity);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         return updatedDublinBusEntities;
@@ -164,11 +167,11 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
 
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
 
-            Criteria tripIdCriteria = Criteria.where("tripId").is(dublinBus.getTripId());
-            Criteria routeIdCriteria = Criteria.where("routeId").is(dublinBus.getRouteId());
-            Criteria criteria = new Criteria().andOperator(tripIdCriteria, routeIdCriteria);
+            //Criteria tripIdCriteria = Criteria.where("tripId").is(dublinBus.getTripId());
+            //Criteria routeIdCriteria = Criteria.where("routeId").is(dublinBus.getRouteId());
+            //Criteria criteria = new Criteria().andOperator(tripIdCriteria, routeIdCriteria);
 
-            Query query = new Query().addCriteria(criteria);
+            //Query query = new Query().addCriteria(criteria);
             DublinBusHistorical dublinBusHistoricalFromDB =
                     dublinBusHistoricalRepository.findFirstByRouteIdAndTripId(
                                     dublinBus.getRouteId(),
@@ -182,7 +185,6 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
 
     private Long convertDateToTimestamp(String startDateTime) throws ParseException {
         Date date = new SimpleDateFormat("yyyyMMddHH:mm:ss").parse(startDateTime);
-        Long timeInSeconds = date.getTime();
-        return timeInSeconds;
+        return date.getTime();
     }
 }
