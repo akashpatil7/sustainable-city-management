@@ -1,5 +1,6 @@
-package com.tcd.ase.externaldata.entity;
+package com.tcd.ase.realtimedataprocessor.entity;
 
+import com.tcd.ase.realtimedataprocessor.models.bus.StopTimeUpdate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,35 +18,30 @@ public class DublinBusHistorical {
      @Id
      private String tripId;
      private String routeId;
-     private String routeShort;
-     private String routeLong;
      private Long startTimestamp;
      private String scheduleRelationship;
-     private ArrayList<DublinBusHistoricalStopSequence> stopSequence;
+     private ArrayList<StopTimeUpdate> stopTimeUpdate;
 
     public DublinBusHistorical() {
+
     }
 
     public DublinBusHistorical(DublinBusHistoricalBuilder dublinBusHistoricalBuilder) {
         this.tripId = dublinBusHistoricalBuilder.tripId;
         this.routeId = dublinBusHistoricalBuilder.routeId;
-        this.routeShort = dublinBusHistoricalBuilder.routeShort;
-        this.routeLong = dublinBusHistoricalBuilder.routeLong;
         this.startTimestamp = dublinBusHistoricalBuilder.startTimestamp;
         this.scheduleRelationship = dublinBusHistoricalBuilder.scheduleRelationship;
-        this.stopSequence = dublinBusHistoricalBuilder.stopSequence;
+        this.stopTimeUpdate = dublinBusHistoricalBuilder.stopTimeUpdate;
     }
 
     @Override
     public String toString() {
-        return "DublinBusHistorical{" +
+        return "DublinBusStopSequence{" +
                 "tripId='" + tripId + '\'' +
                 ", routeId='" + routeId + '\'' +
-                ", routeShort='" + routeShort + '\'' +
-                ", routeLong='" + routeLong + '\'' +
                 ", startTimestamp='" + startTimestamp + '\'' +
                 ", scheduleRelationship='" + scheduleRelationship + '\'' +
-                ", stopSequence=" + stopSequence +
+                ", stopTimeUpdate=" + stopTimeUpdate +
                 '}';
     }
 
@@ -53,13 +49,12 @@ public class DublinBusHistorical {
 
         private String tripId;
         private String routeId;
-        private String routeShort;
-        private String routeLong;
         private Long startTimestamp;
         private String scheduleRelationship;
-        private ArrayList<DublinBusHistoricalStopSequence> stopSequence;
+        private ArrayList<StopTimeUpdate> stopTimeUpdate;
 
         public DublinBusHistoricalBuilder() {
+
         }
 
         public DublinBusHistoricalBuilder withTripId(String tripId) {
@@ -69,16 +64,6 @@ public class DublinBusHistorical {
 
         public DublinBusHistoricalBuilder withRouteId(String routeId) {
             this.routeId = routeId;
-            return this;
-        }
-
-        public DublinBusHistoricalBuilder withRouteShort(String routeShort) {
-            this.routeShort = routeShort;
-            return this;
-        }
-
-        public DublinBusHistoricalBuilder withRouteLong(String routeLong) {
-            this.routeLong = routeLong;
             return this;
         }
 
@@ -92,13 +77,14 @@ public class DublinBusHistorical {
             return this;
         }
 
-        public DublinBusHistoricalBuilder withStopSequence(ArrayList<DublinBusHistoricalStopSequence> stopSequence) {
-            this.stopSequence = stopSequence;
+        public DublinBusHistoricalBuilder withStopTimeUpdate(ArrayList<StopTimeUpdate> stopTimeUpdate) {
+            this.stopTimeUpdate = stopTimeUpdate;
             return this;
         }
 
         public DublinBusHistorical build() {
-            return new DublinBusHistorical(this);
+            DublinBusHistorical stopSequence =  new DublinBusHistorical(this);
+            return stopSequence;
         }
 
     }

@@ -22,7 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +42,8 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
 
     private List<DublinBusRoute> dublinBusRouteList;
     private List<DublinBusStop> dublinBusStopList;
+
+    private static Logger LOGGER = LogManager.getLogger(ProcessDublinBusDataServiceImpl.class);
 
     @Override
     @Scheduled(fixedRate = 10000)
@@ -73,7 +76,7 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
         List<DublinBusHistorical> updatedDublinBusEntities = buildDublinBusEntities(dublinBusEntities);
 
         saveToDB(updatedDublinBusEntities);
-        System.out.println("Processing completed");
+        LOGGER.info("Processing completed for dublin bus response");
     }
 
     List<DublinBusHistorical> buildDublinBusEntities(List<DublinBusEntity> dublinBusEntities) {
@@ -93,7 +96,7 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
                             .withRouteId(currentTrip.getRouteId())
                             .withRouteShort(currentDublinBusRoute.getRoute_short_name())
                             .withRouteLong(currentDublinBusRoute.getRoute_long_name())
-                            .withStartTimestamp(currentTrip.getStartTime()) //please ignore this I'm still working on timestamp
+                            .withStartTimestamp(convertDateToTimestamp(currentTrip.getStartDate().concat(currentTrip.getStartTime())))
                             .withScheduleRelationship(currentTrip.getScheduleRelationship())
                             .withStopSequence(updatedStopSequence)
                             .build();
@@ -175,5 +178,11 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
             if (dublinBusHistoricalFromDB == null)
                 dublinBusHistoricalRepository.save(dublinBus);
         }
+    }
+
+    private Long convertDateToTimestamp(String startDateTime) throws ParseException {
+        Date date = new SimpleDateFormat("yyyyMMddHH:mm:ss").parse(startDateTime);
+        Long timeInSeconds = date.getTime();
+        return timeInSeconds;
     }
 }
