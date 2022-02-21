@@ -6,21 +6,15 @@ import com.tcd.ase.externaldata.model.bus.Header;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-
 @Getter
 @Setter
-public class Bus {
+public class DBus {
 
     @JsonProperty("Header")
     public Header header;
 
     @JsonProperty("Entity")
     public DublinBusEntity[] entity;
-
-    public DublinBusEntity[] getEntity() {
-        return entity;
-    }
 }
 
 
