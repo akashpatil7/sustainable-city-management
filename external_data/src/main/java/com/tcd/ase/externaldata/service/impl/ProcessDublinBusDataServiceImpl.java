@@ -4,13 +4,13 @@ import com.tcd.ase.externaldata.entity.DublinBusHistorical;
 import com.tcd.ase.externaldata.entity.DublinBusHistoricalStopSequence;
 import com.tcd.ase.externaldata.entity.bus.DublinBusRoute;
 import com.tcd.ase.externaldata.entity.bus.DublinBusStop;
-import com.tcd.ase.externaldata.model.Bus;
+import com.tcd.ase.externaldata.model.DBus;
 import com.tcd.ase.externaldata.model.bus.DublinBusEntity;
 import com.tcd.ase.externaldata.model.bus.StopTimeUpdate;
 import com.tcd.ase.externaldata.model.bus.Trip;
 import com.tcd.ase.externaldata.repository.bus.DublinBusHistoricalRepository;
-import com.tcd.ase.externaldata.repository.bus.DublinBusStopsRepository;
 import com.tcd.ase.externaldata.repository.bus.DublinBusRoutesRepository;
+import com.tcd.ase.externaldata.repository.bus.DublinBusStopsRepository;
 import com.tcd.ase.externaldata.service.ProcessDublinBusDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -19,13 +19,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,11 +46,17 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
     private static Logger LOGGER = LogManager.getLogger(ProcessDublinBusDataServiceImpl.class);
 
     @Override
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 50000)
     public void processData() {
 
         // fetch all dublin bus routes
         dublinBusRouteList = dublinBusRoutesRepository.findAll();
+
+        // fetch list of all dublin bus route ids
+        Set<String> dublinBusRouteIdsList = dublinBusRouteList
+                .stream()
+                .map(DublinBusRoute::getRoute_id)
+                .collect(Collectors.toSet());
 
         // get list of all bus stops
         dublinBusStopList = dublinBusStopsRepository.findAll();
@@ -60,17 +66,17 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Bus> busResponseEntity =
+        ResponseEntity<DBus> busResponseEntity =
                 restTemplate.exchange(
                         "https://api.nationaltransport.ie/gtfsr/v1?format=json",
                         HttpMethod.GET,
                         httpEntity,
-                        Bus.class,
+                        DBus.class,
                         1
                 );
 
         // filter data for only DublinBus routes
-        List<DublinBusEntity> dublinBusEntities = filterByRoutes(busResponseEntity);
+        List<DublinBusEntity> dublinBusEntities = filterByRoutes(dublinBusRouteIdsList, busResponseEntity);
 
         // build new entities with mapped data for stops and routes
         List<DublinBusHistorical> updatedDublinBusEntities = buildDublinBusEntities(dublinBusEntities);
@@ -99,6 +105,7 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
                         .withStartTimestamp(convertDateToTimestamp(currentTrip.getStartDate().concat(currentTrip.getStartTime())))
                         .withScheduleRelationship(currentTrip.getScheduleRelationship())
                         .withStopSequence(updatedStopSequence)
+                        .with_CreationDate()
                         .build();
 
                 updatedDublinBusEntities.add(updatedDublinBusEntity);
@@ -110,13 +117,7 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
         return updatedDublinBusEntities;
     }
 
-    List<DublinBusEntity> filterByRoutes(ResponseEntity<Bus> dublinBusResponseEntity) {
-        // fetch list of all dublin bus route ids
-        Set<String> dublinBusRouteIdsList = dublinBusRouteList
-                .stream()
-                .map(DublinBusRoute::getRoute_id)
-                .collect(Collectors.toSet());
-
+    List<DublinBusEntity> filterByRoutes(Set<String> dublinBusRouteIdsList, ResponseEntity<DBus> dublinBusResponseEntity) {
         // filter API response data for dublin bus agency only
         return Arrays.stream(Objects.requireNonNull(dublinBusResponseEntity.getBody()).getEntity())
                 .filter(x -> dublinBusRouteIdsList.contains(x.getTripUpdate().getTrip().getRouteId()))
@@ -166,25 +167,22 @@ public class ProcessDublinBusDataServiceImpl implements ProcessDublinBusDataServ
     void saveToDB(List<DublinBusHistorical> dublinBusEntities) {
 
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
-
-            //Criteria tripIdCriteria = Criteria.where("tripId").is(dublinBus.getTripId());
-            //Criteria routeIdCriteria = Criteria.where("routeId").is(dublinBus.getRouteId());
-            //Criteria criteria = new Criteria().andOperator(tripIdCriteria, routeIdCriteria);
-
-            //Query query = new Query().addCriteria(criteria);
+            
             DublinBusHistorical dublinBusHistoricalFromDB =
                     dublinBusHistoricalRepository.findFirstByRouteIdAndTripId(
                                     dublinBus.getRouteId(),
                                     dublinBus.getTripId())
                             .orElse(null);
 
-            if (dublinBusHistoricalFromDB == null)
-                dublinBusHistoricalRepository.save(dublinBus);
+            if (dublinBusHistoricalFromDB != null)
+                dublinBus.set_creationDate(dublinBusHistoricalFromDB.get_creationDate());
+
+            dublinBusHistoricalRepository.save(dublinBus);
         }
     }
 
-    private Long convertDateToTimestamp(String startDateTime) throws ParseException {
+    private String convertDateToTimestamp(String startDateTime) throws ParseException {
         Date date = new SimpleDateFormat("yyyyMMddHH:mm:ss").parse(startDateTime);
-        return date.getTime();
+        return date.toString();
     }
 }
