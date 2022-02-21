@@ -17,4 +17,10 @@ public class Bus {
 
     @JsonProperty("Entity")
     public DublinBusEntity[] entity;
+
+    public DublinBusEntity[] getEntity() {
+        return entity;
+    }
 }
+
+
