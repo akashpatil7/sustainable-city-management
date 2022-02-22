@@ -31,3 +31,14 @@ docker-compose stop<br>
 
 To see logs of the service container - <br>
 docker-compose logs <service_name>/<container_name> <br>
+
+```Installing and Running Kafka & Zookeeper ```<br>
+Links for installation: <br>
+MAC: [https://www.goavega.com/install-apache-kafka-on-windows/](url)<br>
+Windows: [https://hevodata.com/learn/install-kafka-on-mac/](url)<br>
+
+Follow instructions in links to install and run zookeeper and kafka <br>
+Install Scala 2.13 Binary in Kafka downloads page <br>
+
+With Zookeeper and Kafka running the real-time-data-processor project should work
+
