@@ -32,3 +32,13 @@ jobs:
       run: mvn -B clean package --file user-service/pom.xml
     - name: Build external data with Maven
       run: mvn -B clean package --file external_data/pom.xml
+  
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build images using docker compose Docker-Compose
+        run: docker-compose -f docker-compose.yml build
+      - name: List images
+        run: docker images
