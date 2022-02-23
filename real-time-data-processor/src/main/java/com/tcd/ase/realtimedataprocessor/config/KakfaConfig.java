@@ -1,5 +1,6 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
