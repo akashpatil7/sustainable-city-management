@@ -11,7 +11,7 @@ public class AqiDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer id;
+	private Integer uid;
 	private String aqi;
 
 	public AqiDTO() {
@@ -19,21 +19,21 @@ public class AqiDTO implements Serializable {
 	}
 
 	public AqiDTO(AqiDTOBuilder aqiDTOBuilder) {
-		this.id = aqiDTOBuilder.id;
+		this.uid = aqiDTOBuilder.uid;
 		this.aqi = aqiDTOBuilder.aqi;
 	}
 
 	public static class AqiDTOBuilder {
 
-		private Integer id;
+		private Integer uid;
 		private String aqi;
 
 		public AqiDTOBuilder() {
 
 		}
 
-		public AqiDTOBuilder withId(Integer id) {
-			this.id = id;
+		public AqiDTOBuilder withId(Integer uid) {
+			this.uid = uid;
 			return this;
 		}
 
