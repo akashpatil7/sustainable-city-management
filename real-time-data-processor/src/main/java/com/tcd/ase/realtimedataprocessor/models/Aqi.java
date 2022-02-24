@@ -7,13 +7,13 @@ import lombok.Setter;
 @Setter
 public class Aqi {
 
-    private Integer id;
+    private Integer uid;
     private String aqi;
 
     @Override
     public String toString() {
         return "Aqi{" +
-                "id=" + id +
+                "uid=" + uid +
                 ", aqi=" + aqi +
                 '}';
     }

@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface AqiRepository extends MongoRepository<AqiDAO, Integer> {
 
-    Optional<AqiDAO> findFirstByOrderByHarvestTimeDesc();
+    Optional<AqiDAO> findFirstByOrderByUidDesc();
 }

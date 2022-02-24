@@ -48,7 +48,7 @@ public class AqiService {
         try {
             // TODO do epoch timing thing for aqi
             //Long currentEpoch = convertDateToTimestamp(data[0].getAqi());
-            AqiDAO latestAqiFromDB = aqiRepository.findFirstByOrderByHarvestTimeDesc().orElse(null);
+            AqiDAO latestAqiFromDB = aqiRepository.findFirstByOrderByUidDesc().orElse(null);
 
             if (latestAqiFromDB != null /* TODO do epoch timing thing for aqi*/) {
                 log.info("New Data found");
@@ -69,7 +69,7 @@ public class AqiService {
 
         ArrayList<AqiDAO> aqiList = new ArrayList<AqiDAO>();
         for(Aqi aqi: aqis) {
-            AqiDAO aqiData = new AqiDAO.AqiBuilder().withId(aqi.getId())
+            AqiDAO aqiData = new AqiDAO.AqiBuilder().withId(aqi.getUid())
                     .withAqi(aqi.getAqi()).build();
             aqiList.add(aqiData);
         }

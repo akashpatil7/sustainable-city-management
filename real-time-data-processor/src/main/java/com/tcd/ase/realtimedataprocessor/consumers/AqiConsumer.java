@@ -13,7 +13,7 @@ import reactor.core.publisher.Sinks;
 public class AqiConsumer {
 
     @Autowired
-    private Sinks.Many<Aqi[]> sink;
+    private Sinks.Many<Aqi[]> aqiSink;
 
     private static final Logger log = LogManager.getLogger(AqiProducer.class);
     //private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -21,6 +21,6 @@ public class AqiConsumer {
     @KafkaListener(topics = "aqi", groupId = "mygroup")
     public void consume(Aqi[] message) {
         log.info(String.format("#### -> Consumed message -> %s", message));
-        this.sink.tryEmitNext(message);
+        this.aqiSink.tryEmitNext(message);
     }
 }
