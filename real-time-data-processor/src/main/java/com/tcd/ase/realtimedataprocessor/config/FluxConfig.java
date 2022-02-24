@@ -1,6 +1,5 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
-import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
@@ -10,12 +9,12 @@ import reactor.core.publisher.Sinks;
 public class FluxConfig {
 
     @Bean
-    public Sinks.Many<DublinBike[]> sink() {
+    public Sinks.Many<Object[]> sink() {
         return Sinks.many().replay().latest();
     }
 
     @Bean
-    public Flux<DublinBike[]> flux(Sinks.Many<DublinBike[]> sink) {
+    public Flux<Object[]> flux(Sinks.Many<Object[]> sink) {
         return sink.asFlux().cache();
     }
 
