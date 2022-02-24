@@ -1,5 +1,7 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -31,12 +33,12 @@ public class KakfaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Object[]> producerFactory() {
+    public ProducerFactory<String, DublinBike[]> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, Object[]> kafkaTemplate() {
+    public KafkaTemplate<String, DublinBike[]> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
@@ -51,14 +53,14 @@ public class KakfaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Object[]> consumerFactory() {
+    public ConsumerFactory<String, DublinBike[]> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
-                new JsonDeserializer<>(Object[].class));
+                new JsonDeserializer<>(DublinBike[].class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object[]> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object[]> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, DublinBike[]> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, DublinBike[]> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
