@@ -65,7 +65,11 @@ public class AqiService {
         ArrayList<AqiDAO> aqiList = new ArrayList<AqiDAO>();
         for(Aqi aqi: aqis) {
             AqiDAO aqiData = new AqiDAO.AqiBuilder().withId(aqi.getUid())
-                    .withAqi(aqi.getAqi()).build();
+                    .withAqi(aqi.getAqi())
+                    .withTime(aqi.getTime().getVTime())
+                    .withStation(aqi.getStation().getName())
+                    .withLatitude(aqi.getStation().getGeo()[0])
+                    .withLongitude(aqi.getStation().getGeo()[1]).build();
             aqiList.add(aqiData);
         }
         return aqiList;
