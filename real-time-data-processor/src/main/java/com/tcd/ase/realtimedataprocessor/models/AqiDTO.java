@@ -3,7 +3,6 @@ package com.tcd.ase.realtimedataprocessor.models;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 public class AqiDTO implements Serializable {
@@ -13,6 +12,8 @@ public class AqiDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer uid;
 	private String aqi;
+	private DublinAqiDataTime time;
+	private DublinAqiDataStation station;
 
 	public AqiDTO() {
 
@@ -21,12 +22,16 @@ public class AqiDTO implements Serializable {
 	public AqiDTO(AqiDTOBuilder aqiDTOBuilder) {
 		this.uid = aqiDTOBuilder.uid;
 		this.aqi = aqiDTOBuilder.aqi;
+		this.time = aqiDTOBuilder.time;
+		this.station = aqiDTOBuilder.station;
 	}
 
 	public static class AqiDTOBuilder {
 
 		private Integer uid;
 		private String aqi;
+		private DublinAqiDataTime time;
+		private DublinAqiDataStation station;
 
 		public AqiDTOBuilder() {
 
@@ -41,6 +46,16 @@ public class AqiDTO implements Serializable {
 			this.aqi = aqi;
 			return this;
 		}
+
+        public AqiDTOBuilder withTime(DublinAqiDataTime time) {
+            this.time = time;
+            return this;
+        }
+
+        public AqiDTOBuilder withStation(DublinAqiDataStation station) {
+            this.station = station;
+            return this;
+        }
 
 		public AqiDTO build() {
 			AqiDTO aqiData = new AqiDTO(this);

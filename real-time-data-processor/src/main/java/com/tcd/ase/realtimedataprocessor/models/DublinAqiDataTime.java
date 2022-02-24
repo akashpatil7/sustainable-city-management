@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+
 
 @Getter
 @Setter
 public class DublinAqiDataTime {
     private String tz;
-    private Date sTime;
+    private String sTime;
     private BigDecimal vTime;
 }

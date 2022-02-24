@@ -48,21 +48,16 @@ public class AqiService {
         try {
             // TODO do epoch timing thing for aqi
             //Long currentEpoch = convertDateToTimestamp(data[0].getAqi());
-            AqiDAO latestAqiFromDB = aqiRepository.findFirstByOrderByUidDesc().orElse(null);
+            //AqiDAO latestAqiFromDB = null;
 
-            if (latestAqiFromDB != null /* TODO do epoch timing thing for aqi*/) {
+            //if (latestAqiFromDB != null /* TODO do epoch timing thing for aqi*/) {
                 log.info("New Data found");
+                log.info(convertData(data));
                 aqiRepository.saveAll(convertData(data));
-            }
+            //}
         } catch (Exception e) {
             log.error("Error occurred while parsing response from aqi "+ e.getMessage());
         }
-    }
-
-    private Long convertDateToTimestamp(String date) {
-        LocalDateTime localDateTime = LocalDateTime.parse(date);
-        Long timeInSeconds = localDateTime.toEpochSecond(ZoneOffset.UTC);
-        return timeInSeconds;
     }
 
     private ArrayList<AqiDAO> convertData(Aqi[] aqis) {
