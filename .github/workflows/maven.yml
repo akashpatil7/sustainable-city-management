@@ -34,5 +34,10 @@ jobs:
       run: mvn -B clean package --file external_data/pom.xml
     - name: Build Images
       run: docker-compose -f docker-compose.yml build
-    - name: List images
-      run: docker images
+    - uses: azure/docker-login@v1
+      with:
+       login-server: scmcontainer.azurecr.io
+       username: ${{ secrets.ACR_USERNAME }}
+       password: ${{ secrets.ACR_PASSWORD }}
+    - name: Push docker images to ACR
+      run: docker-compose -f docker-compose.yml push --ignore-push-failures
