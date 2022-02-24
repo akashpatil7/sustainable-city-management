@@ -33,4 +33,15 @@ public class RealTimeDataProcessorController {
             aqiService.processRealTimeDataForAqi();
     }
 
+    @GetMapping(value = "/getRealTimeDataForBike", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<DublinBike[]> streamRealTimeDataForBike() {
+        return bikeFlux;
+    }
+
+    @GetMapping(value = "/getRealTimeDataForAqi", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Aqi[]> streamRealTimeDataForAqi() {
+        return aqiFlux;
+    }
+
+
 }
