@@ -1,6 +1,5 @@
 package com.tcd.ase.realtimedataprocessor.entity;
 
-import com.tcd.ase.realtimedataprocessor.models.bus.StopTimeUpdate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Document("DBus_Historical")
 @Getter
@@ -18,9 +18,13 @@ public class DublinBusHistorical {
      @Id
      private String tripId;
      private String routeId;
+     private String routeShort;
+     private String routeLong;
      private Long startTimestamp;
      private String scheduleRelationship;
-     private ArrayList<StopTimeUpdate> stopTimeUpdate;
+     private ArrayList<DublinBusHistoricalStopSequence> stopSequence;
+     private String _creationDate;
+     private String _lastModifiedDate;
 
     public DublinBusHistorical() {
 
@@ -29,19 +33,27 @@ public class DublinBusHistorical {
     public DublinBusHistorical(DublinBusHistoricalBuilder dublinBusHistoricalBuilder) {
         this.tripId = dublinBusHistoricalBuilder.tripId;
         this.routeId = dublinBusHistoricalBuilder.routeId;
+        this.routeShort = dublinBusHistoricalBuilder.routeShort;
+        this.routeLong = dublinBusHistoricalBuilder.routeLong;
         this.startTimestamp = dublinBusHistoricalBuilder.startTimestamp;
         this.scheduleRelationship = dublinBusHistoricalBuilder.scheduleRelationship;
-        this.stopTimeUpdate = dublinBusHistoricalBuilder.stopTimeUpdate;
+        this.stopSequence = dublinBusHistoricalBuilder.stopSequence;
+        this._creationDate = dublinBusHistoricalBuilder._creationDate;
+        this._lastModifiedDate = dublinBusHistoricalBuilder._lastModifiedDate;
     }
 
     @Override
     public String toString() {
-        return "DublinBusStopSequence{" +
+        return "DublinBusHistorical{" +
                 "tripId='" + tripId + '\'' +
                 ", routeId='" + routeId + '\'' +
-                ", startTimestamp='" + startTimestamp + '\'' +
+                ", routeShort='" + routeShort + '\'' +
+                ", routeLong='" + routeLong + '\'' +
+                ", startTimestamp=" + startTimestamp +
                 ", scheduleRelationship='" + scheduleRelationship + '\'' +
-                ", stopTimeUpdate=" + stopTimeUpdate +
+                ", stopSequence=" + stopSequence +
+                ", _creationDate='" + _creationDate + '\'' +
+                ", _lastModifiedDate='" + _lastModifiedDate + '\'' +
                 '}';
     }
 
@@ -49,9 +61,13 @@ public class DublinBusHistorical {
 
         private String tripId;
         private String routeId;
+        private String routeShort;
+        private String routeLong;
         private Long startTimestamp;
         private String scheduleRelationship;
-        private ArrayList<StopTimeUpdate> stopTimeUpdate;
+        private ArrayList<DublinBusHistoricalStopSequence> stopSequence;
+        private String _creationDate;
+        private String _lastModifiedDate;
 
         public DublinBusHistoricalBuilder() {
 
@@ -67,6 +83,16 @@ public class DublinBusHistorical {
             return this;
         }
 
+        public DublinBusHistoricalBuilder withRouteShort(String routeShort) {
+            this.routeShort = routeShort;
+            return this;
+        }
+
+        public DublinBusHistoricalBuilder withRouteLong(String routeLong) {
+            this.routeLong = routeLong;
+            return this;
+        }
+
         public DublinBusHistoricalBuilder withStartTimestamp(Long startTimestamp) {
             this.startTimestamp = startTimestamp;
             return this;
@@ -77,14 +103,19 @@ public class DublinBusHistorical {
             return this;
         }
 
-        public DublinBusHistoricalBuilder withStopTimeUpdate(ArrayList<StopTimeUpdate> stopTimeUpdate) {
-            this.stopTimeUpdate = stopTimeUpdate;
+        public DublinBusHistoricalBuilder withStopSequence(ArrayList<DublinBusHistoricalStopSequence> stopSequence) {
+            this.stopSequence = stopSequence;
+            return this;
+        }
+
+        public DublinBusHistoricalBuilder with_CreationDate() {
+            this._creationDate = new Date().toString();
+            this._lastModifiedDate = this._creationDate;
             return this;
         }
 
         public DublinBusHistorical build() {
-            DublinBusHistorical stopSequence =  new DublinBusHistorical(this);
-            return stopSequence;
+            return new DublinBusHistorical(this);
         }
 
     }

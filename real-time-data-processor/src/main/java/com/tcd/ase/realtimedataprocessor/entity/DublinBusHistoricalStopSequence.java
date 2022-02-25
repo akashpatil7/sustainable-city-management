@@ -20,7 +20,7 @@ public class DublinBusHistoricalStopSequence {
     public DublinBusHistoricalStopSequence() {
     }
 
-    public DublinBusHistoricalStopSequence(DublinBusStopsBuilder dublinBusStopsBuilder) {
+    public DublinBusHistoricalStopSequence(DublinBusHistoricalStopSequenceBuilder dublinBusStopsBuilder) {
         this.stopSequence = dublinBusStopsBuilder.stopSequence;
         this.stopId = dublinBusStopsBuilder.stopId;
         this.stopName = dublinBusStopsBuilder.stopName;
@@ -45,7 +45,7 @@ public class DublinBusHistoricalStopSequence {
                 '}';
     }
 
-    public static class DublinBusStopsBuilder {
+    public static class DublinBusHistoricalStopSequenceBuilder {
 
         public Integer stopSequence;
         public String stopId;
@@ -56,45 +56,45 @@ public class DublinBusHistoricalStopSequence {
         private String stopLat;
         private String stopLon;
 
-        public DublinBusStopsBuilder() {
+        public DublinBusHistoricalStopSequenceBuilder() {
         }
 
-        public DublinBusStopsBuilder withStopSequence(Integer stopSequence) {
+        public DublinBusHistoricalStopSequenceBuilder withStopSequence(Integer stopSequence) {
             this.stopSequence = stopSequence;
             return this;
         }
 
-        public DublinBusStopsBuilder withStopId(String stopId) {
+        public DublinBusHistoricalStopSequenceBuilder withStopId(String stopId) {
             this.stopId = stopId;
             return this;
         }
 
-        public DublinBusStopsBuilder withStopName(String stopName) {
+        public DublinBusHistoricalStopSequenceBuilder withStopName(String stopName) {
             this.stopName = stopName;
             return this;
         }
 
-        public DublinBusStopsBuilder withDepartureDelay(Integer departureDelay) {
+        public DublinBusHistoricalStopSequenceBuilder withDepartureDelay(Integer departureDelay) {
             this.departureDelay = departureDelay;
             return this;
         }
 
-        public DublinBusStopsBuilder withArrivalDelay(Integer arrivalDelay) {
+        public DublinBusHistoricalStopSequenceBuilder withArrivalDelay(Integer arrivalDelay) {
             this.arrivalDelay = arrivalDelay;
             return this;
         }
 
-        public DublinBusStopsBuilder withScheduleRelationship(String scheduleRelationship) {
+        public DublinBusHistoricalStopSequenceBuilder withScheduleRelationship(String scheduleRelationship) {
             this.scheduleRelationship = scheduleRelationship;
             return this;
         }
 
-        public DublinBusStopsBuilder withStopLat(String stopLat) {
+        public DublinBusHistoricalStopSequenceBuilder withStopLat(String stopLat) {
             this.stopLat = stopLat;
             return this;
         }
 
-        public DublinBusStopsBuilder withStopLon(String stopLon) {
+        public DublinBusHistoricalStopSequenceBuilder withStopLon(String stopLon) {
             this.stopLon = stopLon;
             return this;
         }

@@ -3,24 +3,22 @@ package com.tcd.ase.realtimedataprocessor.service;
 import com.tcd.ase.realtimedataprocessor.entity.DublinBikeDAO;
 import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
-import com.tcd.ase.realtimedataprocessor.models.DublinBikes;
 import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
 import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
+@Log4j2
 public class DublinBikeService {
 
     @Autowired
@@ -29,12 +27,14 @@ public class DublinBikeService {
     @Autowired
     DublinBikesRepository dublinBikesRepository;
 
-    private static final Logger log = LogManager.getLogger(DublinBikesProducer.class);
+    @Autowired
+    @Qualifier("dublinBike")
+    private NewTopic dublinBikeTopic;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 1000)
     public void processRealTimeDataForDublinBikes() {
         DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
-        producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
+        producer.sendMessage(dublinBikeTopic.name(), dublinBikes);
         saveDataToDB(dublinBikes);
     }
 
