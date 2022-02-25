@@ -49,4 +49,4 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
-      - "7003:8080"
+      - "8005:8080"
