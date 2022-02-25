@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataStation;
-import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataTime;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,7 +18,7 @@ public class AqiDAO {
     @Id
     private Integer uid;
     private String aqi;
-    private BigDecimal lastUpdatedTime;
+    private Long lastUpdatedTime;
     private String stationName;
     private BigDecimal latitude;
     private BigDecimal longitude;
@@ -42,7 +39,7 @@ public class AqiDAO {
     public static class AqiBuilder {
         private Integer uid;
         private String aqi;
-        private BigDecimal lastUpdatedTime;
+        private Long lastUpdatedTime;
         private String stationName;
         private BigDecimal latitude;
         private BigDecimal longitude;
@@ -51,7 +48,7 @@ public class AqiDAO {
 
         }
 
-        public AqiBuilder withId(Integer uid) {
+        public AqiBuilder withUid(Integer uid) {
             this.uid = uid;
             return this;
         }
@@ -61,7 +58,7 @@ public class AqiDAO {
             return this;
         }
 
-        public AqiBuilder withTime(BigDecimal time) {
+        public AqiBuilder withTime(Long time) {
             this.lastUpdatedTime = time;
             return this;
         }
