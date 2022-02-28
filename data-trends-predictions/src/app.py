@@ -18,17 +18,20 @@ EUREKA_SERVER_HOST = app.config.get('EUREKA_SERVER_HOST')
 EUREKA_REGISTERED_APP_NAME = app.config.get('EUREKA_REGISTERED_APP_NAME')
 
 EUREKA_SERVER_NAME = f'http://{EUREKA_SERVER_HOST}:8761/eureka'
+print(f'FLASK_RUN_PORT: {FLASK_RUN_PORT}\nEUREKA_REGISTERED_APP_NAME: {EUREKA_REGISTERED_APP_NAME}\nEUREKA_SERVER_NAME: {EUREKA_SERVER_NAME}')
 
 # INIT Eureka Client
-eureka_client.init(eureka_server = EUREKA_SERVER_NAME,
-                   app_name = EUREKA_REGISTERED_APP_NAME,
-                   instance_port = FLASK_RUN_PORT)
+eureka_client.init(
+	eureka_server = EUREKA_SERVER_NAME,
+	app_name = EUREKA_REGISTERED_APP_NAME,
+	instance_port = FLASK_RUN_PORT
+)
 
 # INIT Cors
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 # INIT RESTFul API 
-api = Api(app)
+api = Api(app, catch_all_404s=True)
 
 # INIT MongoClient 
 client = MongoClient(DB_CONNECTION_STRING)
