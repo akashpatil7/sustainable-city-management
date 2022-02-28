@@ -32,12 +32,12 @@ jobs:
       run: mvn -B clean package --file user-service/pom.xml
     - name: Build real-time-data-processor with Maven
       run: mvn -B clean package --file real-time-data-processor/pom.xml
-    - name: Build Images
-      run: docker-compose -f docker-compose.yml build
     - uses: azure/docker-login@v1
       with:
        login-server: scmcontainer.azurecr.io
        username: ${{ secrets.ACR_USERNAME }}
        password: ${{ secrets.ACR_PASSWORD }}
-    - name: Push docker images to ACR
-      run: docker-compose -f docker-compose.yml push
+    - name: Build and Push docker images to ACR
+      run: |
+        docker-compose -f docker-compose.yml build
+        docker-compose -f docker-compose.yml push
