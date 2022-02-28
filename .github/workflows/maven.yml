@@ -40,4 +40,4 @@ jobs:
        username: ${{ secrets.ACR_USERNAME }}
        password: ${{ secrets.ACR_PASSWORD }}
     - name: Push docker images to ACR
-      run: docker-compose -f docker-compose.yml push --ignore-push-failures
+      run: docker-compose -f docker-compose.yml push
