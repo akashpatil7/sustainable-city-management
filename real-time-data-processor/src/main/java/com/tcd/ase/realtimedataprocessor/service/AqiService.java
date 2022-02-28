@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Service
 public class AqiService {
@@ -39,8 +40,21 @@ public class AqiService {
         RestTemplate restTemplate = new RestTemplate();
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();
-        log.info(aqis.toString());
-        return aqis;
+        Aqi[] irishAqis = getIrishStations(aqis);
+        log.info(irishAqis.toString());
+        return irishAqis;
+    }
+
+    public Aqi[] getIrishStations(Aqi[] stations) {
+        Aqi[] irishStations = new Aqi[stations.length];
+        int index = 0;
+        for(int i=0; i < stations.length; i++) {
+            if(stations[i].getStation().getCountry().toString().contains("IE")) {
+                irishStations[index] = stations[i];
+                index++;
+            }
+        }
+        return irishStations;
     }
 
     private void saveDataToDB(Aqi[] data) {
