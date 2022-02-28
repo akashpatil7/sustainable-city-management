@@ -1,7 +1,7 @@
 package com.tcd.ase.realtimedataprocessor.consumers;
 
-import com.tcd.ase.realtimedataprocessor.models.DublinBike;
-import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Sinks;
 
 @Service
-public class DublinBikesConsumer {
+public class AqiConsumer {
 
     @Autowired
-    private Sinks.Many<DublinBike[]> bikeSink;
+    private Sinks.Many<Aqi[]> aqiSink;
 
-    private static final Logger log = LogManager.getLogger(DublinBikesProducer.class);
+    private static final Logger log = LogManager.getLogger(AqiProducer.class);
     //private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @KafkaListener(topics = "dublin_bike", groupId = "mygroup")
-    public void consume(DublinBike[] message) {
+    @KafkaListener(topics = "aqi", groupId = "mygroup")
+    public void consume(Aqi[] message) {
         log.info(String.format("#### -> Consumed message -> %s", message));
-        this.bikeSink.tryEmitNext(message);
+        this.aqiSink.tryEmitNext(message);
     }
 }

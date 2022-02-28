@@ -1,5 +1,6 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -37,8 +38,18 @@ public class KakfaConfig {
     }
 
     @Bean
+    public ProducerFactory<String, Aqi[]> producerFactoryA() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
     public KafkaTemplate<String, DublinBike[]> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, Aqi[]> kafkaTemplateA() {
+        return new KafkaTemplate<>(producerFactoryA());
     }
 
     @Bean
@@ -47,7 +58,7 @@ public class KakfaConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "json");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup");
         return props;
     }
 
@@ -58,10 +69,24 @@ public class KakfaConfig {
     }
 
     @Bean
+    public ConsumerFactory<String, Aqi[]> consumerFactoryA() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
+                new JsonDeserializer<>(Aqi[].class));
+    }
+
+    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, DublinBike[]> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, DublinBike[]> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Aqi[]> kafkaListenerContainerFactoryA() {
+        ConcurrentKafkaListenerContainerFactory<String, Aqi[]> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryA());
         return factory;
     }
 
