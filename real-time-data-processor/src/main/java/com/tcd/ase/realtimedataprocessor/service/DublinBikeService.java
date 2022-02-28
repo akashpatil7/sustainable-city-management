@@ -27,14 +27,10 @@ public class DublinBikeService {
     @Autowired
     DublinBikesRepository dublinBikesRepository;
 
-    @Autowired
-    @Qualifier("dublinBike")
-    private NewTopic dublinBikeTopic;
-
     @Scheduled(fixedRate = 1000)
     public void processRealTimeDataForDublinBikes() {
         DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
-        producer.sendMessage(dublinBikeTopic.name(), dublinBikes);
+        producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
         saveDataToDB(dublinBikes);
     }
 

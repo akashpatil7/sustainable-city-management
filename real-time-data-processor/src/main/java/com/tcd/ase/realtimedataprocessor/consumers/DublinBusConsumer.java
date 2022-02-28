@@ -20,7 +20,7 @@ public class DublinBusConsumer {
     @Qualifier("dublinBusSink")
     private Sinks.Many<List<DublinBusHistorical>> dublinBusSink;
 
-    @KafkaListener(topics = "dublinBus", groupId = "mygroup")
+    @KafkaListener(topics = "dublin_bus", groupId = "mygroup")
     public void consume(List<DublinBusHistorical> message) {
         log.info(String.format("#### -> Consumed message from dublin_bus -> %s", message));
         dublinBusSink.tryEmitNext(message);
