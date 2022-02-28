@@ -3,7 +3,7 @@ version: '2.1'
 services:
   eureka:
     build: eurekaserver
-	image: scmcontainer.azurecr.io/eurekaserver
+    image: scmcontainer.azurecr.io/eurekaserver
     mem_limit: 350m
     environment:
     - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
@@ -12,7 +12,7 @@ services:
 
   user-service:
     build: user-service
-	image: scmcontainer.azurecr.io/user-service
+    image: scmcontainer.azurecr.io/user-service
     mem_limit: 350m
     ports:
       - "7001:8080"
@@ -27,21 +27,21 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
     build: gateway
-	image: scmcontainer.azurecr.io/gateway
+    image: scmcontainer.azurecr.io/gateway
     mem_limit: 350m
     ports:
       - "8080:8080"
       
   trends:
     build: data-trends-predictions
-	image: scmcontainer.azurecr.io/data-trends-predictions
+    image: scmcontainer.azurecr.io/data-trends-predictions
     mem_limit: 350m
     ports:
       - "7002:8050"
 
   real-time-data-processor:
     build: real-time-data-processor
-	image: scmcontainer.azurecr.io/real-time-data-processor
+    image: scmcontainer.azurecr.io/real-time-data-processor
     mem_limit: 350m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
