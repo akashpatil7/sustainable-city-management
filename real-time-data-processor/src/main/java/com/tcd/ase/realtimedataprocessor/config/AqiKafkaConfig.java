@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KakfaConfig {
-
+public class AqiKafkaConfig {
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -33,23 +32,13 @@ public class KakfaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, DublinBike[]> producerFactory() {
+    public ProducerFactory<String, Aqi[]> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public ProducerFactory<String, Aqi[]> producerFactoryA() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
-    }
-
-    @Bean
-    public KafkaTemplate<String, DublinBike[]> kafkaTemplate() {
+    public KafkaTemplate<String, Aqi[]> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
-    }
-
-    @Bean
-    public KafkaTemplate<String, Aqi[]> kafkaTemplateA() {
-        return new KafkaTemplate<>(producerFactoryA());
     }
 
     @Bean
@@ -63,30 +52,16 @@ public class KakfaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, DublinBike[]> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
-                new JsonDeserializer<>(DublinBike[].class));
-    }
-
-    @Bean
-    public ConsumerFactory<String, Aqi[]> consumerFactoryA() {
+    public ConsumerFactory<String, Aqi[]> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
                 new JsonDeserializer<>(Aqi[].class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, DublinBike[]> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, DublinBike[]> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        return factory;
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Aqi[]> kafkaListenerContainerFactoryA() {
+    public ConcurrentKafkaListenerContainerFactory<String, Aqi[]> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Aqi[]> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryA());
+        factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 

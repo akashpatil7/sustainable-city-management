@@ -45,7 +45,7 @@ public class DublinBikeService {
         return dublinBikes;
     }
 
-    public void saveDataToDB(DublinBike[] data) {
+    private void saveDataToDB(DublinBike[] data) {
         log.info("Comparing the data from the database");
         try {
             Long currentEpoch = convertDateToTimestamp(data[0].getHarvest_time());

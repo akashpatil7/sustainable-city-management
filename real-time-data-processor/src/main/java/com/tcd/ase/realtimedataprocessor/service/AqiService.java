@@ -43,7 +43,7 @@ public class AqiService {
         return aqis;
     }
 
-    public void saveDataToDB(Aqi[] data) {
+    private void saveDataToDB(Aqi[] data) {
         log.info("Comparing the data from the database");
         try {
             // TODO do epoch timing thing for aqi
