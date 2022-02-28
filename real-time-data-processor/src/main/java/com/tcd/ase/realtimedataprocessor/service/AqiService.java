@@ -41,19 +41,12 @@ public class AqiService {
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();
         Aqi[] irishAqis = getIrishStations(aqis);
-        log.info(irishAqis.toString());
+        log.info("the number irish number " + irishAqis.length);
         return irishAqis;
     }
 
     public Aqi[] getIrishStations(Aqi[] stations) {
-        Aqi[] irishStations = new Aqi[stations.length];
-        int index = 0;
-        for(int i=0; i < stations.length; i++) {
-            if(stations[i].getStation().getCountry().toString().contains("IE")) {
-                irishStations[index] = stations[i];
-                index++;
-            }
-        }
+        Aqi[] irishStations = Arrays.stream(stations).filter(s -> s.getStation().getCountry().toString().contains("IE")).toArray(Aqi[]::new);
         return irishStations;
     }
 
