@@ -39,5 +39,5 @@ jobs:
        password: ${{ secrets.ACR_PASSWORD }}
     - name: Build and Push docker images to ACR
       run: |
-        docker-compose -f docker-compose.yml build
-        docker-compose -f docker-compose.yml push
+        docker-compose -f docker-compose-acr.yml build
+        docker-compose -f docker-compose-acr.yml push
