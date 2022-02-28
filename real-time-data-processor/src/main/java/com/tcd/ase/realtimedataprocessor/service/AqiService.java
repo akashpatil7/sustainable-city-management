@@ -46,15 +46,14 @@ public class AqiService {
     private void saveDataToDB(Aqi[] data) {
         log.info("Comparing the data from the database");
         try {
-            // TODO do epoch timing thing for aqi
-            //Long currentEpoch = convertDateToTimestamp(data[0].getAqi());
-            //AqiDAO latestAqiFromDB = null;
+            Long currentEpoch = data[0].getTime().getVTime();
+            AqiDAO latestAqiFromDB = aqiRepository.findFirstByOrderByLastUpdatedTimeDesc().orElse(null);
 
-            //if (latestAqiFromDB != null /* TODO do epoch timing thing for aqi*/) {
+            if (latestAqiFromDB == null || currentEpoch > latestAqiFromDB.getLastUpdatedTime()) {
                 log.info("New Data found");
                 log.info(convertData(data));
                 aqiRepository.saveAll(convertData(data));
-            //}
+            }
         } catch (Exception e) {
             log.error("Error occurred while parsing response from aqi "+ e.getMessage());
         }
@@ -64,7 +63,7 @@ public class AqiService {
 
         ArrayList<AqiDAO> aqiList = new ArrayList<AqiDAO>();
         for(Aqi aqi: aqis) {
-            AqiDAO aqiData = new AqiDAO.AqiBuilder().withId(aqi.getUid())
+            AqiDAO aqiData = new AqiDAO.AqiBuilder().withUid(aqi.getUid())
                     .withAqi(aqi.getAqi())
                     .withTime(aqi.getTime().getVTime())
                     .withStation(aqi.getStation().getName())
