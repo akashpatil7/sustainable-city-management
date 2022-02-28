@@ -1,7 +1,6 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
-import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -23,7 +22,7 @@ public class AqiKafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> producerConfigs() {
+    public Map<String, Object> producerConfigsAqi() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -32,17 +31,17 @@ public class AqiKafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Aqi[]> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    public ProducerFactory<String, Aqi[]> producerFactoryAqi() {
+        return new DefaultKafkaProducerFactory<>(producerConfigsAqi());
     }
 
     @Bean
-    public KafkaTemplate<String, Aqi[]> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, Aqi[]> kafkaTemplateAqi() {
+        return new KafkaTemplate<>(producerFactoryAqi());
     }
 
     @Bean
-    public Map<String, Object> consumerConfigs() {
+    public Map<String, Object> consumerConfigsAqi() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -52,16 +51,16 @@ public class AqiKafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Aqi[]> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
+    public ConsumerFactory<String, Aqi[]> consumerFactoryAqi() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigsAqi(), new StringDeserializer(),
                 new JsonDeserializer<>(Aqi[].class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Aqi[]> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, Aqi[]> kafkaListenerContainerFactoryAqi() {
         ConcurrentKafkaListenerContainerFactory<String, Aqi[]> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactoryAqi());
         return factory;
     }
 
