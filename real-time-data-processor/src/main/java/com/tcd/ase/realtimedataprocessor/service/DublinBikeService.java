@@ -27,7 +27,7 @@ public class DublinBikeService {
     @Autowired
     DublinBikesRepository dublinBikesRepository;
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
