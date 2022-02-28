@@ -9,6 +9,6 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT [ "python" ]
+ENV EUREKA_SERVER_HOST eureka
 
-CMD [ "data_app.py","--env", "eureka"]
+CMD [ "flask", "run" ]
