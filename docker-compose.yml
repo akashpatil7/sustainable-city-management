@@ -33,7 +33,7 @@ services:
     build: data-trends-predictions
     mem_limit: 350m
     ports:
-      - "7002:8050"
+      - "8050:8050"
       
   external_data:
     build: external_data
