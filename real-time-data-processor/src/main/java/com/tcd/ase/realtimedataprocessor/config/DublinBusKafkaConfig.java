@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfigForDublinBus {
+public class DublinBusKafkaConfig {
 
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;

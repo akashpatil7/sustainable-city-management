@@ -1,7 +1,9 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
 import com.tcd.ase.realtimedataprocessor.entity.DublinBusHistorical;
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
@@ -13,12 +15,22 @@ import java.util.List;
 public class FluxConfig {
 
     @Bean
-    public Sinks.Many<DublinBike[]> sink() {
+    public Sinks.Many<DublinBike[]> bikeSink() {
         return Sinks.many().replay().latest();
     }
 
     @Bean
-    public Flux<DublinBike[]> flux(Sinks.Many<DublinBike[]> sink) {
+    public Sinks.Many<Aqi[]> aqiSink() {
+        return Sinks.many().replay().latest();
+    }
+
+    @Bean
+    public Flux<Aqi[]> bikeFlux(Sinks.Many<Aqi[]> sink) {
+        return sink.asFlux().cache();
+    }
+
+    @Bean
+    public Flux<DublinBike[]> aqiFlux(Sinks.Many<DublinBike[]> sink) {
         return sink.asFlux().cache();
     }
 

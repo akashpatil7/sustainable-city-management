@@ -34,14 +34,14 @@ public class DublinBikeService {
         saveDataToDB(dublinBikes);
     }
 
-    public DublinBike[] getDublinBikeDataFromExternalSource() {
+    private DublinBike[] getDublinBikeDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         DublinBike[] dublinBikes = restTemplate.getForObject(DataIndicatorEnum.DUBLIN_BIKES.getEndpoint(), DublinBike[].class);
         log.info(dublinBikes.toString());
         return dublinBikes;
     }
 
-    public void saveDataToDB(DublinBike[] data) {
+    private void saveDataToDB(DublinBike[] data) {
         log.info("Comparing the data from the database");
         try {
             Long currentEpoch = convertDateToTimestamp(data[0].getHarvest_time());

@@ -12,11 +12,11 @@ import reactor.core.publisher.Sinks;
 public class DublinBikesConsumer {
 
     @Autowired
-    private Sinks.Many<DublinBike[]> sink;
+    private Sinks.Many<DublinBike[]> bikeSink;
 
     @KafkaListener(topics = "dublin_bike", groupId = "mygroup")
     public void consume(DublinBike[] message) {
         log.info(String.format("#### -> Consumed message -> %s", message));
-        this.sink.tryEmitNext(message);
+        this.bikeSink.tryEmitNext(message);
     }
 }
