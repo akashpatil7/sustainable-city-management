@@ -38,7 +38,7 @@ public class DublinBikeService {
         saveDataToDB(dublinBikes);
     }
 
-    public DublinBike[] getDublinBikeDataFromExternalSource() {
+    private DublinBike[] getDublinBikeDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         DublinBike[] dublinBikes = restTemplate.getForObject(DataIndicatorEnum.DUBLIN_BIKES.getEndpoint(), DublinBike[].class);
         log.info(dublinBikes.toString());

@@ -28,11 +28,4 @@ public class DublinBikesProducer {
         return this.kakfaTemplate.send(topic, message);
     }
 
-//    @Scheduled(fixedRate = 60000)
-//    public void getDublinBikeDataFromExternalSource() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        DublinBike[] dublinBikes = restTemplate.getForObject(DUBLIN_BUS_URI, DublinBike[].class);
-//        log.info(dublinBikes.toString());
-//        sendMessage(topic, dublinBikes);
-//    }
 }

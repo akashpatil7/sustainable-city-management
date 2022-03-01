@@ -35,7 +35,7 @@ public class AqiService {
         saveDataToDB(aqi);
     }
 
-    public Aqi[] getAqiDataFromExternalSource() {
+    private Aqi[] getAqiDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();

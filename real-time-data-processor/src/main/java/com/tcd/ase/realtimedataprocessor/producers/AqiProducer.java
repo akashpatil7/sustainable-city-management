@@ -23,11 +23,4 @@ public class AqiProducer {
         return this.kakfaTemplate.send(topic, message);
     }
 
-//    @Scheduled(fixedRate = 60000)
-//    public void getAqiDataFromExternalSource() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        Aqi[] aqis = restTemplate.getForObject(AQI_URI, Aqi[].class);
-//        log.info(aqis.toString());
-//        sendMessage(topic, aqis);
-//    }
 }
