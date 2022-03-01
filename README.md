@@ -16,7 +16,7 @@ To Run the project execute following commands in sequence -
    <b>java -jar target/gateway-0.0.1-SNAPSHOT.jar</b><br>
 
 4. Run user service - <br>
-   Run from main project directory - <b> cd gateway </b><br>
+   Run from main project directory - <b> cd user-service </b><br>
    <b>mvn clean package</b><br>
    <b>java -jar target/user-service-0.0.1-SNAPSHOT.jar</b><br>
 
