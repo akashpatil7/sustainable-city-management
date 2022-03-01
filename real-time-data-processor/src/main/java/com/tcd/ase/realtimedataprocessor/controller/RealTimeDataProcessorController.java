@@ -48,7 +48,7 @@ public class RealTimeDataProcessorController {
 
     @GetMapping(value = "/getRealTimeDataForBike", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<DublinBike[]> streamRealTimeBikeData() {
-        return flux;
+        return bikeFlux;
     }
 
     @GetMapping(value = "/getRealTimeDataForBus", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
