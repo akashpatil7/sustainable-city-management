@@ -9,11 +9,14 @@ import com.tcd.ase.realtimedataprocessor.repository.PedestrianRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -46,7 +49,15 @@ public class PedestrianService {
     }
     
     private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
-      return null;
+        JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
+        try {
+            JSONObject json = (JSONObject) parser.parse(pedestrianBodyData.toString());
+            log.info(json);
+            return null;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void saveDataToDB(Pedestrian[] data) {
