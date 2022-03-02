@@ -1,8 +1,10 @@
 package com.tcd.ase.realtimedataprocessor.controller;
 
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import com.tcd.ase.realtimedataprocessor.service.AqiService;
+import com.tcd.ase.realtimedataprocessor.service.PedestrianService;
 import com.tcd.ase.realtimedataprocessor.service.DublinBikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,6 +26,12 @@ public class RealTimeDataProcessorController {
 
     @Autowired
     AqiService aqiService;
+    
+    @Autowired
+    PedestrianService pedestrianService;
+    
+    @Autowired
+    Flux<Pedestrian[]> pedestrianFlux;
 
     @GetMapping(value = "/realTimeData/{dataIndicator}")
     public void sendDataToKakfaTopic(@PathVariable(value = "dataIndicator") final String dataIndicator) {
@@ -31,6 +39,8 @@ public class RealTimeDataProcessorController {
             bikeService.processRealTimeDataForDublinBikes();
         if(dataIndicator.equals("aqi"))
             aqiService.processRealTimeDataForAqi();
+        if(dataIndicator.equals("pedestrian"))
+            pedestrianService.processRealTimeDataForPedestrian();
     }
 
     @GetMapping(value = "/getRealTimeDataForBike", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -41,6 +51,11 @@ public class RealTimeDataProcessorController {
     @GetMapping(value = "/getRealTimeDataForAqi", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Aqi[]> streamRealTimeDataForAqi() {
         return aqiFlux;
+    }
+    
+    @GetMapping(value = "/getRealTimeDataForPedestrian", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Pedestrian[]> streamRealTimeDataForPedestrian() {
+        return pedestrianFlux;
     }
 
 
