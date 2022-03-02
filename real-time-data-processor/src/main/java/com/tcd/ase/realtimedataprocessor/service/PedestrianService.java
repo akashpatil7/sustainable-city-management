@@ -49,14 +49,22 @@ public class PedestrianService {
     }
     
     private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
+        Pedestrian[] pedestrianData = null;
         JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
         try {
             JSONObject json = (JSONObject) parser.parse(pedestrianBodyData.toString());
-            log.info(json);
-            return null;
+            JSONObject[] values = json.get("result").get("records");
+            pedestrianData = new Pedestrian[values.length];
+            for(int i = 0; i < values.length; i++) {
+              Pedestrian pedestrianObject = new Pedestrian();
+              pedestrianObjet.id = values[i].get("_id");
+              pedestrianObjet.time = values[i].get("Time");
+              pedestrianData[i] = pedestrianObject;
+            }
+            return pedestrianData;
         } catch (ParseException e) {
             e.printStackTrace();
-            return null;
+            return pedestrianData;
         }
     }
 
