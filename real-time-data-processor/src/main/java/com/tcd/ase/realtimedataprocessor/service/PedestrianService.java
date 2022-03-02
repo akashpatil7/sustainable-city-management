@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import net.minidev.json.JSONObject;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public class PedestrianService {
 
     private Pedestrian[] getPedestrianDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
-        Object pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(), Object.class);
+        JSONObject pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(), JSONObject.class);
         Pedestrian[] pedestrianData = formatPedestrianData(pedestrianBodyData);
         return pedestrianData;
     }
