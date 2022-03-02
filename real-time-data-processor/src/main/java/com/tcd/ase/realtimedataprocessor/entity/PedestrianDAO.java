@@ -18,7 +18,7 @@ import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 public class PedestrianDAO {
 
     @Id
-    private Integer id;
+    private Long id;
     private Long time;
     private PedestrianCount[] pedestrianCount;
     
@@ -33,7 +33,7 @@ public class PedestrianDAO {
     }
 
     public static class PedestrianBuilder {
-        private Integer id;
+        private Long id;
         private Long time;
         private PedestrianCount[] pedestrianCount;
 
@@ -41,7 +41,7 @@ public class PedestrianDAO {
 
         }
 
-        public PedestrianBuilder withId(Integer id) {
+        public PedestrianBuilder withId(Long id) {
             this.id = id;
             return this;
         }

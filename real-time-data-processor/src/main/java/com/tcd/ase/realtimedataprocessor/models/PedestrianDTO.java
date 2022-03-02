@@ -10,7 +10,7 @@ public class PedestrianDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer id;
+	private Long id;
 	private Long time;
 	private PedestrianCount[] pedestrianCount;
 
@@ -26,7 +26,7 @@ public class PedestrianDTO implements Serializable {
 
 	public static class PedestrianDTOBuilder {
 
-		private Integer id;
+		private Long id;
 		private Long time;
 		private PedestrianCount[] pedestrianCount;
 
@@ -34,7 +34,7 @@ public class PedestrianDTO implements Serializable {
 
 		}
 
-		public PedestrianDTOBuilder withId(Integer id) {
+		public PedestrianDTOBuilder withId(Long id) {
 			this.id = id;
 			return this;
 		}

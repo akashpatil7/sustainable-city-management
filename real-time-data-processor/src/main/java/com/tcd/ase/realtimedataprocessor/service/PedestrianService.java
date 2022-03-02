@@ -60,7 +60,7 @@ public class PedestrianService {
             for(int i = 0; i < records.size(); i++) {
               Pedestrian pedestrianObject = new Pedestrian();
               JSONObject obj = (JSONObject) records.get(i);
-              pedestrianObject.setId((Integer) obj.get("_id"));
+              pedestrianObject.setId((Long) obj.get("_id"));
               String time = (String) obj.get("Time");
               Long timestamp = convertDateToTimestamp(time);
               pedestrianObject.setTime(timestamp);

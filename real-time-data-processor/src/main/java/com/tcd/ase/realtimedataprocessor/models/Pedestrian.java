@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 
 public class Pedestrian {
-    private Integer id;
+    private Long id;
     private Long time;
     private PedestrianCount[] pedestrianCount;
 }
