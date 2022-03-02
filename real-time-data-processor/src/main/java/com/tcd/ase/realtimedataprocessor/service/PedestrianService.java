@@ -53,12 +53,13 @@ public class PedestrianService {
         JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
         try {
             JSONObject json = (JSONObject) parser.parse(pedestrianBodyData.toString());
-            JSONObject[] values = json.get("result").get("records");
+            JSONObject result = (JSONObject) json.get("result");
+            JSONObject[] values = (JSONObject[]) result.get("records");
             pedestrianData = new Pedestrian[values.length];
             for(int i = 0; i < values.length; i++) {
               Pedestrian pedestrianObject = new Pedestrian();
-              pedestrianObjet.id = values[i].get("_id");
-              pedestrianObjet.time = values[i].get("Time");
+              pedestrianObject.setId((Integer) values[i].get("_id"));
+              pedestrianObject.setTime((Long) values[i].get("Time"));
               pedestrianData[i] = pedestrianObject;
             }
             return pedestrianData;
