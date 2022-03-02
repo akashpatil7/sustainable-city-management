@@ -64,6 +64,7 @@ public class PedestrianService {
               String time = (String) obj.get("Time");
               Long timestamp = convertDateToTimestamp(time);
               pedestrianObject.setTime(timestamp);
+              pedestrianObject.setPedestrianCount(getPedestrianCounts(obj));
               pedestrianData[i] = pedestrianObject;
             }
             return pedestrianData;
@@ -71,6 +72,18 @@ public class PedestrianService {
             e.printStackTrace();
             return pedestrianData;
         }
+    }
+
+    private PedestrianCount[] getPedestrianCounts(JSONObject obj) {
+        String[] streets = {"Dame Street/Londis", "Grafton st/Monsoon", "Grafton Street/CompuB"};
+        PedestrianCount[] counts = new PedestrianCount[streets.length];
+        for(int i=0; i < streets.length; i++) {
+            PedestrianCount count = new PedestrianCount();
+            count.setStreet(streets[i]);
+            count.setCount((Long) obj.get(streets[i]));
+            counts[i] = count;
+        }
+        return counts;
     }
 
     private Long convertDateToTimestamp(String date) {
