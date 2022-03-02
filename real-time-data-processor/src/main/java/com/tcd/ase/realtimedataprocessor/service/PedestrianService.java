@@ -44,6 +44,7 @@ public class PedestrianService {
     }
     
     private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
+      log.info(pedestrianBodyData);
       return null;
     }
 
