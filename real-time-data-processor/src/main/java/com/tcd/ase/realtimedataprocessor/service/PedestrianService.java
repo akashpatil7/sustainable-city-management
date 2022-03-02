@@ -10,6 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParser;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,12 +21,15 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 
 @Service
 public class PedestrianService {
@@ -36,6 +41,10 @@ public class PedestrianService {
     PedestrianRepository pedestrianRepository;
 
     private static final Logger log = LogManager.getLogger(PedestrianProducer.class);
+
+    public Resource loadEmployeesWithClassPathResource() {
+        return new ClassPathResource("DublinStreetsLatLon.json");
+    }
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForPedestrian() {
@@ -82,9 +91,9 @@ public class PedestrianService {
         PedestrianCount[] counts = null;
         try {
             JSONObject streetsObj;
+            File resource = new ClassPathResource("DublinStreetsLatLon.json").getFile();
 
-            String file = "DublinStreetsLatLon.json";
-            String json = readFileAsString(file);
+            String json = readFileAsString(resource.toPath());
             streetsObj = (JSONObject) parser.parse(json);
             JSONArray streets = (JSONArray) streetsObj.get("streets");
             counts = new PedestrianCount[streets.size()];
@@ -104,9 +113,9 @@ public class PedestrianService {
         }
     }
 
-    public static String readFileAsString(String file)throws Exception
+    public static String readFileAsString(Path file)throws Exception
     {
-        return new String(Files.readAllBytes(Paths.get(file)));
+        return new String(Files.readAllBytes(file));
     }
 
     private Long convertDateToTimestamp(String date) {
