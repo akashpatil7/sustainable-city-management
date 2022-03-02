@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -54,12 +55,13 @@ public class PedestrianService {
         try {
             JSONObject json = (JSONObject) parser.parse(pedestrianBodyData.toString());
             JSONObject result = (JSONObject) json.get("result");
-            JSONObject[] values = (JSONObject[]) result.get("records");
-            pedestrianData = new Pedestrian[values.length];
-            for(int i = 0; i < values.length; i++) {
+            JSONArray records = (JSONArray) result.get("records");
+            pedestrianData = new Pedestrian[records.size()];
+            for(int i = 0; i < records.size(); i++) {
               Pedestrian pedestrianObject = new Pedestrian();
-              pedestrianObject.setId((Integer) values[i].get("_id"));
-              pedestrianObject.setTime((Long) values[i].get("Time"));
+              JSONObject obj = (JSONObject) records.get(i);
+              pedestrianObject.setId((Integer) obj.get("_id"));
+              pedestrianObject.setTime((Long) obj.get("Time"));
               pedestrianData[i] = pedestrianObject;
             }
             return pedestrianData;
