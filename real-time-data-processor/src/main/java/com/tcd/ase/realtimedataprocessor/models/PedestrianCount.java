@@ -12,12 +12,16 @@ public class PedestrianCount {
 
     private String street;
     private Long count;
+    private Long streetLatitude;
+    private Long streetLongitude;
 
     @Override
     public String toString() {
-        return "Aqi{" +
+        return "PedestrianCount{" +
                 "street=" + street +
                 ", count=" + count +
+                ", lat=" + streetLatitude +
+                ", long=" + streetLongitude +
                 '}';
     }
 }

@@ -44,11 +44,12 @@ public class PedestrianService {
 
     private Pedestrian[] getPedestrianDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
-        JSONObject pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(), JSONObject.class);
+        JSONObject pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(),
+                JSONObject.class);
         Pedestrian[] pedestrianData = formatPedestrianData(pedestrianBodyData);
         return pedestrianData;
     }
-    
+
     private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
         Pedestrian[] pedestrianData = null;
         JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
@@ -57,15 +58,15 @@ public class PedestrianService {
             JSONObject result = (JSONObject) json.get("result");
             JSONArray records = (JSONArray) result.get("records");
             pedestrianData = new Pedestrian[records.size()];
-            for(int i = 0; i < records.size(); i++) {
-              Pedestrian pedestrianObject = new Pedestrian();
-              JSONObject obj = (JSONObject) records.get(i);
-              pedestrianObject.setId((Long) obj.get("_id"));
-              String time = (String) obj.get("Time");
-              Long timestamp = convertDateToTimestamp(time);
-              pedestrianObject.setTime(timestamp);
-              pedestrianObject.setPedestrianCount(getPedestrianCounts(obj));
-              pedestrianData[i] = pedestrianObject;
+            for (int i = 0; i < records.size(); i++) {
+                Pedestrian pedestrianObject = new Pedestrian();
+                JSONObject obj = (JSONObject) records.get(i);
+                pedestrianObject.setId((Long) obj.get("_id"));
+                String time = (String) obj.get("Time");
+                Long timestamp = convertDateToTimestamp(time);
+                pedestrianObject.setTime(timestamp);
+                pedestrianObject.setPedestrianCount(getPedestrianCounts(obj));
+                pedestrianData[i] = pedestrianObject;
             }
             return pedestrianData;
         } catch (ParseException e) {
@@ -75,15 +76,27 @@ public class PedestrianService {
     }
 
     private PedestrianCount[] getPedestrianCounts(JSONObject obj) {
-        String[] streets = {"Dame Street/Londis", "Grafton st/Monsoon", "Grafton Street/CompuB"};
-        PedestrianCount[] counts = new PedestrianCount[streets.length];
-        for(int i=0; i < streets.length; i++) {
-            PedestrianCount count = new PedestrianCount();
-            count.setStreet(streets[i]);
-            count.setCount((Long) obj.get(streets[i]));
-            counts[i] = count;
+        JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
+        PedestrianCount[] counts = null;
+        try {
+            JSONObject streetsObj;
+            streetsObj = (JSONObject) parser.parse("");
+            JSONArray streets = (JSONArray) streetsObj.get("streets");
+            counts = new PedestrianCount[streets.size()];
+            for (int i = 0; i < streets.size(); i++) {
+                PedestrianCount count = new PedestrianCount();
+                JSONObject info = (JSONObject) streets.get(i);
+                count.setStreet((String) info.get("streetName"));
+                count.setStreetLatitude((Long) info.get("streetLatitude"));
+                count.setStreetLongitude((Long) info.get("streetLongitude"));
+                count.setCount((Long) obj.get(info.get("streetName")));
+                counts[i] = count;
+            }
+            return counts;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return counts;
         }
-        return counts;
     }
 
     private Long convertDateToTimestamp(String date) {
@@ -104,14 +117,14 @@ public class PedestrianService {
                 pedestrianRepository.saveAll(convertData(data));
             }
         } catch (Exception e) {
-            log.error("Error occurred while parsing response from pedestrian "+ e.getMessage());
+            log.error("Error occurred while parsing response from pedestrian " + e.getMessage());
         }
     }
 
     private ArrayList<PedestrianDAO> convertData(Pedestrian[] pedestrians) {
 
         ArrayList<PedestrianDAO> pedestrianList = new ArrayList<PedestrianDAO>();
-        for(Pedestrian pedestrian: pedestrians) {
+        for (Pedestrian pedestrian : pedestrians) {
             PedestrianDAO pedestrianData = new PedestrianDAO.PedestrianBuilder().withId(pedestrian.getId())
                     .withPedestrianCount(pedestrian.getPedestrianCount())
                     .withTime(pedestrian.getTime()).build();
