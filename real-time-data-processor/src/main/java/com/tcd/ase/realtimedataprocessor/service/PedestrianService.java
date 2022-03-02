@@ -38,9 +38,13 @@ public class PedestrianService {
 
     private Pedestrian[] getPedestrianDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
-        Pedestrian pedestrianData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(), Pedestrian.class);
-        PedestrianCount[] pedestrianCount = pedestrianData.getData();
-        return pedestrianCount;
+        Object pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(), Object.class);
+        Pedestrian[] pedestrianData = formatPedestrianData();
+        return pedestrianData;
+    }
+    
+    private Pedestrian[] formatPedestrianData() {
+      return null;
     }
 
     private void saveDataToDB(Pedestrian[] data) {
