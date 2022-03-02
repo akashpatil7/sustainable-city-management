@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
+
 @Data
 @Document("Pedestrian")
 @Builder()
@@ -39,13 +41,8 @@ public class PedestrianDAO {
 
         }
 
-        public PedestrianBuilder withid(Integer id) {
+        public PedestrianBuilder withId(Integer id) {
             this.id = id;
-            return this;
-        }
-
-        public PedestrianBuilder withPedestrian(String pedestrian) {
-            this.pedestrian = pedestrian;
             return this;
         }
 
@@ -54,18 +51,8 @@ public class PedestrianDAO {
             return this;
         }
 
-        public PedestrianBuilder withStation(String station) {
-            this.stationName = station;
-            return this;
-        }
-
-        public PedestrianBuilder withLongitude(BigDecimal longitude) {
-            this.longitude = longitude;
-            return this;
-        }
-
-        public PedestrianBuilder withLatitude(BigDecimal latitude) {
-            this.latitude = latitude;
+        public PedestrianBuilder withPedestrianCount(PedestrianCount[] pedestrianCount) {
+            this.pedestrianCount = pedestrianCount;
             return this;
         }
 

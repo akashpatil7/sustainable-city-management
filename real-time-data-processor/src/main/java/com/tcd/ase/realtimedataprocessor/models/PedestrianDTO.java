@@ -39,13 +39,13 @@ public class PedestrianDTO implements Serializable {
 			return this;
 		}
 
-		public PedestrianDTOBuilder withTime(String time) {
+		public PedestrianDTOBuilder withTime(Long time) {
 			this.time = time;
 			return this;
 		}
 
 
-    public PedestrianDTOBuilder withPedestrianCount(PedestrianDataStation pedestrianCount) {
+    public PedestrianDTOBuilder withPedestrianCount(PedestrianCount[] pedestrianCount) {
         this.pedestrianCount = pedestrianCount;
         return this;
     }

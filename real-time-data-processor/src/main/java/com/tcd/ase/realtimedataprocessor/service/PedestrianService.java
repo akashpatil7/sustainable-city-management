@@ -3,7 +3,7 @@ package com.tcd.ase.realtimedataprocessor.service;
 import com.tcd.ase.realtimedataprocessor.entity.PedestrianDAO;
 import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
-import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 import com.tcd.ase.realtimedataprocessor.producers.PedestrianProducer;
 import com.tcd.ase.realtimedataprocessor.repository.PedestrianRepository;
 import org.apache.logging.log4j.LogManager;
@@ -39,18 +39,18 @@ public class PedestrianService {
     private Pedestrian[] getPedestrianDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         Object pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(), Object.class);
-        Pedestrian[] pedestrianData = formatPedestrianData();
+        Pedestrian[] pedestrianData = formatPedestrianData(pedestrianBodyData);
         return pedestrianData;
     }
     
-    private Pedestrian[] formatPedestrianData() {
+    private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
       return null;
     }
 
     private void saveDataToDB(Pedestrian[] data) {
         log.info("Comparing the data from the database");
         try {
-            Long currentEpoch = data[0].getTime().getVTime();
+            Long currentEpoch = data[0].getTime();
             PedestrianDAO latestPedestrianFromDB = pedestrianRepository.findFirstByOrderByTimeDesc().orElse(null);
 
             if (latestPedestrianFromDB == null || currentEpoch > latestPedestrianFromDB.getTime()) {
@@ -67,9 +67,9 @@ public class PedestrianService {
 
         ArrayList<PedestrianDAO> pedestrianList = new ArrayList<PedestrianDAO>();
         for(Pedestrian pedestrian: pedestrians) {
-            PedestrianDAO pedestrianData = new PedestrianDAO.PedestrianBuilder().withUid(pedestrian.getUid())
-                    .withPedestrian(pedestrian.getPedestrian())
-                    .withTime(pedestrian.getTime().getTime()).build();
+            PedestrianDAO pedestrianData = new PedestrianDAO.PedestrianBuilder().withId(pedestrian.getId())
+                    .withPedestrianCount(pedestrian.getPedestrianCount())
+                    .withTime(pedestrian.getTime()).build();
             pedestrianList.add(pedestrianData);
         }
         return pedestrianList;
