@@ -25,12 +25,12 @@ public class FluxConfig {
     }
 
     @Bean
-    public Flux<Aqi[]> bikeFlux(Sinks.Many<Aqi[]> sink) {
+    public Flux<Aqi[]> aqiFlux (Sinks.Many<Aqi[]> sink) {
         return sink.asFlux().cache();
     }
 
     @Bean
-    public Flux<DublinBike[]> aqiFlux(Sinks.Many<DublinBike[]> sink) {
+    public Flux<DublinBike[]> bikeFlux (Sinks.Many<DublinBike[]> sink) {
         return sink.asFlux().cache();
     }
 
