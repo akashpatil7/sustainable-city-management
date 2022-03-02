@@ -19,6 +19,8 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -80,7 +82,10 @@ public class PedestrianService {
         PedestrianCount[] counts = null;
         try {
             JSONObject streetsObj;
-            streetsObj = (JSONObject) parser.parse("");
+
+            String file = "DublinStreetsLatLon.json";
+            String json = readFileAsString(file);
+            streetsObj = (JSONObject) parser.parse(json);
             JSONArray streets = (JSONArray) streetsObj.get("streets");
             counts = new PedestrianCount[streets.size()];
             for (int i = 0; i < streets.size(); i++) {
@@ -93,10 +98,15 @@ public class PedestrianService {
                 counts[i] = count;
             }
             return counts;
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return counts;
         }
+    }
+
+    public static String readFileAsString(String file)throws Exception
+    {
+        return new String(Files.readAllBytes(Paths.get(file)));
     }
 
     private Long convertDateToTimestamp(String date) {
