@@ -61,7 +61,9 @@ public class PedestrianService {
               Pedestrian pedestrianObject = new Pedestrian();
               JSONObject obj = (JSONObject) records.get(i);
               pedestrianObject.setId((Integer) obj.get("_id"));
-              pedestrianObject.setTime((Long) obj.get("Time"));
+              String time = (String) obj.get("Time");
+              Long timestamp = convertDateToTimestamp(time);
+              pedestrianObject.setTime(timestamp);
               pedestrianData[i] = pedestrianObject;
             }
             return pedestrianData;
@@ -69,6 +71,12 @@ public class PedestrianService {
             e.printStackTrace();
             return pedestrianData;
         }
+    }
+
+    private Long convertDateToTimestamp(String date) {
+        LocalDateTime localDateTime = LocalDateTime.parse(date);
+        Long timeInSeconds = localDateTime.toEpochSecond(ZoneOffset.UTC);
+        return timeInSeconds;
     }
 
     private void saveDataToDB(Pedestrian[] data) {
