@@ -56,7 +56,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,kafka
     ports:
-      - "8005:8005"
+      - "8005:8080"
     depends_on:
       - kafka
   
