@@ -3,6 +3,7 @@ package com.tcd.ase.realtimedataprocessor.config;
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,7 @@ public class FluxConfig {
     }
     
     @Bean
-    public Sinks.Many<Pedestrian[]> pedestrianSink() {
+    public Sinks.Many<PedestrianCount[]> pedestrianSink() {
         return Sinks.many().replay().latest();
     }
 
@@ -38,7 +39,7 @@ public class FluxConfig {
     }
     
     @Bean
-    public Flux<Pedestrian[]> pedestrianFlux(Sinks.Many<Pedestrian[]> sink) {
+    public Flux<PedestrianCount[]> pedestrianFlux(Sinks.Many<PedestrianCount[]> sink) {
         return sink.asFlux().cache();
     }
 
