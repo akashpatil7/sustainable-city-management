@@ -49,7 +49,7 @@ public class PedestrianService {
         return new ClassPathResource("DublinStreetsLatLon.json");
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 360000)
     public void processRealTimeDataForPedestrian() {
         PedestrianCount[] pedestrian = getPedestrianDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.PEDESTRIAN.getTopic(), pedestrian);
