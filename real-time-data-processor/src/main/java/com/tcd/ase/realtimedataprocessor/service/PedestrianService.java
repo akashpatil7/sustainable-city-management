@@ -73,7 +73,8 @@ public class PedestrianService {
                 allCounts.add(dataCounts[j]);
             }
         }
-        return (PedestrianCount[]) allCounts.toArray();
+        PedestrianCount[] countsArray = allCounts.toArray(new PedestrianCount[allCounts.size()]);
+        return countsArray;
     }
     private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
         Pedestrian[] pedestrianData = null;
