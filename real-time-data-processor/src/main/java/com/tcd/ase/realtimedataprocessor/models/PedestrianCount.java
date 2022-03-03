@@ -12,8 +12,8 @@ public class PedestrianCount {
 
     private String street;
     private Long count;
-    private Long streetLatitude;
-    private Long streetLongitude;
+    private String streetLatitude;
+    private String streetLongitude;
 
     @Override
     public String toString() {

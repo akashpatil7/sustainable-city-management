@@ -96,10 +96,8 @@ public class PedestrianService {
             for (int i = 0; i < streets.size(); i++) {
                 PedestrianCount count = new PedestrianCount();
                 count.setStreet(streets.get(i).getStreetName());
-                Long lat = Long.parseLong(streets.get(i).getStreetLatitude());
-                Long lon = Long.parseLong(streets.get(i).getStreetLongitude());
-                count.setStreetLatitude(lat);
-                count.setStreetLongitude(lon);
+                count.setStreetLatitude(streets.get(i).getStreetLatitude());
+                count.setStreetLongitude(streets.get(i).getStreetLongitude());
                 count.setCount((Long) obj.get(streets.get(i).getStreetName()));
                 counts[i] = count;
             }
