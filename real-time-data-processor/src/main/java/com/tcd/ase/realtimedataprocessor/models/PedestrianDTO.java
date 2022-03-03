@@ -4,15 +4,20 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+import org.bson.types.ObjectId;
+
 @Data
 public class PedestrianDTO implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Long id;
-	private Long time;
-	private PedestrianCount[] pedestrianCount;
+	private ObjectId id;
+    private String street;
+    private Long count;
+    private String streetLatitude;
+    private String streetLongitude;
+    private Long time;
 
 	public PedestrianDTO() {
 
@@ -21,20 +26,26 @@ public class PedestrianDTO implements Serializable {
 	public PedestrianDTO(PedestrianDTOBuilder pedestrianDTOBuilder) {
 		this.id = pedestrianDTOBuilder.id;
 		this.time = pedestrianDTOBuilder.time;
-		this.pedestrianCount = pedestrianDTOBuilder.pedestrianCount;
+		this.count = pedestrianDTOBuilder.count;
+		this.street = pedestrianDTOBuilder.street;
+		this.streetLatitude = pedestrianDTOBuilder.streetLatitude;
+		this.streetLongitude = pedestrianDTOBuilder.streetLongitude;
 	}
 
 	public static class PedestrianDTOBuilder {
 
-		private Long id;
+		private ObjectId id;
+		private String street;
+		private Long count;
+		private String streetLatitude;
+		private String streetLongitude;
 		private Long time;
-		private PedestrianCount[] pedestrianCount;
 
 		public PedestrianDTOBuilder() {
 
 		}
 
-		public PedestrianDTOBuilder withId(Long id) {
+		public PedestrianDTOBuilder withId(ObjectId id) {
 			this.id = id;
 			return this;
 		}
@@ -44,11 +55,26 @@ public class PedestrianDTO implements Serializable {
 			return this;
 		}
 
+		public PedestrianDTOBuilder withCount(Long count) {
+			this.count = count;
+			return this;
+		}
 
-    public PedestrianDTOBuilder withPedestrianCount(PedestrianCount[] pedestrianCount) {
-        this.pedestrianCount = pedestrianCount;
-        return this;
-    }
+		public PedestrianDTOBuilder withStreet(String street) {
+			this.street = street;
+			return this;
+		}
+
+		public PedestrianDTOBuilder withStreetLatitude(String streetLatitude) {
+			this.streetLatitude = streetLatitude;
+			return this;
+		}
+
+		public PedestrianDTOBuilder withStreetLongitude(String streetLongitude) {
+			this.streetLongitude = streetLongitude;
+			return this;
+		}
+
 
 		public PedestrianDTO build() {
 			PedestrianDTO pedestrianData = new PedestrianDTO(this);
