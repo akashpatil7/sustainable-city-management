@@ -27,7 +27,7 @@ public class AqiService {
 
     private static final Logger log = LogManager.getLogger(AqiProducer.class);
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {
         Aqi[] aqi = getAqiDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.AQI.getTopic(), aqi);
