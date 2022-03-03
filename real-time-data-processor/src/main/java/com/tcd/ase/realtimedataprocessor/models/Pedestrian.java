@@ -1,5 +1,7 @@
 package com.tcd.ase.realtimedataprocessor.models;
 
+import org.bson.types.ObjectId;
+
 import lombok.*;
 
 @Data
@@ -9,7 +11,7 @@ import lombok.*;
 @ToString
 
 public class Pedestrian {
-    private Long id;
+    private ObjectId id;
     private Long time;
     private PedestrianCount[] pedestrianCount;
 }

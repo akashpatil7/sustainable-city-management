@@ -1,6 +1,8 @@
 package com.tcd.ase.realtimedataprocessor.producers;
 
 import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -16,9 +18,9 @@ public class PedestrianProducer {
     private static final Logger log = LogManager.getLogger(PedestrianProducer.class);
 
     @Autowired
-    private KafkaTemplate<String,Pedestrian[]> kakfaTemplate;
+    private KafkaTemplate<String,PedestrianCount[]> kakfaTemplate;
 
-    public ListenableFuture<SendResult<String,Pedestrian[]>> sendMessage(String topic, Pedestrian[] message) {
+    public ListenableFuture<SendResult<String,PedestrianCount[]>> sendMessage(String topic, PedestrianCount[] message) {
         log.info(String.format("#### -> Producing message -> %s", message));
         return this.kakfaTemplate.send(topic, message);
     }

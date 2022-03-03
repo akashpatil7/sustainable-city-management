@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.math.BigDecimal;
-
-import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 
 @Data
 @Document("Pedestrian")
@@ -18,9 +15,12 @@ import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 public class PedestrianDAO {
 
     @Id
-    private Long id;
+    private ObjectId id;
+    private String street;
+    private Long count;
+    private String streetLatitude;
+    private String streetLongitude;
     private Long time;
-    private PedestrianCount[] pedestrianCount;
     
     public PedestrianDAO(){
 
@@ -28,20 +28,26 @@ public class PedestrianDAO {
 
     public PedestrianDAO(PedestrianBuilder pedestrianBuilder) {
         this.id =  pedestrianBuilder.id;
+        this.street =  pedestrianBuilder.street;
+        this.count =  pedestrianBuilder.count;
+        this.streetLatitude =  pedestrianBuilder.streetLatitude;
+        this.streetLongitude =  pedestrianBuilder.streetLongitude;
         this.time =  pedestrianBuilder.time;
-        this.pedestrianCount = pedestrianBuilder.pedestrianCount;
     }
 
     public static class PedestrianBuilder {
-        private Long id;
+        private ObjectId id;
+        private String street;
+        private Long count;
+        private String streetLatitude;
+        private String streetLongitude;
         private Long time;
-        private PedestrianCount[] pedestrianCount;
 
         public PedestrianBuilder() {
 
         }
 
-        public PedestrianBuilder withId(Long id) {
+        public PedestrianBuilder withId(ObjectId id) {
             this.id = id;
             return this;
         }
@@ -51,8 +57,25 @@ public class PedestrianDAO {
             return this;
         }
 
-        public PedestrianBuilder withPedestrianCount(PedestrianCount[] pedestrianCount) {
-            this.pedestrianCount = pedestrianCount;
+        public PedestrianBuilder withStreet(String street) {
+            this.street = street;
+            return this;
+        }
+
+        public PedestrianBuilder withCount(Long count) {
+            this.count = count;
+            return this;
+        }
+
+
+        public PedestrianBuilder withStreetLatitude(String streetLatitude) {
+            this.streetLatitude = streetLatitude;
+            return this;
+        }
+
+
+        public PedestrianBuilder withStreetLongitude(String streetLongitude) {
+            this.streetLongitude = streetLongitude;
             return this;
         }
 

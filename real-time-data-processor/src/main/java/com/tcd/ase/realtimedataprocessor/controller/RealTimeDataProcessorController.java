@@ -2,6 +2,7 @@ package com.tcd.ase.realtimedataprocessor.controller;
 
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import com.tcd.ase.realtimedataprocessor.service.AqiService;
 import com.tcd.ase.realtimedataprocessor.service.PedestrianService;
@@ -31,7 +32,7 @@ public class RealTimeDataProcessorController {
     PedestrianService pedestrianService;
     
     @Autowired
-    Flux<Pedestrian[]> pedestrianFlux;
+    Flux<PedestrianCount[]> pedestrianFlux;
 
     @GetMapping(value = "/realTimeData/{dataIndicator}")
     public void sendDataToKakfaTopic(@PathVariable(value = "dataIndicator") final String dataIndicator) {
@@ -54,7 +55,7 @@ public class RealTimeDataProcessorController {
     }
     
     @GetMapping(value = "/getRealTimeDataForPedestrian", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Pedestrian[]> streamRealTimeDataForPedestrian() {
+    public Flux<PedestrianCount[]> streamRealTimeDataForPedestrian() {
         return pedestrianFlux;
     }
 

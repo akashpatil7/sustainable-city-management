@@ -10,6 +10,7 @@ import com.tcd.ase.realtimedataprocessor.repository.PedestrianInfoRepository;
 import com.tcd.ase.realtimedataprocessor.repository.PedestrianRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -50,19 +51,30 @@ public class PedestrianService {
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForPedestrian() {
-        Pedestrian[] pedestrian = getPedestrianDataFromExternalSource();
+        PedestrianCount[] pedestrian = getPedestrianDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.PEDESTRIAN.getTopic(), pedestrian);
         saveDataToDB(pedestrian);
     }
 
-    private Pedestrian[] getPedestrianDataFromExternalSource() {
+    private PedestrianCount[] getPedestrianDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         JSONObject pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(),
                 JSONObject.class);
         Pedestrian[] pedestrianData = formatPedestrianData(pedestrianBodyData);
-        return pedestrianData;
+        PedestrianCount[] counts = createPedestrianCountsArray(pedestrianData);
+        return counts;
     }
 
+    private PedestrianCount[] createPedestrianCountsArray(Pedestrian[] pedestrianData) {
+        ArrayList<PedestrianCount> allCounts= new ArrayList<PedestrianCount>();
+        for (int i=0; i < pedestrianData.length; i++) {
+            PedestrianCount[] dataCounts = pedestrianData[i].getPedestrianCount();
+            for (int j=0; j < dataCounts.length; j++) {
+                allCounts.add(dataCounts[j]);
+            }
+        }
+        return (PedestrianCount[]) allCounts.toArray();
+    }
     private Pedestrian[] formatPedestrianData(Object pedestrianBodyData) {
         Pedestrian[] pedestrianData = null;
         JSONParser parser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
@@ -74,11 +86,10 @@ public class PedestrianService {
             for (int i = 0; i < records.size(); i++) {
                 Pedestrian pedestrianObject = new Pedestrian();
                 JSONObject obj = (JSONObject) records.get(i);
-                pedestrianObject.setId((Long) obj.get("_id"));
                 String time = (String) obj.get("Time");
                 Long timestamp = convertDateToTimestamp(time);
                 pedestrianObject.setTime(timestamp);
-                pedestrianObject.setPedestrianCount(getPedestrianCounts(obj));
+                pedestrianObject.setPedestrianCount(getPedestrianCounts(obj, timestamp));
                 pedestrianData[i] = pedestrianObject;
             }
             return pedestrianData;
@@ -88,17 +99,20 @@ public class PedestrianService {
         }
     }
 
-    private PedestrianCount[] getPedestrianCounts(JSONObject obj) {
+    private PedestrianCount[] getPedestrianCounts(JSONObject obj, Long timestamp) {
         PedestrianCount[] counts = null;
         try {
             List<PedestrianInfoDAO> streets = pedestrianInfoRepository.findAll();
             counts = new PedestrianCount[streets.size()];
             for (int i = 0; i < streets.size(); i++) {
                 PedestrianCount count = new PedestrianCount();
+                ObjectId id = new ObjectId();
+                count.setId(id);
                 count.setStreet(streets.get(i).getStreetName());
                 count.setStreetLatitude(streets.get(i).getStreetLatitude());
                 count.setStreetLongitude(streets.get(i).getStreetLongitude());
                 count.setCount((Long) obj.get(streets.get(i).getStreetName()));
+                count.setTime(timestamp);
                 counts[i] = count;
             }
             return counts;
@@ -119,7 +133,7 @@ public class PedestrianService {
         return timeInSeconds;
     }
 
-    private void saveDataToDB(Pedestrian[] data) {
+    private void saveDataToDB(PedestrianCount[] data) {
         log.info("Comparing the data from the database");
         try {
             Long currentEpoch = data[0].getTime();
@@ -135,13 +149,18 @@ public class PedestrianService {
         }
     }
 
-    private ArrayList<PedestrianDAO> convertData(Pedestrian[] pedestrians) {
+    private ArrayList<PedestrianDAO> convertData(PedestrianCount[] pedestrians) {
 
         ArrayList<PedestrianDAO> pedestrianList = new ArrayList<PedestrianDAO>();
-        for (Pedestrian pedestrian : pedestrians) {
-            PedestrianDAO pedestrianData = new PedestrianDAO.PedestrianBuilder().withId(pedestrian.getId())
-                    .withPedestrianCount(pedestrian.getPedestrianCount())
-                    .withTime(pedestrian.getTime()).build();
+        for (PedestrianCount pedestrian : pedestrians) {
+            PedestrianDAO pedestrianData = new PedestrianDAO.PedestrianBuilder()
+            .withId(pedestrian.getId())
+            .withTime(pedestrian.getTime())
+            .withCount(pedestrian.getCount())
+            .withStreet(pedestrian.getStreet())
+            .withStreetLatitude(pedestrian.getStreetLatitude())
+            .withStreetLongitude(pedestrian.getStreetLongitude())
+            .build();
             pedestrianList.add(pedestrianData);
         }
         return pedestrianList;

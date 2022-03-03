@@ -1,6 +1,8 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
 import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -31,12 +33,12 @@ public class PedestrianKafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Pedestrian[]> producerFactoryPedestrian() {
+    public ProducerFactory<String, PedestrianCount[]> producerFactoryPedestrian() {
         return new DefaultKafkaProducerFactory<>(producerConfigsPedestrian());
     }
 
     @Bean
-    public KafkaTemplate<String, Pedestrian[]> kafkaTemplatePedestrian() {
+    public KafkaTemplate<String, PedestrianCount[]> kafkaTemplatePedestrian() {
         return new KafkaTemplate<>(producerFactoryPedestrian());
     }
 
@@ -51,14 +53,14 @@ public class PedestrianKafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Pedestrian[]> consumerFactoryPedestrian() {
+    public ConsumerFactory<String, PedestrianCount[]> consumerFactoryPedestrian() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigsPedestrian(), new StringDeserializer(),
-                new JsonDeserializer<>(Pedestrian[].class));
+                new JsonDeserializer<>(PedestrianCount[].class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Pedestrian[]> kafkaListenerContainerFactoryPedestrian() {
-        ConcurrentKafkaListenerContainerFactory<String, Pedestrian[]> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, PedestrianCount[]> kafkaListenerContainerFactoryPedestrian() {
+        ConcurrentKafkaListenerContainerFactory<String, PedestrianCount[]> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryPedestrian());
         return factory;
