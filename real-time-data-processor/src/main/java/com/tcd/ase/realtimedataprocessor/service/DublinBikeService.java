@@ -3,7 +3,6 @@ package com.tcd.ase.realtimedataprocessor.service;
 import com.tcd.ase.realtimedataprocessor.entity.DublinBikeDAO;
 import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
-import com.tcd.ase.realtimedataprocessor.models.DublinBikes;
 import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
 import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
 import org.apache.logging.log4j.LogManager;
@@ -13,12 +12,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 public class DublinBikeService {
