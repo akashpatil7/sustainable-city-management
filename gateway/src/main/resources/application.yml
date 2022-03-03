@@ -49,8 +49,8 @@ spring.cloud.gateway.routes:
   filters:
   - AuthenticationGatewayFilter
 
-- id: external-data
-  uri: lb://external-data
+- id: real-time-data-processor
+  uri: lb://real-time-data-processor
   predicates:
   - Path=/realTimeData/**
   filters:
