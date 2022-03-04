@@ -33,12 +33,12 @@ public class FluxConfig {
 
     @Bean
     public Flux<Aqi[]> aqiFlux (Sinks.Many<Aqi[]> sink) {
-        return sink.asFlux().cache();
+        return sink.asFlux().cache(1);
     }
 
     @Bean
     public Flux<DublinBike[]> bikeFlux (Sinks.Many<DublinBike[]> sink) {
-        return sink.asFlux().cache();
+        return sink.asFlux().cache(1);
     }
 
     @Bean(name = "dublinBusSink")
@@ -48,12 +48,12 @@ public class FluxConfig {
 
     @Bean(name = "dublinBusFlux")
     public Flux<List<DublinBusHistorical>> dublinBusFlux(Sinks.Many<List<DublinBusHistorical>> sink) {
-        return sink.asFlux().cache();
+        return sink.asFlux().cache(1);
     }
     
     @Bean
     public Flux<PedestrianCount[]> pedestrianFlux(Sinks.Many<PedestrianCount[]> sink) {
-        return sink.asFlux().cache();
+        return sink.asFlux().cache(1);
     }
 
 }
