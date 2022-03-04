@@ -7,6 +7,7 @@ class Trends(Resource):
 		self.bike = Bike(self.client)
 	
 	def get(self, data_indicator, action):
+		print(f"Data Indicator: {data_indicator}, Action: {action}")
 		if data_indicator == "bike":
 			return self.bike.perform_action(action)
 		

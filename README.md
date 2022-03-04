@@ -1,10 +1,10 @@
 # Sustainable City Management
 ASE project - 
 To Run the project execute following commands in sequence - 
-1. Run the eureka/discovery service - <br>
-   Run from main project directory  - <b> cd eurekaserver </b><br>
-   <b> mvn clean package </b> <br>
-   <b> java -jar target/eurekaserver-0.0.1-SNAPSHOT.jar </b><br>
+1. Eureka (Discovery Service)
+   <br> From the main project directory: `cd eurekaserver`
+   <br>`mvn clean package`
+   <br>`java -jar target/eurekaserver-0.0.1-SNAPSHOT.jar`
    
 2. Run utility/library project - <br>
    Run from main project directory - <b> cd utils </b><br>
@@ -25,10 +25,10 @@ To Run the project execute following commands in sequence -
    <b>mvn clean package</b><br>
    <b>java -jar target/real-time-data-processor-0.0.1-SNAPSHOT.jar</b><br>
 
-- For running the python microservice, initial setup is required first. 
-- <br> Run from the main project directory - 
-- <b> cd data-trends-predictions </b>
-- <br> <b> flask run </b>
+6. For running the python microservice, initial setup is required first. 
+   <br> Run from the main project directory - 
+   <b> cd data-trends-predictions </b>
+   <b> flask run </b>
    
 ## Docker Configurarions
 #### To Run the project with docker run following commands in a sequence: <br>
@@ -44,7 +44,7 @@ To Run the project execute following commands in sequence -
 #### To see logs of the service container - <br>
 `docker-compose logs <service_name>/<container_name>`
 
-```Installing and Running Kafka & Zookeeper ```<br>
+### Installing and Running Kafka & Zookeeper<br>
 Links for installation: <br>
 MAC: [https://hevodata.com/learn/install-kafka-on-mac/](url)<br>
 Windows: [https://www.goavega.com/install-apache-kafka-on-windows/](url)<br>
@@ -52,11 +52,11 @@ Windows: [https://www.goavega.com/install-apache-kafka-on-windows/](url)<br>
 Follow instructions in links to install and run zookeeper and kafka <br>
 Install Scala 2.13 Binary in Kafka downloads page <br>
 
-For example, on mac you navigate to the kafka directory (e.g. cd kafka_2.13-3.0.0) and run the following in separate terminals:
+For example, on mac you navigate to the kafka directory (e.g. `cd kafka_2.13-3.0.0`) and run the following in separate terminals:
 
-bin/zookeeper-server-start.sh config/zookeeper.properties
+`bin/zookeeper-server-start.sh config/zookeeper.properties`
 
-bin/kafka-server-start.sh config/server.properties
+`bin/kafka-server-start.sh config/server.properties`
 
 With Zookeeper and Kafka running the real-time-data-processor project should work
 
