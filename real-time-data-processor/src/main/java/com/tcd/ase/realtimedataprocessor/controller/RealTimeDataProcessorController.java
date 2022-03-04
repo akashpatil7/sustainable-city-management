@@ -2,8 +2,11 @@ package com.tcd.ase.realtimedataprocessor.controller;
 
 import com.tcd.ase.realtimedataprocessor.entity.DublinBusHistorical;
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import com.tcd.ase.realtimedataprocessor.service.AqiService;
+import com.tcd.ase.realtimedataprocessor.service.PedestrianService;
 import com.tcd.ase.realtimedataprocessor.service.DublinBikeService;
 
 import com.tcd.ase.realtimedataprocessor.service.DublinBusService;
@@ -33,6 +36,12 @@ public class RealTimeDataProcessorController {
 
     @Autowired
     AqiService aqiService;
+    
+    @Autowired
+    PedestrianService pedestrianService;
+    
+    @Autowired
+    Flux<PedestrianCount[]> pedestrianFlux;
 
     @Autowired
     @Qualifier("dublinBusFlux")
@@ -44,6 +53,8 @@ public class RealTimeDataProcessorController {
             bikeService.processRealTimeDataForDublinBikes();
         if(dataIndicator.equals("aqi"))
             aqiService.processRealTimeDataForAqi();
+        if(dataIndicator.equals("pedestrian"))
+            pedestrianService.processRealTimeDataForPedestrian();
     }
 
     @GetMapping(value = "/getRealTimeDataForBike", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -59,6 +70,11 @@ public class RealTimeDataProcessorController {
     @GetMapping(value = "/getRealTimeDataForAqi", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Aqi[]> streamRealTimeDataForAqi() {
         return aqiFlux;
+    }
+    
+    @GetMapping(value = "/getRealTimeDataForPedestrian", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<PedestrianCount[]> streamRealTimeDataForPedestrian() {
+        return pedestrianFlux;
     }
 
 }

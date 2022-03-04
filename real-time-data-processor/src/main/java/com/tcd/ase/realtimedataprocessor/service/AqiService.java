@@ -13,8 +13,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -29,7 +27,7 @@ public class AqiService {
 
     private static final Logger log = LogManager.getLogger(AqiProducer.class);
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {
         Aqi[] aqi = getAqiDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.AQI.getTopic(), aqi);
