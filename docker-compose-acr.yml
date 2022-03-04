@@ -6,7 +6,7 @@ services:
     image: scmcontainer.azurecr.io/eurekaserver
     mem_limit: 350m
     networks:
-      - my-network
+      - mynetwork
     environment:
     - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
     ports:
@@ -17,7 +17,7 @@ services:
     image: scmcontainer.azurecr.io/user-service
     mem_limit: 350m
     networks:
-      - my-network
+      - mynetwork
     ports:
       - "7001:8080"
     volumes:
@@ -32,7 +32,7 @@ services:
       - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
     build: gateway
     networks:
-      - my-network
+      - mynetwork
     image: scmcontainer.azurecr.io/gateway
     mem_limit: 350m
     ports:
@@ -42,7 +42,7 @@ services:
     build: data-trends-predictions
     image: scmcontainer.azurecr.io/data-trends-predictions
     networks:
-      - my-network
+      - mynetwork
     mem_limit: 350m
     ports:
       - "7002:8080"
@@ -52,7 +52,7 @@ services:
     image: scmcontainer.azurecr.io/real-time-data-processor
     mem_limit: 350m
     networks:
-      - my-network
+      - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -64,7 +64,7 @@ services:
     image: wurstmeister/kafka:2.13-2.8.1
     mem_limit: 350m
     networks:
-      - my-network
+      - mynetwork
     ports:
       - "9092:9092"
     environment:
@@ -78,12 +78,12 @@ services:
     image: wurstmeister/zookeeper:3.4.6
     mem_limit: 350m
     networks:
-      - my-network
+      - mynetwork
     ports:
       - "2181:2181"
     environment:
       - KAFKA_ADVERTISED_HOST_NAME=zookeeper
 
   networks:
-    my-network:
-       name: my-network
+    mynetwork:
+       name: mynetwork
