@@ -5,9 +5,10 @@ import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
 import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +18,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 
 @Service
+@Log4j2
 public class DublinBikeService {
 
     @Autowired
@@ -24,8 +26,6 @@ public class DublinBikeService {
 
     @Autowired
     DublinBikesRepository dublinBikesRepository;
-
-    private static final Logger log = LogManager.getLogger(DublinBikesProducer.class);
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
