@@ -54,7 +54,7 @@ services:
     networks:
       - my-network
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,kafka
+      - SPRING_PROFILES_ACTIVE=docker
     ports:
       - "8005:8080"
     depends_on:
