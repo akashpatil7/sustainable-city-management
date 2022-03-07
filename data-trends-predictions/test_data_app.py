@@ -3,7 +3,13 @@ from src.app import create_app
 from src.resources.trends.bike import EndPointMethods as BikeTrendsEndPoints
 
 @pytest.fixture
-def client():
+def client(monkeypatch):
+	monkeypatch.setenv('FLASK_RUN_PORT', '8050')
+	monkeypatch.setenv('DB_CONNECTION_STRING', 'mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard')
+	monkeypatch.setenv('DB_NAME', 'city_dashboard')
+	monkeypatch.setenv('EUREKA_SERVER_HOST', 'localhost')
+	monkeypatch.setenv('EUREKA_REGISTERED_APP_NAME', 'trends')
+
 	client = create_app().test_client()
 	yield client
 
