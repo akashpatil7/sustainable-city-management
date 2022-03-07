@@ -1,6 +1,9 @@
 from os import environ
 
 DB_CONNECTION_STRING = environ.get('DB_CONNECTION_STRING')
-FLASK_RUN_PORT = environ.get('FLASK_RUN_PORT')
+DB_NAME = environ.get('DB_NAME')
+
+FLASK_RUN_PORT = int(environ.get('FLASK_RUN_PORT'))
 EUREKA_SERVER_HOST = environ.get('EUREKA_SERVER_HOST')
 EUREKA_REGISTERED_APP_NAME = environ.get('EUREKA_REGISTERED_APP_NAME')
+EUREKA_SERVER_NAME = f'http://{EUREKA_SERVER_HOST}:8761/eureka'

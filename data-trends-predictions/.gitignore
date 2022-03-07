@@ -1,3 +1,4 @@
 /flask-microservice
 /test-py
 **/__pycache__/ 
+**.pyc
