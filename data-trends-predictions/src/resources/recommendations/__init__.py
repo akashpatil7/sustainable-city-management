@@ -3,8 +3,8 @@ from .bike import Bike
 
 class Recommendations(Resource):
 	def __init__(self, **kwargs):
-		self.client = kwargs['client']
-		self.bike = Bike(self.client)
+		self.db = kwargs['db']
+		self.bike = Bike(self.db)
 	
 	def get(self, data_indicator, action):
 		return self.bike.perform_action(action)
