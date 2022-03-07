@@ -3,8 +3,7 @@ from src.app import create_app
 from src.resources.trends.bike import EndPointMethods as BikeTrendsEndPoints
 
 @pytest.fixture
-def client(monkeypatch):
-	monkeypatch.setenv('FLASK_RUN_PORT', '8050')
+def client():
 	client = create_app().test_client()
 	yield client
 
