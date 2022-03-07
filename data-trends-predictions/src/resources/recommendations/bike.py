@@ -16,7 +16,7 @@ class Bike():
 			print("[Bike Recommendations] EndPoint not found")
 		except AttributeError:
 			print("[Bike Recommendations] EndPoint cannot be resolved")
-		return "Recommendations bike: " + action + " not found"
+		return Response.not_found_404("Recommendations bike: " + action + " not found")
 
 	def get_recommendations(self):
 		print("[Bike Recommendations] Get")
@@ -57,7 +57,7 @@ class Bike():
 			'mostAvailableBikeStationData':
 			most_available_bike_station_data
 		}
-		return Response.send_json_response_200(data)
+		return Response.send_json_200(data)
 		
 		# make_response(dumps({
 		# 	'mostEmptyBikeStationData':

@@ -2,7 +2,7 @@ from datetime import datetime
 from src.common.response import Response
 from enum import Enum
 
-class End_Point_Methods(Enum):
+class EndPointMethods(Enum):
 	getCurrentHourAverages = "get_current_hour_averages"
 	getHourlyAverageForAllStation = "get_hourly_average_for_all_station"
 	getPopularityAverageHistorical = "get_popularity_average_historical"
@@ -16,12 +16,12 @@ class Bike():
 
 	def perform_action(self, action):
 		try:
-			return getattr(self, End_Point_Methods[action].value)()
+			return getattr(self, EndPointMethods[action].value)()
 		except KeyError:
 			print("[Bike Trends] EndPoint not found")
 		except AttributeError:
 			print("[Bike Trends] EndPoint cannot be resolved")
-		return "trends bike: " + action + " not found"
+		return Response.not_found_404("trends bike: " + action + " not found")
 
 
 	def get_current_hour_averages(self):
@@ -31,7 +31,7 @@ class Bike():
 		print("Filter: ", hour_filter)
 
 		data = self.db.get_view("Bike_AvgHourlyAvailability", hour_filter)
-		return Response.send_json_response_200(data)
+		return Response.send_json_200(data)
 
 
 	def get_hourly_average_for_all_station(self):
@@ -51,4 +51,4 @@ class Bike():
 
 	def fetch_view_send_response(self, collection_name):
 		data = self.db.get_view(collection_name)
-		return Response.send_json_response_200(data)
+		return Response.send_json_200(data)
