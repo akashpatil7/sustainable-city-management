@@ -1,9 +1,10 @@
+import imp
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
-from pymongo import MongoClient
 import py_eureka_client.eureka_client as eureka_client
 
+from src.common.database import Database
 from src.resources.trends import Trends
 from src.resources.recommendations import Recommendations
 
@@ -13,11 +14,11 @@ app = Flask(__name__)
 # INIT Configs
 app.config.from_pyfile('settings.py')
 DB_CONNECTION_STRING = app.config.get('DB_CONNECTION_STRING')
-FLASK_RUN_PORT = int(app.config.get('FLASK_RUN_PORT'))
+DB_NAME = app.config.get('DB_NAME')
+FLASK_RUN_PORT = app.config.get('FLASK_RUN_PORT')
 EUREKA_SERVER_HOST = app.config.get('EUREKA_SERVER_HOST')
 EUREKA_REGISTERED_APP_NAME = app.config.get('EUREKA_REGISTERED_APP_NAME')
-
-EUREKA_SERVER_NAME = f'http://{EUREKA_SERVER_HOST}:8761/eureka'
+EUREKA_SERVER_NAME = app.config.get('EUREKA_SERVER_NAME')
 print(f'FLASK_RUN_PORT: {FLASK_RUN_PORT}\nEUREKA_REGISTERED_APP_NAME: {EUREKA_REGISTERED_APP_NAME}\nEUREKA_SERVER_NAME: {EUREKA_SERVER_NAME}')
 
 # INIT Eureka Client
@@ -33,10 +34,10 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 # INIT RESTFul API 
 api = Api(app, catch_all_404s=True)
 
-# INIT MongoClient 
-client = MongoClient(DB_CONNECTION_STRING)
-client_as_args = {'client': client}
+# INIT DB Object
+db = Database(connection_string = DB_CONNECTION_STRING, database = DB_NAME)
 
 # ADD Routes
-api.add_resource(Trends, '/trends/<string:data_indicator>/<string:action>', resource_class_kwargs=client_as_args)
-api.add_resource(Recommendations, '/recommendations/<string:data_indicator>/<string:action>', resource_class_kwargs=client_as_args)
+route_args = {'db': db}
+api.add_resource(Trends, '/trends/<string:data_indicator>/<string:action>', resource_class_kwargs=route_args)
+api.add_resource(Recommendations, '/recommendations/<string:data_indicator>/<string:action>', resource_class_kwargs=route_args)
