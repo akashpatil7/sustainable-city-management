@@ -24,7 +24,6 @@ class Aqi():
     def get_recommendations(self):
         print("[Aqi Recommendations] Get")
         aqi = self.db.get_collection("Aqi")
-        print(aqi)
 
         lowest_aqi_station_data = list(
             aqi.find({}, {
@@ -49,5 +48,4 @@ class Aqi():
             'highestAqiStationData': lowest_aqi_station_data,
             'lowestAqiStationData': highest_aqi_station_data
         }
-        print(data)
         return Response.send_json_200(data)
