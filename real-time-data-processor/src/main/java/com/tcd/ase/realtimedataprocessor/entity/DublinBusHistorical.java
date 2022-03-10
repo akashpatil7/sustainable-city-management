@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Document("DBus_Historical")
+@Document("DBus_Historical_Test1")
 @Getter
 @Setter
 @Builder()
@@ -110,7 +110,11 @@ public class DublinBusHistorical {
 
         public DublinBusHistoricalBuilder with_CreationDate() {
             this._creationDate = new Date().toString();
-            this._lastModifiedDate = this._creationDate;
+            return this;
+        }
+
+        public DublinBusHistoricalBuilder with_LastModifiedDate() {
+            this._lastModifiedDate = null;
             return this;
         }
 
