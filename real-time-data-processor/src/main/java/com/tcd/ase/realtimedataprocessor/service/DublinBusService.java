@@ -59,7 +59,7 @@ public class DublinBusService {
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical);
+        //dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical);
         saveDataToDB(dublinBusHistorical);
     }
 
@@ -85,6 +85,10 @@ public class DublinBusService {
         // filter data for only DublinBus routes
         List<Entity> dublinBusEntities = filterByRoutes(dublinBusRouteIdsList, dublinBusResponseEntity);
 
+        System.out.println("Response Items: " + dublinBusResponseEntity.getBody().getEntity().size());
+        System.out.println("Dublin Bus Routes: " + dublinBusRouteIdsList.size());
+        System.out.println("After filtering, Dublin Bus Entities: " + dublinBusEntities.size());
+
         // build new entities with mapped data for stops and routes
         List<DublinBusHistorical> updatedDublinBusEntities = buildDublinBusEntities(dublinBusEntities);
         return updatedDublinBusEntities;
@@ -92,6 +96,7 @@ public class DublinBusService {
 
     private List<Entity> filterByRoutes(Set<String> dublinBusRouteIdsList, ResponseEntity<DublinBus> dublinBusResponseEntity) {
         // filter API response data for dublin bus agency only
+
         return dublinBusResponseEntity.getBody().getEntity().stream()
                 .filter(x -> dublinBusRouteIdsList.contains(x.getTripUpdate().getTrip().getRouteId()))
                 .collect(Collectors.toList());
@@ -118,6 +123,7 @@ public class DublinBusService {
                         .withScheduleRelationship(currentTrip.getScheduleRelationship())
                         .withStopSequence(updatedStopSequence)
                         .with_CreationDate()
+                        .with_LastModifiedDate()
                         .build();
 
                 updatedDublinBusEntities.add(updatedDublinBusEntity);
@@ -150,13 +156,16 @@ public class DublinBusService {
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
 
             DublinBusHistorical dublinBusHistoricalFromDB =
-                    dublinBusHistoricalRepository.findFirstByRouteIdAndTripId(
+                    dublinBusHistoricalRepository.findFirstByRouteIdAndTripIdAndStartTimestamp(
                             dublinBus.getRouteId(),
-                            dublinBus.getTripId())
+                            dublinBus.getTripId(),
+                            dublinBus.getStartTimestamp())
                             .orElse(null);
 
-            if (dublinBusHistoricalFromDB != null)
+            if (dublinBusHistoricalFromDB != null) {
                 dublinBus.set_creationDate(dublinBusHistoricalFromDB.get_creationDate());
+                dublinBus.set_lastModifiedDate(new Date().toString());
+            }
 
             dublinBusHistoricalRepository.save(dublinBus);
         }

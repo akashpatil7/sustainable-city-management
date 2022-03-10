@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface DublinBusHistoricalRepository extends MongoRepository<DublinBusHistorical, String> {
 
-    Optional<DublinBusHistorical> findFirstByRouteIdAndTripId(String routeId, String tripId);
+    Optional<DublinBusHistorical> findFirstByRouteIdAndTripIdAndStartTimestamp(String routeId, String tripId, Long timeStamp);
 
 }
