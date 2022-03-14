@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Document("DBus_Historical")
+@Document("DBus_Historical_Test")
 @Getter
 @Setter
 @Builder()
