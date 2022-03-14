@@ -1,4 +1,4 @@
-from src.common.Rresponse import Response
+from src.common.response import Response
 from enum import Enum
 
 class EndPointMethods(Enum):
