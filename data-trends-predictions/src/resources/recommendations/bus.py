@@ -1,5 +1,6 @@
 import datetime
 import queue
+from tabnanny import check
 import time
 from src.common.response import Response
 from enum import Enum
@@ -44,7 +45,7 @@ class Bus():
                     'routeLong': True,
                     'stopSequence': True,
                 }).sort([
-                    ("routeLong", -1),
+                    ("startTimestamp", -1), ("routeLong", -1)
                 ]))
 
         def get_avg_delay(bus):
@@ -55,8 +56,13 @@ class Bus():
                 index+=1
             return total_delay / index
             
-        most_delayed = queue.PriorityQueue()
+        most_delayed = queue.PriorityQueue(maxsize=5)
+        checked_buses = {}
         for bus in buses:
+            if bus["routeLong"] in checked_buses:
+                continue
+            route = bus["routeLong"]
+            checked_buses[route] = 1
             avg_delay = get_avg_delay(bus)
             if most_delayed.full():
                 delay, _ = most_delayed.queue[0]
