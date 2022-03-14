@@ -20,4 +20,4 @@ class Recommendations(Resource):
 		if data_indicator == 'pedestrian':
 			return self.pedestrian.perform_action(action)
 		if data_indicator == 'bus':
-    			return self.bus.perform_action(action)
+			return self.bus.perform_action(action)
