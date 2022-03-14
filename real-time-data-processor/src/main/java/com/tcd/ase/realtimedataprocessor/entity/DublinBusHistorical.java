@@ -14,7 +14,6 @@ import java.util.Date;
 @Setter
 @Builder()
 public class DublinBusHistorical {
-
      @Id
      private String tripId;
      private String routeId;
@@ -110,7 +109,6 @@ public class DublinBusHistorical {
 
         public DublinBusHistoricalBuilder with_CreationDate() {
             this._creationDate = new Date().toString();
-            this._lastModifiedDate = this._creationDate;
             return this;
         }
 
