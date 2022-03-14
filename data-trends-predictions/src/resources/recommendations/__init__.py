@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from .bike import Bike
 from .aqi import Aqi
-from .pedistrian import Pedestrian
+from .pedestrian import Pedestrian
 from .bus import Bus
 
 class Recommendations(Resource):
