@@ -64,7 +64,7 @@ class Bike():
 	def get_bike_pedestrian_recommendations(self):
 		print("[Bike-Pedestrian Recommendations] Get")
 		dublin_bikes = self.db.get_collection("Dublin_Bikes")
-		pedestrian = self.db.get_collection("Pedestrian")
+		ped = self.db.get_collection("Pedestrian")
 
 		# get 5 most filled stations
 		most_available_bike_station_data = list(
