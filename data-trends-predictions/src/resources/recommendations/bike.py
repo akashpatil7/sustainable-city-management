@@ -61,9 +61,10 @@ class Bike():
 		return Response.send_json_200(data)
 
 	def get_bike_pedestrian_recommendations(self):
+		
 		print("[Bike-Pedestrian Recommendations] Get")
 		dublin_bikes = self.db.get_collection("Dublin_Bikes")
-		ped = self.db.get_collection("Pedestrian")
+		pedestrian = self.db.get_collection("Pedestrian")
 
 		# get 5 most filled stations
 		most_available_bike_station_data = list(
@@ -107,12 +108,12 @@ class Bike():
 			if not closestBikeStand is None:
 				move_bikes_from.append(stand)
 				move_bikes_to.append(ped)
-				
+			
 		data = {
 			'moveBikesFrom':
 			move_bikes_from,
 			'moveBikesTo':
 			move_bikes_to
 		}
-
+		
 		return Response.send_json_200(data)
