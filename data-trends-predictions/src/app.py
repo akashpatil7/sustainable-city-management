@@ -6,7 +6,6 @@ from src.common.database import Database
 from src.resources.recommendations import Recommendations
 from src.resources.trends import Trends
 
-
 def create_app():
 	# INIT Flask App
 	app = Flask(__name__)
@@ -45,5 +44,7 @@ def create_app():
 	api.add_resource(Trends,
 					 '/trends/<string:data_indicator>/<string:action>',
 					 resource_class_kwargs=route_args)
+					 
+	print("url map",app.url_map)
 
 	return app

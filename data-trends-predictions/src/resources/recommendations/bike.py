@@ -14,8 +14,6 @@ class Bike():
 	def perform_action(self, action):
 		try:
 			return getattr(self, EndPointMethods[action].value)()
-		except KeyError:
-			print("[Bike Recommendations] EndPoint not found")
 		except AttributeError:
 			print("[Bike Recommendations] EndPoint cannot be resolved")
 		return Response.not_found_404("Recommendations bike: " + action + " not found")
@@ -59,6 +57,7 @@ class Bike():
 			'mostAvailableBikeStationData':
 			most_available_bike_station_data
 		}
+
 		return Response.send_json_200(data)
 
 	def get_bike_pedestrian_recommendations(self):
@@ -74,47 +73,46 @@ class Bike():
 				'availableBikeStands': True,
 				'bikeStands': True,
 				'availableBikes': True,
-				'_id': False
+				'_id': False,
+				'latitude': True,
+				'longitude': True
 			}).sort([("harvestTime", -1),
-						("availableBikeStands", -1)]).limit(5))
+						("availableBikes", -1)]).limit(5))
 		
 		# get 5 most busy areas
 		highest_count_pedestrian_data = list(
-			ped.find({}, {
+			pedestrian.find({}, {
 				'count': True,
 				'street': True,
+				'streetLatitude': True,
+				'streetLongitude': True
 			}).sort([("count", 1)]).limit(5))
-		
+
 		# for each busy area, calculuate the closest bike station that is full
 		# recommend sending bikes from closest fullest station to this area	
 		move_bikes_from = []
 		move_bikes_to = []
 		
 		for ped in highest_count_pedestrian_data:
+			
 			closestBikeStandDistance = float('inf');
 			closestBikeStand = None
 
 			for stand in most_available_bike_station_data:
-				distance = math.sqrt((stand['latitude'] - ped['streetLatitude']) ** 2 + (stand['longitude'] - ped['streetLongitude']) ** 2);
+				distance = math.sqrt((float(stand['latitude']) - float(ped['streetLatitude'])) ** 2 + (float(stand['longitude']) - float(ped['streetLongitude'])) ** 2);
 				if distance < closestBikeStandDistance and stand not in move_bikes_from:
 					closestBikeStandDistance = distance
 					closestBikeStand = stand
 			
-			if not stand is None:
+			if not closestBikeStand is None:
 				move_bikes_from.append(stand)
 				move_bikes_to.append(ped)
-
+				
 		data = {
 			'moveBikesFrom':
 			move_bikes_from,
 			'moveBikesTo':
 			move_bikes_to
 		}
+
 		return Response.send_json_200(data)
-		
-		# make_response(dumps({
-		# 	'mostEmptyBikeStationData':
-		# 	mostEmptyBikeStationData,
-		# 	'mostAvailableBikeStationData':
-		# 	mostAvailableBikeStationData
-		# }))
