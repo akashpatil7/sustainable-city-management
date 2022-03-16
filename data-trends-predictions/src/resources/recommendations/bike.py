@@ -89,7 +89,7 @@ class Bike():
 				'streetLatitude': True,
 				'streetLongitude': True,
 				'time': True
-			}).sort([("time", -1), ("count", 1)]).limit(5))
+			}).sort([("time", -1), ("count", -1)]).limit(5))
 
 		# for each busy area, calculuate the closest bike station that is full
 		# recommend sending bikes from closest fullest station to this area	
