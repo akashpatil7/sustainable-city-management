@@ -1,6 +1,7 @@
 from src.common.response import Response
 from enum import Enum
 import math
+import time
 
 class EndPointMethods(Enum):
 	getRecommendations = "get_recommendations"
@@ -63,7 +64,8 @@ class Bike():
 	def get_bike_pedestrian_recommendations(self):
 		print("[Bike-Pedestrian Recommendations] Get")
 		dublin_bikes = self.db.get_collection("Dublin_Bikes")
-		ped = self.db.get_collection("Pedestrian")
+		pedestrian = self.db.get_collection("Pedestrian")
+		yesterday = time.time() - 86400
 
 		# get 5 most filled stations
 		most_available_bike_station_data = list(
@@ -85,8 +87,9 @@ class Bike():
 				'count': True,
 				'street': True,
 				'streetLatitude': True,
-				'streetLongitude': True
-			}).sort([("count", 1)]).limit(5))
+				'streetLongitude': True,
+				'time': True
+			}).sort([("time", -1), ("count", -1)]).limit(5))
 
 		# for each busy area, calculuate the closest bike station that is full
 		# recommend sending bikes from closest fullest station to this area	
@@ -99,20 +102,21 @@ class Bike():
 			closestBikeStand = None
 
 			for stand in most_available_bike_station_data:
-				distance = math.sqrt((float(stand['latitude']) - float(ped['streetLatitude'])) ** 2 + (float(stand['longitude']) - float(ped['streetLongitude'])) ** 2);
+			
+				distance = math.sqrt((float(stand['latitude']) - float(ped['streetLatitude'])) ** 2 + (float(stand['longitude']) - float(ped['streetLongitude'])) ** 2)
 				if distance < closestBikeStandDistance and stand not in move_bikes_from:
 					closestBikeStandDistance = distance
 					closestBikeStand = stand
-			
+		
 			if not closestBikeStand is None:
-				move_bikes_from.append(stand)
+				move_bikes_from.append(closestBikeStand)
 				move_bikes_to.append(ped)
-				
+			
 		data = {
 			'moveBikesFrom':
 			move_bikes_from,
 			'moveBikesTo':
 			move_bikes_to
 		}
-
+		
 		return Response.send_json_200(data)
