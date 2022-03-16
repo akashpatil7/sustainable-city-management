@@ -34,7 +34,10 @@ class Aqi():
                 'longitude': True,
             }).sort([
                 ("aqi", -1),
-            ]).limit(5))
+            ]))
+        lowest_aqi_station_data = list(filter(lambda x: x["aqi"] != "-", lowest_aqi_station_data))
+        lowest_aqi_station_data.sort(key=lambda x: int(x["aqi"]))
+        lowest_aqi_station_data = lowest_aqi_station_data[0:5]
 
         highest_aqi_station_data = list(
             aqi.find({}, {
@@ -42,7 +45,11 @@ class Aqi():
                 'stationName': True,
             }).sort([
                 ("aqi", 1),
-            ]).limit(5))
+            ]))
+            
+        highest_aqi_station_data = list(filter(lambda x: x["aqi"] != "-", highest_aqi_station_data))
+        highest_aqi_station_data.sort(key=lambda x: int(x["aqi"]), reverse=True)
+        highest_aqi_station_data = highest_aqi_station_data[0:5]
 
         data = {
             'highestAqiStationData': lowest_aqi_station_data,

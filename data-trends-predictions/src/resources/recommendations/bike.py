@@ -81,7 +81,7 @@ class Bike():
 		
 		# get 5 most busy areas
 		highest_count_pedestrian_data = list(
-			pedestrian.find({}, {
+			ped.find({}, {
 				'count': True,
 				'street': True,
 				'streetLatitude': True,
