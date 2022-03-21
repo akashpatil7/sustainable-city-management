@@ -1,5 +1,6 @@
 from src.common.response import Response
 from enum import Enum
+from src.utils import top_aqi_locations
 
 
 class EndPointMethods(Enum):
@@ -33,26 +34,23 @@ class Aqi():
                 'latitude': True,
                 'longitude': True,
             }).sort([
-                ("aqi", -1),
+                ("aqi", 1),
             ]))
-        lowest_aqi_station_data = list(filter(lambda x: x["aqi"] != "-", lowest_aqi_station_data))
-        lowest_aqi_station_data.sort(key=lambda x: int(x["aqi"]))
-        lowest_aqi_station_data = lowest_aqi_station_data[0:5]
+        lowest_aqi_station_data = top_aqi_locations(lowest_aqi_station_data, 5,
+                                                    False)
 
         highest_aqi_station_data = list(
             aqi.find({}, {
                 'aqi': True,
                 'stationName': True,
             }).sort([
-                ("aqi", 1),
+                ("aqi", -1),
             ]))
-            
-        highest_aqi_station_data = list(filter(lambda x: x["aqi"] != "-", highest_aqi_station_data))
-        highest_aqi_station_data.sort(key=lambda x: int(x["aqi"]), reverse=True)
-        highest_aqi_station_data = highest_aqi_station_data[0:5]
 
+        highest_aqi_station_data = top_aqi_locations(highest_aqi_station_data,
+                                                     5, True)
         data = {
-            'highestAqiStationData': lowest_aqi_station_data,
-            'lowestAqiStationData': highest_aqi_station_data
+            'highestAqiStationData': highest_aqi_station_data,
+            'lowestAqiStationData': lowest_aqi_station_data
         }
         return Response.send_json_200(data)
