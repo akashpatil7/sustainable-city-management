@@ -6,32 +6,27 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Document("DBus_Historical")
+@Document("DBus_Historical_Test")
 @Getter
 @Setter
 @Builder()
 public class DublinBusHistorical {
-
      @Id
      private String tripId;
      private String routeId;
      private String routeShort;
      private String routeLong;
-     private String startTimestamp;
+     private Long startTimestamp;
      private String scheduleRelationship;
      private ArrayList<DublinBusHistoricalStopSequence> stopSequence;
      private String _creationDate;
      private String _lastModifiedDate;
 
     public DublinBusHistorical() {
-    }
 
-    public void setUpdateTime() {
-        this._lastModifiedDate = new SimpleDateFormat("yyyyMMddHH:mm:ss").format(new Date().getTime());
     }
 
     public DublinBusHistorical(DublinBusHistoricalBuilder dublinBusHistoricalBuilder) {
@@ -53,9 +48,11 @@ public class DublinBusHistorical {
                 ", routeId='" + routeId + '\'' +
                 ", routeShort='" + routeShort + '\'' +
                 ", routeLong='" + routeLong + '\'' +
-                ", startTimestamp='" + startTimestamp + '\'' +
+                ", startTimestamp=" + startTimestamp +
                 ", scheduleRelationship='" + scheduleRelationship + '\'' +
                 ", stopSequence=" + stopSequence +
+                ", _creationDate='" + _creationDate + '\'' +
+                ", _lastModifiedDate='" + _lastModifiedDate + '\'' +
                 '}';
     }
 
@@ -65,13 +62,14 @@ public class DublinBusHistorical {
         private String routeId;
         private String routeShort;
         private String routeLong;
-        private String startTimestamp;
+        private Long startTimestamp;
         private String scheduleRelationship;
         private ArrayList<DublinBusHistoricalStopSequence> stopSequence;
         private String _creationDate;
         private String _lastModifiedDate;
 
         public DublinBusHistoricalBuilder() {
+
         }
 
         public DublinBusHistoricalBuilder withTripId(String tripId) {
@@ -94,7 +92,7 @@ public class DublinBusHistorical {
             return this;
         }
 
-        public DublinBusHistoricalBuilder withStartTimestamp(String startTimestamp) {
+        public DublinBusHistoricalBuilder withStartTimestamp(Long startTimestamp) {
             this.startTimestamp = startTimestamp;
             return this;
         }
@@ -110,8 +108,7 @@ public class DublinBusHistorical {
         }
 
         public DublinBusHistoricalBuilder with_CreationDate() {
-            this._creationDate = new SimpleDateFormat("yyyyMMddHH:mm:ss").format(new Date().getTime());
-            this._lastModifiedDate = this._creationDate;
+            this._creationDate = new Date().toString();
             return this;
         }
 

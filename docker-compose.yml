@@ -34,7 +34,17 @@ services:
     mem_limit: 350m
     ports:
       - "8050:8050"
-
+      
+  external-data:
+    build: external_data
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8004:8080"
+    depends_on:
+      - kafka
+      
   real-time-data-processor:
     build: real-time-data-processor
     mem_limit: 350m

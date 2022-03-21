@@ -20,15 +20,15 @@ public class DublinBusHistoricalStopSequence {
     public DublinBusHistoricalStopSequence() {
     }
 
-    public DublinBusHistoricalStopSequence(DublinBusHistoricalStopSequenceBuilder dublinBusHistoricalStopSequenceBuilder) {
-        this.stopSequence = dublinBusHistoricalStopSequenceBuilder.stopSequence;
-        this.stopId = dublinBusHistoricalStopSequenceBuilder.stopId;
-        this.stopName = dublinBusHistoricalStopSequenceBuilder.stopName;
-        this.departureDelay = dublinBusHistoricalStopSequenceBuilder.departureDelay;
-        this.arrivalDelay = dublinBusHistoricalStopSequenceBuilder.arrivalDelay;
-        this.scheduleRelationship = dublinBusHistoricalStopSequenceBuilder.scheduleRelationship;
-        this.stopLat = dublinBusHistoricalStopSequenceBuilder.stopLat;
-        this.stopLon = dublinBusHistoricalStopSequenceBuilder.stopLon;
+    public DublinBusHistoricalStopSequence(DublinBusHistoricalStopSequenceBuilder dublinBusStopsBuilder) {
+        this.stopSequence = dublinBusStopsBuilder.stopSequence;
+        this.stopId = dublinBusStopsBuilder.stopId;
+        this.stopName = dublinBusStopsBuilder.stopName;
+        this.departureDelay = dublinBusStopsBuilder.departureDelay;
+        this.arrivalDelay = dublinBusStopsBuilder.arrivalDelay;
+        this.scheduleRelationship = dublinBusStopsBuilder.scheduleRelationship;
+        this.stopLat = dublinBusStopsBuilder.stopLat;
+        this.stopLon = dublinBusStopsBuilder.stopLon;
     }
 
     @Override
@@ -100,7 +100,8 @@ public class DublinBusHistoricalStopSequence {
         }
 
         public DublinBusHistoricalStopSequence build() {
-            return new DublinBusHistoricalStopSequence(this);
+            DublinBusHistoricalStopSequence dublinBusHistoricalStopSequence = new DublinBusHistoricalStopSequence(this);
+            return dublinBusHistoricalStopSequence;
         }
     }
 }

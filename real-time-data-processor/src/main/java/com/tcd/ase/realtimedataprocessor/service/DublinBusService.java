@@ -146,7 +146,6 @@ public class DublinBusService {
     }
 
     private void saveDataToDB(List<DublinBusHistorical> dublinBusEntities) {
-
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
 
             DublinBusHistorical dublinBusHistoricalFromDB =
@@ -160,8 +159,11 @@ public class DublinBusService {
                 dublinBus.set_creationDate(dublinBusHistoricalFromDB.get_creationDate());
                 dublinBus.set_lastModifiedDate(new Date().toString());
             }
+            
+            dublinBusHistoricalFromDB.getStopSequence().size();
 
             dublinBusHistoricalRepository.save(dublinBus);
+            dublinBusHistoricalRepository.findAllById(null);
         }
     }
 
