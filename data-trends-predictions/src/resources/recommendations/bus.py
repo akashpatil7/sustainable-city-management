@@ -1,8 +1,7 @@
-import queue
 import time
 from src.common.response import Response
 from enum import Enum
-from src.utils import get_most_polluted, get_highest_aqi, get_avg_delay
+from src.utils import get_most_polluted, top_aqi_locations, most_delayed_buses
 
 
 class EndPointMethods(Enum):
@@ -44,24 +43,19 @@ class Bus():
                     'stopLon': True,
                 }).sort([("startTimestamp", -1), ("routeLong", -1)]))
 
-        most_delayed = queue.PriorityQueue(maxsize=5)
-        checked_buses = {}
-        for bus in buses:
-            if bus["routeLong"] in checked_buses:
-                continue
-            route = bus["routeLong"]
-            checked_buses[route] = 1
-            avg_delay = get_avg_delay(bus)
-            if most_delayed.full():
-                delay, _ = most_delayed.queue[0]
-                if delay < avg_delay:
-                    most_delayed.get()
-                    most_delayed.put((avg_delay, bus["routeLong"]))
-            else:
-                most_delayed.put((avg_delay, bus["routeLong"]))
 
-        most_delayed = most_delayed.queue
-        highest_aqi = get_highest_aqi(self.db)
+        most_delayed = most_delayed_buses(buses)
+        aqi = self.db.get_collection("Aqi")
+        highest_aqi_station = list(
+            aqi.find({}, {
+                'aqi': True,
+                'stationName': True,
+                'latitude': True,
+                'longitude': True,
+            }).sort([
+                ("aqi", -1),
+            ]))
+        highest_aqi = top_aqi_locations(highest_aqi_station, 5, True)
         most_polluted = get_most_polluted(buses, highest_aqi)
 
         data = {'mostDelayed': most_delayed, 'mostPolluted': most_polluted}
