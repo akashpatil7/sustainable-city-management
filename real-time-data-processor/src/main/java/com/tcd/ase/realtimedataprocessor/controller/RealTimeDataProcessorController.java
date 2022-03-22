@@ -5,11 +5,11 @@ import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
 import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
-import com.tcd.ase.realtimedataprocessor.service.AqiService;
-import com.tcd.ase.realtimedataprocessor.service.PedestrianService;
-import com.tcd.ase.realtimedataprocessor.service.DublinBikeService;
-
-import com.tcd.ase.realtimedataprocessor.service.DublinBusService;
+//import com.tcd.ase.realtimedataprocessor.service.AqiService;
+//import com.tcd.ase.realtimedataprocessor.service.PedestrianService;
+//import com.tcd.ase.realtimedataprocessor.service.DublinBikeService;
+//
+//import com.tcd.ase.realtimedataprocessor.service.DublinBusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -22,11 +22,11 @@ import java.util.List;
 @RestController
 public class RealTimeDataProcessorController {
 
-    @Autowired
-    DublinBikeService bikeService;
+//    @Autowired
+//    DublinBikeService bikeService;
 
-    @Autowired
-    DublinBusService dublinBusService;
+//    @Autowired
+//    DublinBusService dublinBusService;
 
     @Autowired
     Flux<DublinBike[]> bikeFlux;
@@ -34,11 +34,11 @@ public class RealTimeDataProcessorController {
     @Autowired
     Flux<Aqi[]> aqiFlux;
 
-    @Autowired
-    AqiService aqiService;
+//    @Autowired
+//    AqiService aqiService;
     
-    @Autowired
-    PedestrianService pedestrianService;
+//    @Autowired
+//    PedestrianService pedestrianService;
     
     @Autowired
     Flux<PedestrianCount[]> pedestrianFlux;
@@ -47,7 +47,7 @@ public class RealTimeDataProcessorController {
     @Qualifier("dublinBusFlux")
     Flux<List<DublinBusHistorical>> dublinBusFlux;
 
-    @GetMapping(value = "/realTimeData/{dataIndicator}")
+    /*@GetMapping(value = "/realTimeData/{dataIndicator}")
     public void sendDataToKakfaTopic(@PathVariable(value = "dataIndicator") final String dataIndicator) {
         if(dataIndicator.equals("bike"))
             bikeService.processRealTimeDataForDublinBikes();
@@ -55,7 +55,7 @@ public class RealTimeDataProcessorController {
             aqiService.processRealTimeDataForAqi();
         if(dataIndicator.equals("pedestrian"))
             pedestrianService.processRealTimeDataForPedestrian();
-    }
+    }*/
 
     @GetMapping(value = "/getRealTimeDataForBike", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<DublinBike[]> streamRealTimeBikeData() {
