@@ -61,8 +61,8 @@ public class DublinBusService {
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        dublinBusProducer.sendMessage(dublinBusTopic.name(), "Updated");
-        saveDataToDB(dublinBusHistorical);
+        if (saveDataToDB(dublinBusHistorical))
+            dublinBusProducer.sendMessage(dublinBusTopic.name(), "Updated");
     }
 
     public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
@@ -146,8 +146,9 @@ public class DublinBusService {
                 .get();
     }
 
-    private void saveDataToDB(List<DublinBusHistorical> dublinBusEntities) {
+    private boolean saveDataToDB(List<DublinBusHistorical> dublinBusEntities) {
 
+        boolean isUpdated = false;
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
 
             DublinBusHistorical dublinBusHistoricalFromDB =
@@ -158,12 +159,15 @@ public class DublinBusService {
 
             if (dublinBusHistoricalFromDB != null)
             {
+                if (dublinBusHistoricalFromDB.getStopSequence().size() < dublinBus.getStopSequence().size())
+                    isUpdated = true;
                 dublinBus.set_creationDate(dublinBusHistoricalFromDB.get_creationDate());
                 dublinBus.set_lastModifiedDate(new Date().toString());
             }
 
             dublinBusHistoricalRepository.save(dublinBus);
         }
+        return isUpdated;
     }
 
     private ArrayList<DublinBusHistoricalStopSequence> getUpdatedStopSequence(ArrayList<StopTimeUpdate> currentTripStopSequence) {
