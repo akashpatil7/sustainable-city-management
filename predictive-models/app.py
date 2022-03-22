@@ -15,10 +15,6 @@ client = MongoClient(eureka_db_string)
 eureka_db = client.city_dashboard
 eureka_collection = eureka_db.predictive_models
 
-# test local db
-db = client.test_database
-collection  = db.model_collection
-
 def save_pedestrian_model():
     ped_model = train_pedestrian_model(eureka_db)
     date = datetime.now()
@@ -43,14 +39,14 @@ def load_pedestrian_model():
     ped_model = eureka_collection.find_one({"indicator": "pedestrian"})
 
     pred = get_pedestrian_predictions(ped_model['model'])
-    return ' '.join(str(p) for p in pred)
+    return pred
 
 @app.route("/get_aqi_predictions", methods=['GET'])
 def load_aqi_model():
     aqi_model = eureka_collection.find_one({"indicator": "aqi"})
 
     pred = get_aqi_predictions(aqi_model['model'])
-    return ' '.join(str(p) for p in pred)
+    return pred
     
 
 if __name__ == "__main__":

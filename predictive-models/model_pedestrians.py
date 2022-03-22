@@ -1,6 +1,6 @@
+from collections import defaultdict
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.metrics import max_error
 from sklearn.linear_model import LinearRegression
 import pickle
 
@@ -44,8 +44,15 @@ def train_pedestrian_model(db):
 
 def get_pedestrian_predictions(model_):
     model = pickle.loads(model_)
-    pred = model.predict(x_test)
+    preds = model.predict(x_test)
 
-    print(max_error(y_test, pred))
-    return pred
+    predictions_ = defaultdict(dict)
+    
+    # assign the predictions to each location
+    for x, p in zip(x_test, preds):
+        index_of_loc = list(LOCATION_TO_ID.values()).index(x[0])
+        loc = list(LOCATION_TO_ID.keys())[index_of_loc]
+        predictions_[loc] = p   
+
+    return predictions_
 

@@ -1,8 +1,9 @@
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.metrics import max_error
 from sklearn.linear_model import LinearRegression
 import pickle
+from collections import defaultdict
+
 
 x_test, y_test = [], []
 
@@ -47,5 +48,12 @@ def get_aqi_predictions(model_):
     model = pickle.loads(model_)
     preds = model.predict(x_test)
 
-    print(max_error(y_test, preds))
-    return preds
+    predictions_ = defaultdict(dict)
+
+    # assign the predictions to each staion
+    for x, p in zip(x_test, preds):
+        index_of_loc = list(STATION_TO_ID.values()).index(x[0])
+        loc = list(STATION_TO_ID.keys())[index_of_loc]
+        predictions_[loc] = p
+
+    return predictions_
