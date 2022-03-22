@@ -45,7 +45,7 @@ def load_pedestrian_model():
 def load_aqi_model():
     aqi_model = eureka_collection.find_one({"indicator": "aqi"})
 
-    pred = get_aqi_predictions(aqi_model['model'])
+    pred = get_aqi_predictions(aqi_model['model'], eureka_db)
     return pred
     
 

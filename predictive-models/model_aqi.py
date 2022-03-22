@@ -3,9 +3,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 import pickle
 from collections import defaultdict
-
-
-x_test, y_test = [], []
+import time
 
 STATION_TO_ID = {'Marino, Dublin 3, Ireland': 1, 'Ballymun Library, Dublin 9, Ireland': 2, "St. Anne's Park, Dublin 5, Ireland": 3, 
 'Sandymount Green, Dublin 4, Ireland': 4, 'Amiens Street, Dublin 1, Ireland': 5, 'St. John’s Road, Kilmainham, Dublin 8, Ireland': 6, 
@@ -14,38 +12,60 @@ STATION_TO_ID = {'Marino, Dublin 3, Ireland': 1, 'Ballymun Library, Dublin 9, Ir
 'Dublin Port, Dublin 1, Ireland': 14, 'Finglas, Dublin 11, Ireland': 15, 'Rathmines, Ireland': 16, 'Lord Edward Street, Dublin 2, Ireland': 17, 
 'Walkinstown Library, Dublin 12, Ireland': 18}
 
-def train_aqi_model(db):
-    stations = []
-    aqi = []
-    epoch_time = []
+def get_testing_data_from_db(db):
+ # get testing data from db
+    locations = []
+    times = []
+    coll = db.Aqi
+    data = coll.find()
+    for doc in data:
+        locations.append(STATION_TO_ID[doc['stationName']])
+        times.append(int(doc['lastUpdatedTime']))
+    
+    x_test = np.column_stack((locations, times))
+    return x_test
 
+def get_testing_data_using_epoch():
+    epoch_times = []
+    for i in range(len(STATION_TO_ID.values())):
+        epoch_times.append(time.time())
+    
+    return np.column_stack((list(STATION_TO_ID.values()), epoch_times))
+
+
+def train_aqi_model(db):
     # get data from db
     collection = db.Aqi
     data = collection.find()
-    for doc in data:
-        if doc['aqi'] != '-':
-            stations.append(STATION_TO_ID[doc['stationName']])
-            aqi.append(int(doc['aqi']))
-            epoch_time.append(doc['lastUpdatedTime'])
+
+    if data != []:
+        stations = []
+        aqi = []
+        epoch_time = []
+        for doc in data:
+            if doc['aqi'] != '-':
+                stations.append(STATION_TO_ID[doc['stationName']])
+                aqi.append(int(doc['aqi']))
+                epoch_time.append(doc['lastUpdatedTime'])
+        
+        
+        X = np.column_stack((stations, epoch_time))
+        y = np.array(aqi)
+
+        # train model with x features being the station name and the time, and the y being the api
+        model = LinearRegression()
+        model.fit(X, y)
+
+        to_db = pickle.dumps(model)
+        return to_db
     
-    
-    X = np.column_stack((stations, epoch_time))
-    y_count = np.array(aqi)
+    else:
+        return None
 
-    # split into train/test datasets
-    global x_test
-    global y_test
-    x_train, x_test, y_train, y_test = train_test_split(X, y_count, train_size=0.75, shuffle=True)
-
-    # train model with x features being the station name and the time, and the y being the api
-    model = LinearRegression()
-    model.fit(x_train, y_train)
-
-    to_db = pickle.dumps(model)
-    return to_db
-
-def get_aqi_predictions(model_):
+def get_aqi_predictions(model_, db):
     model = pickle.loads(model_)
+
+    x_test = get_testing_data_using_epoch()
     preds = model.predict(x_test)
 
     predictions_ = defaultdict(dict)
