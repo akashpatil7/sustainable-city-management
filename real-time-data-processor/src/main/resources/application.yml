@@ -37,3 +37,9 @@ spring.profiles: docker
 app.eureka-server: eureka
 app.kafka-server: kafka
 server.port: 8080
+
+---
+spring.profiles: dev
+app.eureka-server: eureka
+app.kafka-server: 13.80.143.101
+server.port: 8080
