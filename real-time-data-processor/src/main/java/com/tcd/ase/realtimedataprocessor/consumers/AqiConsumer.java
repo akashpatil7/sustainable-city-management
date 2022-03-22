@@ -1,7 +1,6 @@
 package com.tcd.ase.realtimedataprocessor.consumers;
 
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
-import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ public class AqiConsumer {
     @Autowired
     private Sinks.Many<Aqi[]> aqiSink;
 
-    private static final Logger log = LogManager.getLogger(AqiProducer.class);
+    private static final Logger log = LogManager.getLogger(AqiConsumer.class);
     //private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @KafkaListener(topics = "aqi", groupId = "mygroup")

@@ -2,7 +2,7 @@ package com.tcd.ase.realtimedataprocessor.service;
 
 import com.tcd.ase.realtimedataprocessor.entity.DublinBikeDAO;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
-import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
+//import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
 //import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +26,8 @@ public class DublinBikeServiceTest {
     @Mock
     RestTemplate restTemplateMock;
 
-    @Mock
-    DublinBikesProducer producer;
+//    @Mock
+//    DublinBikesProducer producer;
 
     @Before
     public void setUp(){
