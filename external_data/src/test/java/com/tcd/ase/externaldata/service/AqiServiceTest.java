@@ -1,14 +1,11 @@
-package com.tcd.ase.realtimedataprocessor.service;
+package com.tcd.ase.externaldata.service;
 
-import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
-import com.tcd.ase.realtimedataprocessor.models.Aqi;
-import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataTime;
-//import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
-//import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
+import com.tcd.ase.externaldata.entity.AqiDAO;
+import com.tcd.ase.externaldata.model.Aqi;
+import com.tcd.ase.externaldata.model.DublinAqiDataTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
