@@ -156,7 +156,10 @@ public class DublinBusService {
                             .orElse(null);
 
             if (dublinBusHistoricalFromDB != null)
+            {
                 dublinBus.set_creationDate(dublinBusHistoricalFromDB.get_creationDate());
+                dublinBus.set_lastModifiedDate(new Date().toString());
+            }
 
             dublinBusHistoricalRepository.save(dublinBus);
         }
