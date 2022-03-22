@@ -8,32 +8,6 @@ services:
     - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
     ports:
       - "8761:8761"
-
-  user-service:
-    build: user-service
-    mem_limit: 350m
-    ports:
-      - "7001:8080"
-    volumes:
-      - ./logs:/log
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
-      
-  gateway:
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
-    build: gateway
-    mem_limit: 350m
-    ports:
-      - "8080:8080"
-      
-  trends:
-    build: data-trends-predictions
-    mem_limit: 350m
-    ports:
-      - "8050:8050"
       
   external-data:
     build: external_data
@@ -44,20 +18,9 @@ services:
       - "8004:8080"
     depends_on:
       - kafka
-      
-  real-time-data-processor:
-    build: real-time-data-processor
-    mem_limit: 350m
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    ports:
-      - "8005:8080"
-    depends_on:
-      - kafka
   
   kafka:
-    image: wurstmeister/kafka:2.13-2.8.1
-    mem_limit: 350m
+    image: wurstmeister/kafka
     ports:
       - "9092:9092"
     environment:
@@ -68,7 +31,7 @@ services:
       - zookeeper
 
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: wurstmeister/zookeeper
     mem_limit: 350m
     ports:
       - "2181:2181"
