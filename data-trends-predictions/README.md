@@ -7,7 +7,7 @@ Initial Setup:
 
 Configure the flask server:
 
-`export FLASK_APP = ./src/app.py`
+`export FLASK_APP=./src/app.py`
 
 
 Run the flask server:
