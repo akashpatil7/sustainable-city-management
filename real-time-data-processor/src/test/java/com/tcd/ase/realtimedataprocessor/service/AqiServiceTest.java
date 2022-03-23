@@ -3,7 +3,7 @@ package com.tcd.ase.realtimedataprocessor.service;
 import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataTime;
-//import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
+import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
 //import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +26,8 @@ public class AqiServiceTest {
     @Mock
     RestTemplate restTemplateMock;
 
-//    @Mock
-//    AqiProducer producer;
+    @Mock
+    AqiProducer producer;
 
     @Before
     public void setUp(){
