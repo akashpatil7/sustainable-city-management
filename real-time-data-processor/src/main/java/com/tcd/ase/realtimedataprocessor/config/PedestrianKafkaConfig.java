@@ -23,25 +23,6 @@ public class PedestrianKafkaConfig {
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
 
-//    @Bean
-//    public Map<String, Object> producerConfigsPedestrian() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-//        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-//        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-//        return props;
-//    }
-
-//    @Bean
-//    public ProducerFactory<String, PedestrianCount[]> producerFactoryPedestrian() {
-//        return new DefaultKafkaProducerFactory<>(producerConfigsPedestrian());
-//    }
-
-//    @Bean
-//    public KafkaTemplate<String, PedestrianCount[]> kafkaTemplatePedestrian() {
-//        return new KafkaTemplate<>(producerFactoryPedestrian());
-//    }
-
     @Bean
     public Map<String, Object> consumerConfigsPedestrian() {
         Map<String, Object> props = new HashMap<>();
@@ -65,5 +46,23 @@ public class PedestrianKafkaConfig {
         factory.setConsumerFactory(consumerFactoryPedestrian());
         return factory;
     }
+    
+    @Bean
+    public Map<String, Object> producerConfigsPedestrian() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return props;
+    }
 
+    @Bean
+    public ProducerFactory<String, PedestrianCount[]> producerFactoryPedestrian() {
+        return new DefaultKafkaProducerFactory<>(producerConfigsPedestrian());
+    }
+
+    @Bean
+    public KafkaTemplate<String, PedestrianCount[]> kafkaTemplatePedestrian() {
+        return new KafkaTemplate<>(producerFactoryPedestrian());
+    }
 }

@@ -44,5 +44,24 @@ public class AqiKafkaConfig {
         factory.setConsumerFactory(consumerFactoryAqi());
         return factory;
     }
+    
+    @Bean
+    public Map<String, Object> producerConfigsAqi() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return props;
+    }
+
+    @Bean
+    public ProducerFactory<String, Aqi[]> producerFactoryAqi() {
+        return new DefaultKafkaProducerFactory<>(producerConfigsAqi());
+    }
+
+    @Bean
+    public KafkaTemplate<String, Aqi[]> kafkaTemplateAqi() {
+        return new KafkaTemplate<>(producerFactoryAqi());
+    }
 
 }

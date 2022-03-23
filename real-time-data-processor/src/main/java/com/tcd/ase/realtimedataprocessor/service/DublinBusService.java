@@ -32,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 @Service
 public class DublinBusService {
 
@@ -51,22 +53,22 @@ public class DublinBusService {
     @Qualifier("dublinBus")
     private NewTopic dublinBusTopic;
 
-    private List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
-    private List<DublinBusStops> dublinBusStopList = new ArrayList<>();
+    private static List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
+    private static List<DublinBusStops> dublinBusStopList = new ArrayList<>();
 
     private static Logger LOGGER = LogManager.getLogger(DublinBusService.class);
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical);
+        dublinBusProducer.sendMessage(dublinBusTopic.name(), "Updated");
         saveDataToDB(dublinBusHistorical);
     }
 
     public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
-        dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
-        // get list of all bus stops
-        dublinBusStopList = dublinBusStopsRepository.findAll();
+//        dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
+//        // get list of all bus stops
+//        dublinBusStopList = dublinBusStopsRepository.findAll();
 
         // fetch list of all dublin bus route ids
         Set<String> dublinBusRouteIdsList = dublinCityBusRoutes
@@ -195,6 +197,14 @@ public class DublinBusService {
         Date date=new SimpleDateFormat("yyyyMMddHH:mm:ss").parse(startDateTime);
         Long timeInSeconds = date.getTime();
         return timeInSeconds;
+    }
+    
+    
+    @PostConstruct
+    private void loadRoutesAndStops() {
+    	 dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
+         dublinBusStopList = dublinBusStopsRepository.findAll();
+
     }
 
 }

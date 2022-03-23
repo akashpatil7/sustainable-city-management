@@ -57,4 +57,26 @@ public class DublinBusKafkaConfig {
         factory.setConsumerFactory(consumerFactoryForDublinBus());
         return factory;
     }
+    
+    
+    @Bean
+    public Map<String, Object> producerConfigsForDublinBus() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "2000000");
+        return props;
+    }
+
+    @Bean("producerFactoryForDublinBus")
+    public ProducerFactory<String, String> producerFactoryForDublinBus() {
+        return new DefaultKafkaProducerFactory<>(producerConfigsForDublinBus());
+    }
+
+    @Bean("kafkaTemplateForDublinBus")
+    public KafkaTemplate<String, String> kafkaTemplateForDublinBus() {
+        return new KafkaTemplate<>(producerFactoryForDublinBus());
+    }
+    
 }
