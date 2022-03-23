@@ -12,19 +12,6 @@ STATION_TO_ID = {'Marino, Dublin 3, Ireland': 1, 'Ballymun Library, Dublin 9, Ir
 'Dublin Port, Dublin 1, Ireland': 14, 'Finglas, Dublin 11, Ireland': 15, 'Rathmines, Ireland': 16, 'Lord Edward Street, Dublin 2, Ireland': 17, 
 'Walkinstown Library, Dublin 12, Ireland': 18}
 
-def get_testing_data_from_db(db):
- # get testing data from db
-    locations = []
-    times = []
-    coll = db.Aqi
-    data = coll.find()
-    for doc in data:
-        locations.append(STATION_TO_ID[doc['stationName']])
-        times.append(int(doc['lastUpdatedTime']))
-    
-    x_test = np.column_stack((locations, times))
-    return x_test
-
 def get_testing_data_using_epoch():
     epoch_times = []
     for i in range(len(STATION_TO_ID.values())):
