@@ -16,11 +16,11 @@ def closest_bike_stand(location, bike_station_data, used_stands):
     return closest_stand
 
 
-def get_distance(standLat, standLon, locLat, locLon):
-    if '' in (standLat, standLon, locLat, locLon):
+def get_distance(stand_lat, stand_lon, loc_lat, loc_lon):
+    if '' in (stand_lat, stand_lon, loc_lat, loc_lon):
         return float('inf')
-    distance = math.sqrt((float(standLat) - float(locLat))**2 +
-                         (float(standLon) - float(locLon))**2)
+    distance = math.sqrt((float(stand_lat) - float(loc_lat))**2 +
+                         (float(stand_lon) - float(loc_lon))**2)
     return distance
 
 

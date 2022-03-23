@@ -77,7 +77,7 @@ class UtilsTests(unittest.TestCase):
         bus_one = {"stopSequence": [{"arrivalDelay": 1}]}
         bus_two = {"stopSequence": [{"arrivalDelay": 1}, {"arrivalDelay": 3}]}
         bus_three = {"stopSequence": [{"arrivalDelay": 0}]}
-        
+
         self.assertRaises(ZeroDivisionError, get_avg_delay, error_bus)
         avg_delay = get_avg_delay(bus_one)
         assert avg_delay == 1
