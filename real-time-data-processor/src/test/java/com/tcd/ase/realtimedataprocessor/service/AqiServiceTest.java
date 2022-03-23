@@ -4,7 +4,7 @@ import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataTime;
 import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
-//import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
+import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +20,8 @@ public class AqiServiceTest {
 //    @InjectMocks
 //    AqiService aqiService;
 
-//    @Mock
-//    AqiRepository aqiRepository;
+    @Mock
+    AqiRepository aqiRepository;
 
     @Mock
     RestTemplate restTemplateMock;
@@ -48,7 +48,7 @@ public class AqiServiceTest {
 
         Mockito.when(restTemplateMock.getForObject("https://api.waqi.info/search/?token=6405c2482f44780e0d1eb1387bc9ee17edfd0b51&keyword=dublin", Aqi[].class))
                 .thenReturn(aqis);
-//        Mockito.when(aqiRepository.findFirstByOrderByLastUpdatedTimeDesc()).thenReturn(java.util.Optional.of(aqiDAO));
+        Mockito.when(aqiRepository.findFirstByOrderByLastUpdatedTimeDesc()).thenReturn(java.util.Optional.of(aqiDAO));
 
 //        aqiService.processRealTimeDataForAqi();
     }
