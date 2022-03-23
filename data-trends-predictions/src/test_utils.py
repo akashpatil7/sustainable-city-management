@@ -73,9 +73,18 @@ class UtilsTests(unittest.TestCase):
 
     def test_get_avg_delay(self):
         print("[TEST] get_avg_delay")
-        bus = {}
-        bus["stopSequence"] = []
-        self.assertRaises(ZeroDivisionError, get_avg_delay, bus)
+        error_bus = {"stopSequence": []}
+        bus_one = {"stopSequence": [{"arrivalDelay": 1}]}
+        bus_two = {"stopSequence": [{"arrivalDelay": 1}, {"arrivalDelay": 3}]}
+        bus_three = {"stopSequence": [{"arrivalDelay": 0}]}
+        
+        self.assertRaises(ZeroDivisionError, get_avg_delay, error_bus)
+        avg_delay = get_avg_delay(bus_one)
+        assert avg_delay == 1
+        avg_delay = get_avg_delay(bus_two)
+        assert avg_delay == 2
+        avg_delay = get_avg_delay(bus_three)
+        assert avg_delay == 0
 
     def test_get_most_polluted(self):
         print("[TEST] get_most_polluted")
