@@ -17,8 +17,8 @@ import org.springframework.web.client.RestTemplate;
 @RunWith(MockitoJUnitRunner.class)
 public class DublinBikeServiceTest {
 
-//    @InjectMocks
-//    DublinBikeService dublinBikeService;
+    @InjectMocks
+    DublinBikeService dublinBikeService;
 
     @Mock
     DublinBikesRepository dublinBikesRepository;
@@ -48,6 +48,6 @@ public class DublinBikeServiceTest {
                 .thenReturn(dublinBikes);
         Mockito.when(dublinBikesRepository.findFirstByOrderByHarvestTimeDesc()).thenReturn(java.util.Optional.of(dublinBikeDAO));
 
-//        dublinBikeService.processRealTimeDataForDublinBikes();
+        dublinBikeService.processRealTimeDataForDublinBikes();
     }
 }

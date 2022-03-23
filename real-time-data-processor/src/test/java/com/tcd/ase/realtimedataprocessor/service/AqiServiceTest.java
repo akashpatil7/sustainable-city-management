@@ -17,8 +17,8 @@ import org.springframework.web.client.RestTemplate;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AqiServiceTest {
-//    @InjectMocks
-//    AqiService aqiService;
+    @InjectMocks
+    AqiService aqiService;
 
     @Mock
     AqiRepository aqiRepository;
@@ -50,6 +50,6 @@ public class AqiServiceTest {
                 .thenReturn(aqis);
         Mockito.when(aqiRepository.findFirstByOrderByLastUpdatedTimeDesc()).thenReturn(java.util.Optional.of(aqiDAO));
 
-//        aqiService.processRealTimeDataForAqi();
+        aqiService.processRealTimeDataForAqi();
     }
 }
