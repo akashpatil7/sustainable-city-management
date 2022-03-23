@@ -7,14 +7,21 @@ def closest_bike_stand(location, bike_station_data, used_stands):
     closest_stand = None
     for stand in bike_station_data:
 
-        distance = math.sqrt((float(stand['latitude']) -
-                              float(location['streetLatitude']))**2 +
-                             (float(stand['longitude']) -
-                              float(location['streetLongitude']))**2)
+        distance = get_distance(stand['latitude'], stand['longitude'],
+                                location['streetLatitude'],
+                                location['streetLongitude'])
         if distance < closest_stand_dist and stand not in used_stands:
             closest_stand_dist = distance
             closest_stand = stand
     return closest_stand
+
+
+def get_distance(standLat, standLon, locLat, locLon):
+    if '' in (standLat, standLon, locLat, locLon):
+        return float('inf')
+    distance = math.sqrt((float(standLat) - float(locLat))**2 +
+                         (float(standLon) - float(locLon))**2)
+    return distance
 
 
 def top_aqi_locations(aqi_station_data, top_n, is_reverse):
@@ -55,6 +62,7 @@ def get_most_polluted(buses, aqis):
                     closest_stop = bus
         most_polluted[closest_stop['routeLong']] = aqi['aqi']
     return most_polluted
+
 
 def most_delayed_buses(buses):
     most_delayed = queue.PriorityQueue(maxsize=5)
