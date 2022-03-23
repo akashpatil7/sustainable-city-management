@@ -54,11 +54,22 @@ class UtilsTests(unittest.TestCase):
 
     def test_top_aqi_locations(self):
         print("[TEST] top_aqi_locations")
-        aqi_station_data = []
-        top_n = 0
-        is_reverse = False
-        top_locations = top_aqi_locations(aqi_station_data, top_n, is_reverse)
-        assert top_locations == []
+        small = {"aqi": "1"}
+        med = {"aqi": "2"}
+        big = {"aqi": "51"}
+        aqi_station_data = [[], [{
+            "aqi": "-"
+        }], [small], [small, med], [small, med], [small, med, big],
+                            [small, med, big]]
+
+        top_n = [1, 1, 1, 1, 1, 2, 2]
+        is_reverse = [False, False, False, False, True, False, True]
+        results = [[], [], [small], [small], [med], [small, med], [big, med]]
+
+        for data, n, reverse, res in zip(aqi_station_data, top_n, is_reverse,
+                                         results):
+            top_locations = top_aqi_locations(data, n, reverse)
+            assert top_locations == res
 
     def test_get_avg_delay(self):
         print("[TEST] get_avg_delay")
