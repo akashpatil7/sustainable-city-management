@@ -2,8 +2,8 @@ package com.tcd.ase.realtimedataprocessor.service;
 
 import com.tcd.ase.realtimedataprocessor.entity.DublinBikeDAO;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
-//import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
-//import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
+import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
+import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,17 +17,17 @@ import org.springframework.web.client.RestTemplate;
 @RunWith(MockitoJUnitRunner.class)
 public class DublinBikeServiceTest {
 
-//    @InjectMocks
-//    DublinBikeService dublinBikeService;
+    @InjectMocks
+    DublinBikeService dublinBikeService;
 
-//    @Mock
-//    DublinBikesRepository dublinBikesRepository;
+    @Mock
+    DublinBikesRepository dublinBikesRepository;
 
     @Mock
     RestTemplate restTemplateMock;
 
-//    @Mock
-//    DublinBikesProducer producer;
+    @Mock
+    DublinBikesProducer producer;
 
     @Before
     public void setUp(){
@@ -46,8 +46,8 @@ public class DublinBikeServiceTest {
 
         Mockito.when(restTemplateMock.getForObject("https://data.smartdublin.ie/dublinbikes-api/last_snapshot/", DublinBike[].class))
                 .thenReturn(dublinBikes);
-//        Mockito.when(dublinBikesRepository.findFirstByOrderByHarvestTimeDesc()).thenReturn(java.util.Optional.of(dublinBikeDAO));
+        Mockito.when(dublinBikesRepository.findFirstByOrderByHarvestTimeDesc()).thenReturn(java.util.Optional.of(dublinBikeDAO));
 
-//        dublinBikeService.processRealTimeDataForDublinBikes();
+        dublinBikeService.processRealTimeDataForDublinBikes();
     }
 }
