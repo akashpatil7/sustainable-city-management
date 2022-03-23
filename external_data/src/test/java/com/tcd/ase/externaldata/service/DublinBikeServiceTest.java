@@ -1,10 +1,13 @@
-package com.tcd.ase.externaldata.service;
+package com.tcd.ase.realtimedataprocessor.service;
 
-import com.tcd.ase.externaldata.entity.DublinBikeDAO;
-import com.tcd.ase.externaldata.model.DublinBike;
+import com.tcd.ase.realtimedataprocessor.entity.DublinBikeDAO;
+import com.tcd.ase.realtimedataprocessor.models.DublinBike;
+//import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
+//import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
