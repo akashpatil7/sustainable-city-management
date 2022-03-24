@@ -88,10 +88,33 @@ class UtilsTests(unittest.TestCase):
 
     def test_get_most_polluted(self):
         print("[TEST] get_most_polluted")
-        buses = []
-        aqis = []
-        most_polluted = get_most_polluted(buses, aqis)
-        assert most_polluted == {}
+
+        example_aqi = {"aqi": 10, "longitude": 0, "latitude": 0}
+        missing_lat = {"aqi": 10, "longitude": 0}
+
+        example_bus_1 = {
+            "routeLong": "A",
+            "stopSequence": [{
+                "stopLat": 1,
+                "stopLon": 2
+            }]
+        }
+        example_bus_2 = {
+            "routeLong": "B",
+            "stopSequence": [{
+                "stopLat": 2,
+                "stopLon": -4
+            }]
+        }
+        missing_lon = {"routeLong": "B", "stopSequence": [{"stopLat": 1}]}
+
+        bus_data = [[], [], [missing_lon], [example_bus_1, example_bus_2]]
+        aqi_data = [[], [example_aqi], [missing_lat], [example_aqi]]
+        results = [{}, {}, {}, {"A": 10}]
+
+        for aqis, buses, res in zip(aqi_data, bus_data, results):
+            most_polluted = get_most_polluted(buses, aqis)
+            assert most_polluted == res
 
     def test_most_delayed_buses(self):
         print("[TEST] most_delayed_buses")
