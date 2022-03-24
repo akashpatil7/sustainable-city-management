@@ -51,6 +51,7 @@ public class PedestrianService {
 
     @Scheduled(fixedRate = 360000)
     public void processRealTimeDataForPedestrian() {
+        log.info("Processing Pedestrian Data");
         PedestrianCount[] pedestrian = getPedestrianDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.PEDESTRIAN.getTopic(), pedestrian);
         saveDataToDB(pedestrian);

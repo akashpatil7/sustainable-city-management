@@ -29,6 +29,7 @@ public class DublinBikeService {
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
+        log.info("Processing Dublin Bikes Data");
         DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
         saveDataToDB(dublinBikes);

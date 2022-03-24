@@ -29,6 +29,7 @@ public class AqiService {
 
     @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {
+        log.info("Processing AQI Data");
         Aqi[] aqi = getAqiDataFromExternalSource();
         producer.sendMessage(DataIndicatorEnum.AQI.getTopic(), aqi);
         saveDataToDB(aqi);
