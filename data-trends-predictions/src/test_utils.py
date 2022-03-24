@@ -1,7 +1,8 @@
 import unittest
 
-from src.utils import (closest_bike_stand, get_avg_delay, get_most_polluted,
-                       most_delayed_buses, top_aqi_locations, get_distance)
+from src.utils import (closest_bike_stand, get_avg_delay, get_distance,
+                       get_most_polluted, most_delayed_buses,
+                       top_aqi_locations)
 
 
 class UtilsTests(unittest.TestCase):
@@ -118,6 +119,24 @@ class UtilsTests(unittest.TestCase):
 
     def test_most_delayed_buses(self):
         print("[TEST] most_delayed_buses")
-        buses = []
-        most_polluted = most_delayed_buses(buses)
-        assert most_polluted == []
+
+        example_bus_1 = {
+            "routeLong": "A",
+            "stopSequence": [{
+                "arrivalDelay": 1
+            }]
+        }
+        example_bus_2 = {
+            "routeLong": "B",
+            "stopSequence": [{
+                "arrivalDelay": -1
+            }]
+        }
+
+        missing_route = {"stopSequence": [{"stopLat": 1}]}
+
+        bus_data = [[], [missing_route], [example_bus_1, example_bus_2]]
+        results = [[], [], [(1, "A"), (-1.0, 'B')]]
+        for buses, res in zip(bus_data, results):
+            most_delayed = most_delayed_buses(buses)
+            assert most_delayed == res

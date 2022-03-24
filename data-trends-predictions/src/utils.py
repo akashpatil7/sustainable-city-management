@@ -75,7 +75,7 @@ def most_delayed_buses(buses):
     most_delayed = queue.PriorityQueue(maxsize=5)
     checked_buses = {}
     for bus in buses:
-        if bus["routeLong"] in checked_buses:
+        if "routeLong" not in bus or bus["routeLong"] in checked_buses:
             continue
         route = bus["routeLong"]
         checked_buses[route] = 1
@@ -87,4 +87,6 @@ def most_delayed_buses(buses):
                 most_delayed.put((avg_delay, bus["routeLong"]))
         else:
             most_delayed.put((avg_delay, bus["routeLong"]))
-    return most_delayed.queue
+    most_delayed = most_delayed.queue
+    most_delayed.reverse()
+    return most_delayed
