@@ -5,6 +5,7 @@ import py_eureka_client.eureka_client as eureka_client
 from src.common.database import Database
 from src.resources.recommendations import Recommendations
 from src.resources.trends import Trends
+from src.resources.models import Models
 
 def create_app():
 	# INIT Flask App
@@ -44,6 +45,10 @@ def create_app():
 	api.add_resource(Trends,
 					 '/trends/<string:data_indicator>/<string:action>',
 					 resource_class_kwargs=route_args)
+	
+	api.add_resource(Models, 
+					'/models/<string:data_indicator>/<string:action>',
+					resource_class_kwargs=route_args)
 					 
 	print("url map",app.url_map)
 
