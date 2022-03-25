@@ -1,11 +1,9 @@
 package com.tcd.ase.realtimedataprocessor.config;
 
 import com.tcd.ase.realtimedataprocessor.entity.DublinBusHistorical;
-import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.ListDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,11 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -43,12 +41,12 @@ public class DublinBusKafkaConfig {
     }
 
     @Bean("producerFactoryForDublinBus")
-    public ProducerFactory<String, List<DublinBusHistorical>> producerFactoryForDublinBus() {
+    public ProducerFactory<String, DublinBusHistorical> producerFactoryForDublinBus() {
         return new DefaultKafkaProducerFactory<>(producerConfigsForDublinBus());
     }
 
     @Bean("kafkaTemplateForDublinBus")
-    public KafkaTemplate<String, List<DublinBusHistorical>> kafkaTemplateForDublinBus() {
+    public KafkaTemplate<String, DublinBusHistorical> kafkaTemplateForDublinBus() {
         return new KafkaTemplate<>(producerFactoryForDublinBus());
     }
 
@@ -59,20 +57,20 @@ public class DublinBusKafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "2000000");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "json");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup");
         props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "2000000");
         return props;
     }
 
     @Bean("consumerFactoryForDublinBus")
-    public ConsumerFactory<String, List<DublinBusHistorical>> consumerFactoryForDublinBus() {
+    public ConsumerFactory<String, DublinBusHistorical> consumerFactoryForDublinBus() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigsDublinBus(), new StringDeserializer(),
-                new JsonDeserializer<>(List.class));
+                new JsonDeserializer<>(DublinBusHistorical.class));
     }
 
     @Bean("kafkaListenerContainerFactoryForDublinBus")
-    public ConcurrentKafkaListenerContainerFactory<String, List<DublinBusHistorical>> kafkaListenerContainerFactoryForDublinBus() {
-        ConcurrentKafkaListenerContainerFactory<String, List<DublinBusHistorical>> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, DublinBusHistorical> kafkaListenerContainerFactoryForDublinBus() {
+        ConcurrentKafkaListenerContainerFactory<String, DublinBusHistorical> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryForDublinBus());
         return factory;

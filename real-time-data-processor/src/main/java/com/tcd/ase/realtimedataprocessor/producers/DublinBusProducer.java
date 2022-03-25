@@ -19,11 +19,10 @@ public class DublinBusProducer {
 
     @Autowired
     @Qualifier("kafkaTemplateForDublinBus")
-    private KafkaTemplate<String, List<DublinBusHistorical>> kafkaTemplate;
+    private KafkaTemplate<String, DublinBusHistorical> kafkaTemplate;
 
-    public ListenableFuture<SendResult<String, List<DublinBusHistorical>>> sendMessage(String topic, List<DublinBusHistorical> message) {
+    public ListenableFuture<SendResult<String, DublinBusHistorical>> sendMessage(String topic, DublinBusHistorical message) {
         log.info(String.format("#### -> Producing message on Dublin Bus Topic-> %s", message));
         return this.kafkaTemplate.send(topic, message);
     }
-
 }
