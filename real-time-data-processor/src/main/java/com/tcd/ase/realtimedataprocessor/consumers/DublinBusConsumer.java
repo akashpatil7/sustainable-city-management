@@ -1,6 +1,7 @@
 package com.tcd.ase.realtimedataprocessor.consumers;
 
 import com.tcd.ase.realtimedataprocessor.entity.DublinBusHistorical;
+import com.tcd.ase.realtimedataprocessor.service.DublinBusService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,12 +18,16 @@ import java.util.List;
 public class DublinBusConsumer {
 
     @Autowired
+    DublinBusService dublinBusService;
+
+    @Autowired
     @Qualifier("dublinBusSink")
     private Sinks.Many<List<DublinBusHistorical>> dublinBusSink;
 
     @KafkaListener(topics = "dublin_bus", groupId = "mygroup")
     public void consume(List<DublinBusHistorical> message) {
         log.info(String.format("#### -> Consumed message from dublin_bus -> %s", message));
-        dublinBusSink.tryEmitNext(message);
+        List<DublinBusHistorical> updatedBusData = dublinBusService.getDublinBusUpdate();
+        dublinBusSink.tryEmitNext(updatedBusData);
     }
 }

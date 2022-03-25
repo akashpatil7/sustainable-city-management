@@ -14,6 +14,7 @@ import com.tcd.ase.realtimedataprocessor.repository.bus.DublinBusHistoricalRepos
 import com.tcd.ase.realtimedataprocessor.repository.bus.DublinBusRoutesRepository;
 import com.tcd.ase.realtimedataprocessor.repository.bus.DublinBusStopsRepository;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 public class DublinBusService {
 
@@ -54,13 +56,25 @@ public class DublinBusService {
     private List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
     private List<DublinBusStops> dublinBusStopList = new ArrayList<>();
 
-    private static Logger LOGGER = LogManager.getLogger(DublinBusService.class);
-
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
+        log.info("Processing Dublin Bikes");
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical);
+        List<DublinBusHistorical> dublinBusHistoricalQueueUpdate = dublinBusHistorical.stream().limit(1).collect(Collectors.toList());
+        dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistoricalQueueUpdate);
         saveDataToDB(dublinBusHistorical);
+    }
+
+    public List<DublinBusHistorical> getDublinBusUpdate() {
+        List<DublinBusHistorical> updatedBusList = new ArrayList<>();
+        // 72,00,000 denotes 2 hours
+        Long now = System.currentTimeMillis() - 7200000;
+        Optional<List<DublinBusHistorical>> updatedBus = dublinBusHistoricalRepository.findByStartTimestampGreaterThan(now);
+        if (updatedBus.isPresent()) {
+            log.info("Getting Dublin Bus Data for past 2 hours");
+            updatedBusList = (List<DublinBusHistorical>) updatedBus.get();
+        }
+        return updatedBusList;
     }
 
     public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
