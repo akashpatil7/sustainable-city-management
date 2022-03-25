@@ -39,29 +39,4 @@ public class AqiKafkaConfig {
     public KafkaTemplate<String, Aqi[]> kafkaTemplateAqi() {
         return new KafkaTemplate<>(producerFactoryAqi());
     }
-
-    @Bean
-    public Map<String, Object> consumerConfigsAqi() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup");
-        return props;
-    }
-
-    @Bean
-    public ConsumerFactory<String, Aqi[]> consumerFactoryAqi() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigsAqi(), new StringDeserializer(),
-                new JsonDeserializer<>(Aqi[].class));
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Aqi[]> kafkaListenerContainerFactoryAqi() {
-        ConcurrentKafkaListenerContainerFactory<String, Aqi[]> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryAqi());
-        return factory;
-    }
-
 }

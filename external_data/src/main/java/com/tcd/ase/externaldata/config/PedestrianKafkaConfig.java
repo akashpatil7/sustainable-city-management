@@ -41,29 +41,4 @@ public class PedestrianKafkaConfig {
     public KafkaTemplate<String, PedestrianCount[]> kafkaTemplatePedestrian() {
         return new KafkaTemplate<>(producerFactoryPedestrian());
     }
-
-    @Bean
-    public Map<String, Object> consumerConfigsPedestrian() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup");
-        return props;
-    }
-
-    @Bean
-    public ConsumerFactory<String, PedestrianCount[]> consumerFactoryPedestrian() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigsPedestrian(), new StringDeserializer(),
-                new JsonDeserializer<>(PedestrianCount[].class));
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, PedestrianCount[]> kafkaListenerContainerFactoryPedestrian() {
-        ConcurrentKafkaListenerContainerFactory<String, PedestrianCount[]> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryPedestrian());
-        return factory;
-    }
-
 }

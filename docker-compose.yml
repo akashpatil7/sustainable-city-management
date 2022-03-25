@@ -19,7 +19,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - JAVA_OPTS=-Djdk.tls.client.protocols=TLSv1.2
-
+      
   gateway:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -28,7 +28,7 @@ services:
     mem_limit: 350m
     ports:
       - "8080:8080"
-
+      
   trends:
     build: data-trends-predictions
     mem_limit: 350m

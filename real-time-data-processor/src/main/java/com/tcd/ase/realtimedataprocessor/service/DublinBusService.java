@@ -33,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 @Service
 @Log4j2
 public class DublinBusService {
@@ -53,8 +55,8 @@ public class DublinBusService {
     @Qualifier("dublinBus")
     private NewTopic dublinBusTopic;
 
-    private List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
-    private List<DublinBusStops> dublinBusStopList = new ArrayList<>();
+    private static List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
+    private static List<DublinBusStops> dublinBusStopList = new ArrayList<>();
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBus() {
@@ -76,9 +78,9 @@ public class DublinBusService {
     }
 
     public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
-        dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
-        // get list of all bus stops
-        dublinBusStopList = dublinBusStopsRepository.findAll();
+//        dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
+//        // get list of all bus stops
+//        dublinBusStopList = dublinBusStopsRepository.findAll();
 
         // fetch list of all dublin bus route ids
         Set<String> dublinBusRouteIdsList = dublinCityBusRoutes
@@ -208,6 +210,14 @@ public class DublinBusService {
         Date date=new SimpleDateFormat("yyyyMMddHH:mm:ss").parse(startDateTime);
         Long timeInSeconds = date.getTime();
         return timeInSeconds;
+    }
+    
+    
+    @PostConstruct
+    private void loadRoutesAndStops() {
+    	 dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
+         dublinBusStopList = dublinBusStopsRepository.findAll();
+
     }
 
 }

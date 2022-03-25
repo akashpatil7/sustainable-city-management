@@ -22,7 +22,7 @@ import java.util.Map;
 @Configuration
 public class DublinBusKafkaConfig {
 
-    @Value("${spring.kafka.producer.bootstrap-servers}")
+    @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean("dublinBus")
@@ -55,7 +55,7 @@ public class DublinBusKafkaConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "2000000");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup");
         props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "2000000");
@@ -75,4 +75,26 @@ public class DublinBusKafkaConfig {
         factory.setConsumerFactory(consumerFactoryForDublinBus());
         return factory;
     }
+    
+    
+    @Bean
+    public Map<String, Object> producerConfigsForDublinBus() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "2000000");
+        return props;
+    }
+
+    @Bean("producerFactoryForDublinBus")
+    public ProducerFactory<String, String> producerFactoryForDublinBus() {
+        return new DefaultKafkaProducerFactory<>(producerConfigsForDublinBus());
+    }
+
+    @Bean("kafkaTemplateForDublinBus")
+    public KafkaTemplate<String, String> kafkaTemplateForDublinBus() {
+        return new KafkaTemplate<>(producerFactoryForDublinBus());
+    }
+    
 }
