@@ -15,6 +15,7 @@ import java.util.Date;
 @Builder()
 public class DublinBusHistorical {
      @Id
+     private String _id;
      private String tripId;
      private String routeId;
      private String routeShort;
@@ -30,6 +31,7 @@ public class DublinBusHistorical {
     }
 
     public DublinBusHistorical(DublinBusHistoricalBuilder dublinBusHistoricalBuilder) {
+        this._id = dublinBusHistoricalBuilder._id;
         this.tripId = dublinBusHistoricalBuilder.tripId;
         this.routeId = dublinBusHistoricalBuilder.routeId;
         this.routeShort = dublinBusHistoricalBuilder.routeShort;
@@ -44,7 +46,8 @@ public class DublinBusHistorical {
     @Override
     public String toString() {
         return "DublinBusHistorical{" +
-                "tripId='" + tripId + '\'' +
+                "_id='" + _id + '\'' +
+                ", tripId='" + tripId + '\'' +
                 ", routeId='" + routeId + '\'' +
                 ", routeShort='" + routeShort + '\'' +
                 ", routeLong='" + routeLong + '\'' +
@@ -58,6 +61,7 @@ public class DublinBusHistorical {
 
     public static class DublinBusHistoricalBuilder {
 
+        private String _id;
         private String tripId;
         private String routeId;
         private String routeShort;
@@ -69,16 +73,23 @@ public class DublinBusHistorical {
         private String _lastModifiedDate;
 
         public DublinBusHistoricalBuilder() {
+        }
 
+        public void setupId(String term) {
+            if (this._id == null)
+                this._id = "";
+            this._id = this._id + term;
         }
 
         public DublinBusHistoricalBuilder withTripId(String tripId) {
             this.tripId = tripId;
+            setupId(tripId);
             return this;
         }
 
         public DublinBusHistoricalBuilder withRouteId(String routeId) {
             this.routeId = routeId;
+            setupId(routeId);
             return this;
         }
 
@@ -94,6 +105,7 @@ public class DublinBusHistorical {
 
         public DublinBusHistoricalBuilder withStartTimestamp(Long startTimestamp) {
             this.startTimestamp = startTimestamp;
+            setupId(startTimestamp.toString());
             return this;
         }
 
