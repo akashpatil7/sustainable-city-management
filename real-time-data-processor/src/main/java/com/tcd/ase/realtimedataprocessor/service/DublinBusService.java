@@ -62,9 +62,13 @@ public class DublinBusService {
     public void processRealTimeDataForDublinBus() {
         log.info("Processing Dublin Bus Data");
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        if (saveDataToDB(dublinBusHistorical)) {
-            dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical.get(0));
+        List<String> updatedBusIds = saveDataToDB(dublinBusHistorical);
+        if (!updatedBusIds.isEmpty()) {
+            dublinBusProducer.sendMessage(dublinBusTopic.name(), updatedBusIds);
         }
+//        if (saveDataToDB(dublinBusHistorical)) {
+//            dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical.get(0));
+//        }
     }
 
     public List<DublinBusHistorical> getDublinBusUpdate() {
@@ -72,8 +76,10 @@ public class DublinBusService {
         // 72,00,000 denotes 2 hours
         Long now = System.currentTimeMillis() - 7200000;
         Optional<List<DublinBusHistorical>> updatedBus = dublinBusHistoricalRepository.findByStartTimestampGreaterThan(now);
-        if (updatedBus.isPresent())
+        if (updatedBus.isPresent()) {
+            log.info("Getting Dublin Bus Data for past 2 hours");
             updatedBusList = (List<DublinBusHistorical>) updatedBus.get();
+        }
         return updatedBusList;
     }
 
@@ -159,8 +165,9 @@ public class DublinBusService {
                 .get();
     }
 
-    private boolean saveDataToDB(List<DublinBusHistorical> dublinBusEntities) {
-        boolean hasBeenUpdated = false;
+    private List<String> saveDataToDB(List<DublinBusHistorical> dublinBusEntities) {
+        //boolean hasBeenUpdated = false;
+        List<String> updatedBusIds = new ArrayList<>();
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
 
             DublinBusHistorical dublinBusHistoricalFromDB =
@@ -174,12 +181,13 @@ public class DublinBusService {
             {
                 dublinBus.set_creationDate(dublinBusHistoricalFromDB.get_creationDate());
                 dublinBus.set_lastModifiedDate(new Date().toString());
-                hasBeenUpdated = true;
+                updatedBusIds.add(dublinBus.get_id());
+                //hasBeenUpdated = true;
             }
             dublinBusHistoricalRepository.save(dublinBus);
         }
-
-        return hasBeenUpdated;
+        //return hasBeenUpdated;
+        return updatedBusIds;
     }
 
     private ArrayList<DublinBusHistoricalStopSequence> getUpdatedStopSequence(ArrayList<StopTimeUpdate> currentTripStopSequence) {
