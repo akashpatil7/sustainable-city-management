@@ -19,7 +19,7 @@ public class AqiConsumer {
 
     @KafkaListener(topics = "aqi", groupId = "mygroup")
     public void consume(Aqi[] message) {
-        log.info("AQI: Consumed Message of " + message.length + " elements");
+        log.info("[AQI] Consumed Message of " + message.length + " elements");
         this.aqiSink.tryEmitNext(message);
     }
 }

@@ -26,7 +26,7 @@ public class DublinBusConsumer {
 
     @KafkaListener(topics = "dublin_bus", groupId = "mygroup")
     public void consume(List<String> message) {
-        log.info("Bus: Consumed Message: ", message);
+        log.info("[BUS] Consumed Message: " + message.toString());
         List<DublinBusHistorical> updatedBusData = dublinBusService.getDublinBusUpdate();
         dublinBusSink.tryEmitNext(updatedBusData);
     }

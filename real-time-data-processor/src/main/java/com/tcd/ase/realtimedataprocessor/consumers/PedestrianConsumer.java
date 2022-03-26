@@ -17,10 +17,10 @@ public class PedestrianConsumer {
 
     @Autowired
     private Sinks.Many<PedestrianCount[]> pedestrianSink;
-    
+
     @KafkaListener(topics = "pedestrian", groupId = "mygroup")
     public void consume(PedestrianCount[] message) {
-        log.info("Pedestrian: Consumed Message of " + message.length + " elements");
+        log.info("[PEDESTRIAN] Consumed Message of " + message.length + " elements");
         this.pedestrianSink.tryEmitNext(message);
     }
 }

@@ -1,6 +1,7 @@
 package com.tcd.ase.realtimedataprocessor.producers;
 
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -11,15 +12,14 @@ import org.apache.logging.log4j.Logger;
 
 
 @Service
+@Log4j2
 public class AqiProducer {
-
-    private static final Logger log = LogManager.getLogger(AqiProducer.class);
 
     @Autowired
     private KafkaTemplate<String,Aqi[]> kakfaTemplate;
 
     public ListenableFuture<SendResult<String,Aqi[]>> sendMessage(String topic, Aqi[] message) {
-        log.info(String.format("#### -> Producing message -> %s", message));
+        log.info("[AQI] Producing Message of " + message.length + " elements");
         return this.kakfaTemplate.send(topic, message);
     }
 

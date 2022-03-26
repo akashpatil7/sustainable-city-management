@@ -22,7 +22,7 @@ public class DublinBusProducer {
     private KafkaTemplate<String, List<String>> kafkaTemplate;
 
     public ListenableFuture<SendResult<String, List<String>>> sendMessage(String topic, List<String> message) {
-        log.info(String.format("#### -> Producing message on Dublin Bus Topic-> %s", message));
+        log.info("[BUS] Producing Message: " + message.toString());
         return this.kafkaTemplate.send(topic, message);
     }
 

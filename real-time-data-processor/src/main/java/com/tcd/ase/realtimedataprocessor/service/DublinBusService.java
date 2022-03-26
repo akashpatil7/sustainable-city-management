@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -56,11 +57,9 @@ public class DublinBusService {
 
     @Scheduled(fixedRate = 120000)
     public void processRealTimeDataForDublinBus() {
-        log.info("Processing Dublin Bus");
+        log.info("[BUS] Processing");
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        //List<DublinBusHistorical> dublinBusHistoricalQueueUpdate = dublinBusHistorical.stream().limit(1).collect(Collectors.toList());
-        //dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistoricalQueueUpdate);
-        log.info("Updating database for Bus");
+
         if (saveDataToDB(dublinBusHistorical)) {
             List<String> updatedList = Arrays.asList("Updated");
             dublinBusProducer.sendMessage(dublinBusTopic.name(), updatedList);
@@ -73,17 +72,22 @@ public class DublinBusService {
         Long now = System.currentTimeMillis() - 7200000;
         Optional<List<DublinBusHistorical>> updatedBus = dublinBusHistoricalRepository.findByStartTimestampGreaterThan(now);
         if (updatedBus.isPresent()) {
-            log.info("Getting Dublin Bus Data for past 2 hours");
+            log.info("[BUS] Fetching data");
             updatedBusList = (List<DublinBusHistorical>) updatedBus.get();
         }
         return updatedBusList;
     }
 
-    public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
+    @PostConstruct
+    private void loadRoutesAndStops() {
+        // get list of all bus routes
         dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
+
         // get list of all bus stops
         dublinBusStopList = dublinBusStopsRepository.findAll();
+    }
 
+    public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
         // fetch list of all dublin bus route ids
         Set<String> dublinBusRouteIdsList = dublinCityBusRoutes
                 .stream()
@@ -162,6 +166,7 @@ public class DublinBusService {
     }
 
     private boolean saveDataToDB(List<DublinBusHistorical> dublinBusEntities) {
+        log.info("[BUS] Updating database");
         boolean hasUpdates = false;
         for (DublinBusHistorical dublinBus: dublinBusEntities) {
 
@@ -180,7 +185,7 @@ public class DublinBusService {
 
             dublinBusHistoricalRepository.save(dublinBus);
         }
-        log.info("Dublin Bus has updates: " + hasUpdates);
+        log.info("[BUS] Has updates: " + hasUpdates);
         return hasUpdates;
     }
 
