@@ -58,7 +58,7 @@ public class AqiService {
 
             if (latestAqiFromDB == null || currentEpoch > latestAqiFromDB.getLastUpdatedTime()) {
                 log.info("[AQI] New Data found");
-                log.info(convertData(data));
+                //log.info(convertData(data));
                 aqiRepository.saveAll(convertData(data));
             }
         } catch (Exception e) {
