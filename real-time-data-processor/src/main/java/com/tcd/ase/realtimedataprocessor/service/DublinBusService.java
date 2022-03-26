@@ -54,7 +54,7 @@ public class DublinBusService {
     private List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
     private List<DublinBusStops> dublinBusStopList = new ArrayList<>();
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 120000)
     public void processRealTimeDataForDublinBus() {
         log.info("Processing Dublin Bus");
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
