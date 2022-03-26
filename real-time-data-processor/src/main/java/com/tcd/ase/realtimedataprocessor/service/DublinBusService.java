@@ -60,8 +60,9 @@ public class DublinBusService {
     public void processRealTimeDataForDublinBikes() {
         log.info("Processing Dublin Bikes");
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        List<DublinBusHistorical> dublinBusHistoricalQueueUpdate = dublinBusHistorical.stream().limit(1).collect(Collectors.toList());
-        dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistoricalQueueUpdate);
+        //List<DublinBusHistorical> dublinBusHistoricalQueueUpdate = dublinBusHistorical.stream().limit(1).collect(Collectors.toList());
+        List<String> updatedList = Arrays.asList("Updated");
+        dublinBusProducer.sendMessage(dublinBusTopic.name(), updatedList);
         saveDataToDB(dublinBusHistorical);
     }
 
