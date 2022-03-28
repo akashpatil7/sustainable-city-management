@@ -104,16 +104,16 @@ def get_prediction_array():
     diff = previous_day_last_instance - previous_day
     minutes = diff.total_seconds()/60
     instances_to_go_back = int((minutes + (5-(minutes%5)))/5)
-    lag = 5
+    lag = 6
     print(instances_to_go_back)
     prediction_array = []
     y_length = len(y)
     prediction_array.append(y[y_length - 1 - instances_to_go_back])
-    for i in range(lag):
-        prediction_array.append(y[y_length -1 - instances_to_go_back - 2016])
+    for i in range(1, lag):
+        prediction_array.append(y[y_length -1 - instances_to_go_back - (i*2016)])
     prediction_array.append(y[y_length - 1 - instances_to_go_back])
-    for i in range(lag):
-        prediction_array.append(y[y_length -1 - instances_to_go_back - 288])
+    for i in range(1, lag):
+        prediction_array.append(y[y_length -1 - instances_to_go_back - (i*288)])
     return [prediction_array]
 
 
