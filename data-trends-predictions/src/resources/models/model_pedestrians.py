@@ -1,15 +1,15 @@
-from collections import defaultdict
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import pickle
-import time
 from datetime import datetime
+from src.utils import get_testing_data_using_epoch
 
 from src.common.response import Response
 from enum import Enum
 
 class EndPointMethods(Enum):
     getPedestrianPredictions = "get_pedestrian_predictions"
+    trainModel = 'train_pedestrian_model'
 
 class PedestrianModel():
     def __init__(self, db):
@@ -34,13 +34,6 @@ class PedestrianModel():
                                         " not found")
 
 
-    def get_testing_data_using_epoch(self):
-        epoch_times = []
-        for i in range(len(self.LOCATION_TO_ID.values())):
-            epoch_times.append(time.time())
-        
-        return np.column_stack((list(self.LOCATION_TO_ID.values()), epoch_times))
-
     def train_pedestrian_model(self):
         # get data from db
         collection = self.db.get_collection("Pedestrian")
@@ -63,10 +56,15 @@ class PedestrianModel():
             model.fit(X, y_count)
 
             to_db = pickle.dumps(model)
-            return to_db
-        
-        else:
-            return None
+
+            date = datetime.now()
+            new_entry = {"$set": {"model": to_db, "date_of_training": date}}
+
+            info = self.db.get_collection('predictive_models').update_one({"indicator": "pedestrian"}, new_entry)
+            print("Pedestrian Model saved to DB")
+            print(info)
+
+            return Response.send_json_200(info._UpdateResult__raw_result)
 
 
     def get_pedestrian_predictions(self):
@@ -75,16 +73,19 @@ class PedestrianModel():
 
         model = pickle.loads(model_)
 
-        x_test = self.get_testing_data_using_epoch()
+        x_test = get_testing_data_using_epoch(self.LOCATION_TO_ID)
         preds = model.predict(x_test)
 
-        predictions_ = defaultdict(dict)
-        
+        response_predictions = []
+
         # assign the predictions to each location
         for x, p in zip(x_test, preds):
             index_of_loc = list(self.LOCATION_TO_ID.values()).index(x[0])
             loc = list(self.LOCATION_TO_ID.keys())[index_of_loc]
-            predictions_[loc] = p   
 
-        return Response.send_json_200(predictions_)
+            doc = self.db.get_collection("Pedestrian").find_one({"street": loc})
+            obj = {"count": p, "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": {}}
+            response_predictions.append(obj)
+
+        return Response.send_json_200(response_predictions)
 
