@@ -26,7 +26,7 @@ public class AuthenticationFilter implements GatewayFilter {
 		String token = "";
 		if (routerValidator.useSecurity(request)) {
 			System.out.println("Needs security checks");
-			if (!(request.getHeaders().containsKey("Authorization") || request.getQueryParams().containsKey("Authorization"))) {
+			if (request.getHeaders().containsKey("Authorization") || request.getQueryParams().containsKey("Authorization")) {
 				if(request.getHeaders().containsKey("Authorization")) {
 					String header = request.getHeaders().getFirst("Authorization");
 					token = getToken(header, helper);
