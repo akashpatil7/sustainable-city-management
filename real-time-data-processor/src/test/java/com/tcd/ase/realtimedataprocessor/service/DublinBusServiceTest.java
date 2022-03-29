@@ -72,6 +72,6 @@ public class DublinBusServiceTest {
         List<DublinBusStops> emptyStops = new ArrayList<DublinBusStops>();
         Mockito.when(dublinBusStopsRepository.findAll()).thenReturn(emptyStops);
 
-        dublinBusService.processRealTimeDataForDublinBikes();
+        dublinBusService.processRealTimeDataForDublinBus();
     }
 }
