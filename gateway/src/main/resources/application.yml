@@ -45,14 +45,14 @@ spring.cloud.gateway.routes:
 - id: trends
   uri: lb://trends
   predicates:
-  - Path=/getCurrentHourAverages/**, /getHourlyAverageForAllStation/**, /getRecommendations/**
+  - Path=/trends/**, /recommendations/**
   filters:
   - AuthenticationGatewayFilter
 
 - id: real-time-data-processor
   uri: lb://real-time-data-processor
   predicates:
-  - Path=/realTimeData/**
+  - Path=/getRealTimeDataForAqi/**,/getRealTimeDataForBike/**,/getRealTimeDataForPedestrian/**,/getRealTimeDataForBus/*
   filters:
   - AuthenticationGatewayFilter
 
