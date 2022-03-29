@@ -102,7 +102,7 @@ public class PedestrianService {
     }
 
     private PedestrianCount[] getPedestrianCounts(JSONObject obj, Long timestamp) {
-        PedestrianCount[] counts = null;
+        PedestrianCount[] counts = new PedestrianCount[]{};
         try {
             List<PedestrianInfoDAO> streets = pedestrianInfoRepository.findAll();
             counts = new PedestrianCount[streets.size()];

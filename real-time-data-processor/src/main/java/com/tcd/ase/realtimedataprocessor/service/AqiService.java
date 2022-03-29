@@ -36,7 +36,7 @@ public class AqiService {
         saveDataToDB(aqi);
     }
 
-    private Aqi[] getAqiDataFromExternalSource() {
+    public Aqi[] getAqiDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();
@@ -46,6 +46,9 @@ public class AqiService {
     }
 
     public Aqi[] getIrishStations(Aqi[] stations) {
+        if (stations == null) {
+            return null;
+        }
         Aqi[] irishStations = Arrays.stream(stations).filter(s -> s.getStation().getCountry().toString().contains("IE")).toArray(Aqi[]::new);
         return irishStations;
     }
