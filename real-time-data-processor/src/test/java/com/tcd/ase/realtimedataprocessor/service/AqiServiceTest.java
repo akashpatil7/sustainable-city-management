@@ -1,7 +1,12 @@
 package com.tcd.ase.realtimedataprocessor.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import com.google.inject.spi.StaticInjectionRequest;
 import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataStation;
 import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataTime;
 import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
 import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
@@ -14,6 +19,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
+import static org.mockito.ArgumentMatchers.*;
+
+import java.util.ArrayList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AqiServiceTest {
@@ -45,11 +53,36 @@ public class AqiServiceTest {
 
         AqiDAO aqiDAO = new AqiDAO();
         aqiDAO.setLastUpdatedTime(Long.getLong("1643305203"));
+        
+        AqiService spiedService = Mockito.spy(aqiService);
+        Mockito.doReturn(aqis).when(spiedService).getAqiDataFromExternalSource();
+        Mockito.doReturn(java.util.Optional.of(aqiDAO)).when(aqiRepository).findFirstByOrderByLastUpdatedTimeDesc();
+        spiedService.processRealTimeDataForAqi();
+    }
 
-        Mockito.when(restTemplateMock.getForObject("https://api.waqi.info/search/?token=6405c2482f44780e0d1eb1387bc9ee17edfd0b51&keyword=dublin", Aqi[].class))
-                .thenReturn(aqis);
-        Mockito.when(aqiRepository.findFirstByOrderByLastUpdatedTimeDesc()).thenReturn(java.util.Optional.of(aqiDAO));
+    @Test
+    public void testGetIrishStations(){
+        Aqi irishStation = new Aqi();
+        DublinAqiDataStation irishLoc = new DublinAqiDataStation();
+        irishLoc.setCountry("IE");
+        irishStation.setStation(irishLoc);
 
-        aqiService.processRealTimeDataForAqi();
+        Aqi notIrishStation = new Aqi();
+        DublinAqiDataStation notIrishLoc = new DublinAqiDataStation(); 
+        notIrishLoc.setCountry("USA"); 
+        notIrishStation.setStation(notIrishLoc);     
+        Aqi[] aqis = new Aqi[2];
+        aqis[0] = notIrishStation;
+        aqis[1] = irishStation;
+
+        Aqi[] resp = aqiService.getIrishStations(aqis);
+        assertEquals(resp[0], aqis[1]);
+
+        resp = aqiService.getIrishStations(null);
+        assertNull(resp);
+
+        Aqi[] emptyAqis = new Aqi[]{};
+        resp = aqiService.getIrishStations(emptyAqis);
+        assertEquals(resp.length, 0);
     }
 }

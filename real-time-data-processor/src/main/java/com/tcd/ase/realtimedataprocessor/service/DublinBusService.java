@@ -36,20 +36,18 @@ import java.util.stream.Collectors;
 public class DublinBusService {
 
     @Autowired
-    private DublinBusRoutesRepository dublinBusRoutesRepository;
+    DublinBusRoutesRepository dublinBusRoutesRepository;
 
     @Autowired
-    private DublinBusStopsRepository dublinBusStopsRepository;
+    DublinBusStopsRepository dublinBusStopsRepository;
 
     @Autowired
-    private DublinBusHistoricalRepository dublinBusHistoricalRepository;
+    DublinBusHistoricalRepository dublinBusHistoricalRepository;
 
     @Autowired
-    private DublinBusProducer dublinBusProducer;
+    DublinBusProducer dublinBusProducer;
 
-    @Autowired
-    @Qualifier("dublinBus")
-    private NewTopic dublinBusTopic;
+    RestTemplate restTemplate = new RestTemplate();
 
     private List<DublinCityBusRoutes> dublinCityBusRoutes = new ArrayList<>();
     private List<DublinBusStops> dublinBusStopList = new ArrayList<>();
@@ -59,11 +57,11 @@ public class DublinBusService {
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         List<DublinBusHistorical> dublinBusHistorical = getDublinBusDataFromExternalSource();
-        dublinBusProducer.sendMessage(dublinBusTopic.name(), dublinBusHistorical);
+        dublinBusProducer.sendMessage(DataIndicatorEnum.DUBLIN_BUS.getTopic(), dublinBusHistorical);
         saveDataToDB(dublinBusHistorical);
     }
 
-    public List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
+    private List<DublinBusHistorical> getDublinBusDataFromExternalSource() {
         dublinCityBusRoutes = dublinBusRoutesRepository.findAll();
         // get list of all bus stops
         dublinBusStopList = dublinBusStopsRepository.findAll();
@@ -78,7 +76,6 @@ public class DublinBusService {
         headers.set("x-api-key","2de8ef2694a24e1c82fa92aaeba7d351");
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<DublinBus> dublinBusResponseEntity =
                 restTemplate.exchange(DataIndicatorEnum.DUBLIN_BUS.getEndpoint(), HttpMethod.GET, httpEntity, DublinBus.class, 1);
 
@@ -92,14 +89,22 @@ public class DublinBusService {
 
     private List<Entity> filterByRoutes(Set<String> dublinBusRouteIdsList, ResponseEntity<DublinBus> dublinBusResponseEntity) {
         // filter API response data for dublin bus agency only
-        return dublinBusResponseEntity.getBody().getEntity().stream()
-                .filter(x -> dublinBusRouteIdsList.contains(x.getTripUpdate().getTrip().getRouteId()))
-                .collect(Collectors.toList());
+        if (dublinBusResponseEntity == null) {
+            return null;
+        }
+        else {
+            return dublinBusResponseEntity.getBody().getEntity().stream()
+            .filter(x -> dublinBusRouteIdsList.contains(x.getTripUpdate().getTrip().getRouteId()))
+            .collect(Collectors.toList());
+        }
     }
 
     List<DublinBusHistorical> buildDublinBusEntities(List<Entity> dublinBusEntities) {
 
         List<DublinBusHistorical> updatedDublinBusEntities = new ArrayList<>();
+        if (dublinBusEntities == null) {
+            return updatedDublinBusEntities;
+        }
         for (Entity busEntity: dublinBusEntities ) {
             Trip currentTrip = busEntity.getTripUpdate().getTrip();
             ArrayList<StopTimeUpdate> currentTripStopSequence = busEntity.getTripUpdate().getStopTimeUpdate();
