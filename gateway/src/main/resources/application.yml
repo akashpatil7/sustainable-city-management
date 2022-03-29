@@ -52,7 +52,7 @@ spring.cloud.gateway.routes:
 - id: real-time-data-processor
   uri: lb://real-time-data-processor
   predicates:
-  - Path=/getRealTimeDataForAqi/**,/getRealTimeDataForBike/**,/getRealTimeDataForPedestrian/**,/getRealTimeDataForBus/*
+  - Path=/getRealTimeDataForAqi ,/getRealTimeDataForBike,/getRealTimeDataForPedestrian,/getRealTimeDataForBus
   filters:
   - AuthenticationGatewayFilter
 
