@@ -26,20 +26,14 @@ public class AuthenticationFilter implements GatewayFilter {
 		String token = "";
 		if (routerValidator.useSecurity(request)) {
 			System.out.println("Needs security checks");
-			if (!request.getHeaders().containsKey("Authorization")) {
-				boolean hasAuthorization = hasParamAuthorization(request, helper);
-				if (hasAuthorization) {
-					response.setStatusCode(HttpStatus.UNAUTHORIZED);
-					return response.setComplete();
+			if (!(request.getHeaders().containsKey("Authorization") || request.getQueryParams().containsKey("Authorization"))) {
+				if(request.getHeaders().containsKey("Authorization")) {
+					String header = request.getHeaders().getFirst("Authorization");
+					token = getToken(header, helper);
 				}
 				else {
-					token = request.getQueryParams().getFirst("Authorization");
-					exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
+					token = getTokenFromQueryParam(request, helper);
 				}
-			}
-			else {
-				String header = request.getHeaders().getFirst("Authorization");
-				token = getToken(header, helper);
 				if (token != "") {
 					exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
 				}
@@ -48,11 +42,15 @@ public class AuthenticationFilter implements GatewayFilter {
 					return response.setComplete();
 				}
 			}
+			else {
+				response.setStatusCode(HttpStatus.UNAUTHORIZED);
+				return response.setComplete();
+			}
 		}
 		return chain.filter(exchange);
 	}
 
-	public String getToken(String header, JWTokenHelper helper ) {
+	public String getToken(String header, JWTokenHelper helper) {
 		if (header != null && header.contains("Bearer")) {
 			String token = header.split(" ")[1].trim();
 			if (helper.isValid(token)) {
@@ -61,23 +59,26 @@ public class AuthenticationFilter implements GatewayFilter {
 				return "";
 			}
 		} else {
+			
 			return "";
 		}
 	}
 
-	public boolean hasParamAuthorization(ServerHttpRequest request, JWTokenHelper helper) {
+	public String getTokenFromQueryParam(ServerHttpRequest request, JWTokenHelper helper) {
 		System.out.println("Has no header");
 		if(request.getQueryParams().containsKey("Authorization")) {
-			System.out.println("Has no header");
 			String token = request.getQueryParams().get("Authorization").get(0);
 			if (helper.isValid(token)) {
 				System.out.println("Is param!");
-				return true;
+				return token;
 			}
-			System.out.println("No param. " + token);
-			return false;
+			else {
+				return "";
+			}
 		}
-		System.out.println("No param.");
-		return false;
+		else {
+			return "";
+		}
+			
 	}
 }
