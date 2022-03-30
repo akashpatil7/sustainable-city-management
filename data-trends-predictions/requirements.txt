@@ -1,3 +1,4 @@
+werkzeug==2.0.3
 pandas==1.4.0
 py-eureka-client==0.10.2
 pymongo==4.0.1
