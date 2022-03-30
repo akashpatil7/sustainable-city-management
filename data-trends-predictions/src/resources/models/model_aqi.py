@@ -4,13 +4,18 @@ import pickle
 from collections import defaultdict
 import time
 from datetime import datetime
-
+from datetime import timedelta
+from src.utils import top_aqi_locations
+from collections import OrderedDict
+import json
 from src.common.response import Response
 from enum import Enum
 
 class EndPointMethods(Enum):
     getAqiPredictions = "get_aqi_predictions"
     trainModel = "train_aqi_model"
+    getAqiRecommendationFromPrediction = "get_aqi_recommendation_from_prediction"
+    getAqiRecommendationFromFuturePrediction = "get_aqi_recommendation_from_future_prediction"
 
 class AqiModel():
     def __init__(self, db):
@@ -32,10 +37,10 @@ class AqiModel():
             return Response.not_found_404("Aqi Model: " + action +
                                         " not found")
     
-    def get_testing_data_using_epoch(self):
+    def get_testing_data_using_epoch(self, currentTime):
         epoch_times = []
         for i in range(len(self.STATION_TO_ID.values())):
-            epoch_times.append(time.time())
+            epoch_times.append(currentTime)
         
         return np.column_stack((list(self.STATION_TO_ID.values()), epoch_times))
 
@@ -76,13 +81,51 @@ class AqiModel():
         else:
             return None
 
-    def get_aqi_predictions(self):
+    def get_predictions(self):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "aqi"})['model']
 
         model = pickle.loads(model_)
 
-        x_test = self.get_testing_data_using_epoch()
+        x_test = self.get_testing_data_using_epoch(time.time())
+        preds = model.predict(x_test)
+
+        predictions_ = defaultdict(dict)
+
+        # assign the predictions to each staion
+        for x, p in zip(x_test, preds):
+            index_of_loc = list(self.STATION_TO_ID.values()).index(x[0])
+            loc = list(self.STATION_TO_ID.keys())[index_of_loc]
+            predictions_[loc] = p
+        return predictions_
+
+    def get_aqi_predictions(self):
+        predictions_ = self.get_predictions()
+        return Response.send_json_200(predictions_)
+
+    def get_aqi_recommendation_from_prediction(self):
+        predictions_ = self.get_predictions()
+        dict(sorted(predictions_.items(), key=lambda item: item[1]))
+        highest_aqi_station_data = list(predictions_.items())[:5]
+        lowest_aqi_station_data = list(predictions_.items())[-5:]
+        lowest_aqi_station_data.reverse()
+
+        data = {
+            'highestAqiStationData': highest_aqi_station_data,
+            'lowestAqiStationData': lowest_aqi_station_data
+        }
+        return Response.send_json_200(data)
+
+    def get_aqi_recommendation_from_future_prediction(self):
+        collection = self.db.get_collection("predictive_models")
+        model_ = collection.find_one({"indicator": "aqi"})['model']
+
+        model = pickle.loads(model_)
+
+        dtime = datetime.now() + timedelta(minutes=10)
+        unixtime = time. mktime(dtime.timetuple())
+
+        x_test = self.get_testing_data_using_epoch(unixtime)
         preds = model.predict(x_test)
 
         predictions_ = defaultdict(dict)
@@ -93,4 +136,14 @@ class AqiModel():
             loc = list(self.STATION_TO_ID.keys())[index_of_loc]
             predictions_[loc] = p
 
-        return Response.send_json_200(predictions_)
+        dict(sorted(predictions_.items(), key=lambda item: item[1]))
+        highest_aqi_station_data = list(predictions_.items())[:5]
+        lowest_aqi_station_data = list(predictions_.items())[-5:]
+        lowest_aqi_station_data.reverse()
+
+        data = {
+            'highestAqiStationData': highest_aqi_station_data,
+            'lowestAqiStationData': lowest_aqi_station_data
+        }
+
+        return Response.send_json_200(data)

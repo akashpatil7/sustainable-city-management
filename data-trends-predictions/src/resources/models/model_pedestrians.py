@@ -4,12 +4,14 @@ from sklearn.linear_model import LinearRegression
 import pickle
 import time
 from datetime import datetime
-
+from datetime import timedelta
 from src.common.response import Response
 from enum import Enum
 
 class EndPointMethods(Enum):
     getPedestrianPredictions = "get_pedestrian_predictions"
+    getPedestrianRecommendationFromPrediction = "get_recommendation_pedestrian_predictions"
+    getPedestrianRecommendationFromFuturePrediction = "get_recommendation_pedestrian_future_predictions"
 
 class PedestrianModel():
     def __init__(self, db):
@@ -34,10 +36,10 @@ class PedestrianModel():
                                         " not found")
 
 
-    def get_testing_data_using_epoch(self):
+    def get_testing_data_using_epoch(self, currentTime):
         epoch_times = []
         for i in range(len(self.LOCATION_TO_ID.values())):
-            epoch_times.append(time.time())
+            epoch_times.append(currentTime)
         
         return np.column_stack((list(self.LOCATION_TO_ID.values()), epoch_times))
 
@@ -69,22 +71,71 @@ class PedestrianModel():
             return None
 
 
-    def get_pedestrian_predictions(self):
+    def get_predictions(self):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "pedestrian"})['model']
 
         model = pickle.loads(model_)
 
-        x_test = self.get_testing_data_using_epoch()
+        x_test = self.get_testing_data_using_epoch(time.time())
         preds = model.predict(x_test)
 
         predictions_ = defaultdict(dict)
-        
+
         # assign the predictions to each location
         for x, p in zip(x_test, preds):
             index_of_loc = list(self.LOCATION_TO_ID.values()).index(x[0])
             loc = list(self.LOCATION_TO_ID.keys())[index_of_loc]
-            predictions_[loc] = p   
+            predictions_[loc] = p
 
+        return predictions_
+
+    def get_pedestrian_predictions(self):
+        predictions_ = self.get_predictions()
         return Response.send_json_200(predictions_)
 
+    def get_recommendation_pedestrian_predictions(self):
+        predictions_ = self.get_predictions()
+        dict(sorted(predictions_.items(), key=lambda item: item[1]))
+        highest_count_pedestrian_data = list(predictions_.items())[:5]
+        lowest_count_pedestrian_data = list(predictions_.items())[-5:]
+        lowest_count_pedestrian_data.reverse()
+
+        data = {
+            'lowestCountPedestrianData': lowest_count_pedestrian_data,
+            'highestCountPedestrianData': highest_count_pedestrian_data
+        }
+
+        return Response.send_json_200(data)
+
+    def get_recommendation_pedestrian_future_predictions(self):
+        collection = self.db.get_collection("predictive_models")
+        model_ = collection.find_one({"indicator": "pedestrian"})['model']
+
+        model = pickle.loads(model_)
+
+        dtime = datetime.now() + timedelta(minutes=10)
+        unixtime = time.mktime(dtime.timetuple())
+
+        x_test = self.get_testing_data_using_epoch(unixtime)
+        preds = model.predict(x_test)
+
+        predictions_ = defaultdict(dict)
+
+        # assign the predictions to each location
+        for x, p in zip(x_test, preds):
+            index_of_loc = list(self.LOCATION_TO_ID.values()).index(x[0])
+            loc = list(self.LOCATION_TO_ID.keys())[index_of_loc]
+            predictions_[loc] = p
+
+        dict(sorted(predictions_.items(), key=lambda item: item[1]))
+        highest_count_pedestrian_data = list(predictions_.items())[:5]
+        lowest_count_pedestrian_data = list(predictions_.items())[-5:]
+        lowest_count_pedestrian_data.reverse()
+
+        data = {
+            'lowestCountPedestrianData': lowest_count_pedestrian_data,
+            'highestCountPedestrianData': highest_count_pedestrian_data
+        }
+
+        return Response.send_json_200(data)
