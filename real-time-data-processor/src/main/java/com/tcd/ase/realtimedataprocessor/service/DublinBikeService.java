@@ -29,7 +29,9 @@ public class DublinBikeService {
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
+        log.info("[BIKE] Processing");
         DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
+
         producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
         saveDataToDB(dublinBikes);
     }
@@ -42,18 +44,18 @@ public class DublinBikeService {
     }
 
     private void saveDataToDB(DublinBike[] data) {
-        log.info("Comparing the data from the database");
+        log.info("[BIKE] Updating database");
         try {
             Long currentEpoch = convertDateToTimestamp(data[0].getHarvest_time());
             DublinBikeDAO latestBikeFromDB = dublinBikesRepository.findFirstByOrderByHarvestTimeDesc().orElse(null);
 
             if (latestBikeFromDB != null && currentEpoch > latestBikeFromDB.getHarvestTime()) {
-                log.info("New Data found");
+                log.info("[BIKE] New Data found");
                 dublinBikesRepository.saveAll(convertData(data));
                 //this.sink.tryEmitNext(bikeResponseDTO);
             }
         } catch (Exception e) {
-            log.error("Error occurred while parsing response from dublin bikes "+ e.getMessage());
+            log.error("[BIKE] Error occurred while parsing response from dublin bikes "+ e.getMessage());
         }
     }
 

@@ -6,6 +6,7 @@ import com.tcd.ase.realtimedataprocessor.models.Aqi;
 import com.tcd.ase.realtimedataprocessor.models.Aqis;
 import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
 import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @Service
+@Log4j2
 public class AqiService {
 
     @Autowired
@@ -25,11 +27,11 @@ public class AqiService {
     @Autowired
     AqiRepository aqiRepository;
 
-    private static final Logger log = LogManager.getLogger(AqiProducer.class);
-
     @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {
+        log.info("[AQI] Processing");
         Aqi[] aqi = getAqiDataFromExternalSource();
+
         producer.sendMessage(DataIndicatorEnum.AQI.getTopic(), aqi);
         saveDataToDB(aqi);
     }
@@ -39,6 +41,7 @@ public class AqiService {
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();
         Aqi[] irishAqis = getIrishStations(aqis);
+        //log.info("the number irish number " + irishAqis.length);
         return irishAqis;
     }
 
@@ -51,18 +54,18 @@ public class AqiService {
     }
 
     private void saveDataToDB(Aqi[] data) {
-        log.info("Comparing the data from the database");
+        log.info("[AQI] Updating Database");
         try {
             Long currentEpoch = data[0].getTime().getVTime();
             AqiDAO latestAqiFromDB = aqiRepository.findFirstByOrderByLastUpdatedTimeDesc().orElse(null);
 
             if (latestAqiFromDB == null || currentEpoch > latestAqiFromDB.getLastUpdatedTime()) {
-                log.info("New Data found");
-                log.info(convertData(data));
+                log.info("[AQI] New Data found");
+                //log.info(convertData(data));
                 aqiRepository.saveAll(convertData(data));
             }
         } catch (Exception e) {
-            log.error("Error occurred while parsing response from aqi "+ e.getMessage());
+            log.error("[AQI] Error occurred while parsing response from aqi "+ e.getMessage());
         }
     }
 

@@ -26,6 +26,8 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
+logging.level.org.apache.kafka: OFF
+
 spring.data.mongodb.uri: mongodb+srv://admin:admin@cluster1.varva.mongodb.net/city_dashboard
 spring.data.mongodb.database: city_dashboard
 

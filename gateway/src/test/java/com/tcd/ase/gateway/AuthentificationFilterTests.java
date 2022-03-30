@@ -2,6 +2,7 @@ package com.tcd.ase.gateway;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -45,13 +46,13 @@ public class AuthentificationFilterTests {
         when(helper.isValid(token)).thenReturn(true); 
         AuthenticationFilter filter = new AuthenticationFilter();
 
-        boolean resp = filter.hasParamAuthorization(noAuthReq, helper);
-        assertFalse(resp);
+        String resp = filter.getTokenFromQueryParam(noAuthReq, helper);
+        assertEquals(resp,"");
 
-        resp = filter.hasParamAuthorization(invalidReq, helper);
-        assertFalse(resp);
+        resp = filter.getTokenFromQueryParam(invalidReq, helper);
+        assertEquals(resp,"");
 
-        resp = filter.hasParamAuthorization(validReq, helper);
-        assertTrue(resp);
+        resp = filter.getTokenFromQueryParam(validReq, helper);
+        assertNotEquals(resp,"");
     }
 }
