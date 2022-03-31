@@ -89,7 +89,7 @@ class AqiModel():
 
             print(datetime.fromtimestamp(x[1]))
             doc = self.db.get_collection("Aqi").find_one({"stationName": loc})
-            obj = {"aqi": p, "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
+            obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
             response_predictions.append(obj)
 
         return Response.send_json_200(response_predictions)
