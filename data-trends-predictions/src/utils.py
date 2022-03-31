@@ -1,8 +1,6 @@
 import math
 import queue
-import time
 import numpy as np
-
 
 def closest_bike_stand(location, bike_station_data, used_stands):
     closest_stand_dist = float('inf')
@@ -76,9 +74,9 @@ def most_delayed_buses(buses):
             most_delayed.put((avg_delay, bus["routeLong"]))
     return most_delayed.queue
 
-def get_testing_data_using_epoch(x_values):
+def get_testing_data_using_epoch(x_values, unixTime):
     epoch_times = []
     for i in range(len(x_values.values())):
-        epoch_times.append(time.time())
+        epoch_times.append(unixTime)
     
     return np.column_stack((list(x_values.values()), epoch_times))
