@@ -1,16 +1,18 @@
-from flask import jsonify
 import numpy as np
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import pickle
-from datetime import datetime
+import time
+from datetime import timedelta
+from datetime import date, datetime
 from src.utils import get_testing_data_using_epoch
-
 from src.common.response import Response
 from enum import Enum
 
 class EndPointMethods(Enum):
     getAqiPredictions = "get_aqi_predictions"
     trainModel = "train_aqi_model"
+    getAqiRecommendationFromPrediction = "get_aqi_recommendation_from_prediction"
+    getAqiRecommendationFromFuturePrediction = "get_aqi_recommendation_from_future_prediction"
 
 class AqiModel():
     def __init__(self, db):
@@ -33,15 +35,12 @@ class AqiModel():
             return Response.not_found_404("Aqi Model: " + action +
                                         " not found")
     
-
     def train_aqi_model(self):
         # get data from db
         collection = self.db.get_collection("Aqi")
         
         data = list(collection.find())
 
-        print(len(data))
-        
         if data != []:
             stations = []
             aqi = []
@@ -57,7 +56,7 @@ class AqiModel():
             y = np.array(aqi)
 
             # train model with x features being the station name and the time, and the y being the api
-            model = LinearRegression()
+            model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y)
 
             to_db = pickle.dumps(model)
@@ -71,14 +70,13 @@ class AqiModel():
 
             return Response.send_json_200(info._UpdateResult__raw_result)
     
-
-    def get_aqi_predictions(self):
+    def get_predictions(self, unixTime):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "aqi"})['model']
 
         model = pickle.loads(model_)
 
-        x_test = get_testing_data_using_epoch(self.STATION_TO_ID)
+        x_test = get_testing_data_using_epoch(self.STATION_TO_ID, unixTime)
         preds = model.predict(x_test)
 
         response_predictions = []
@@ -86,10 +84,43 @@ class AqiModel():
         # assign the predictions to each staion
         for x, p in zip(x_test, preds):
             index_of_loc = list(self.STATION_TO_ID.values()).index(x[0])
-            loc = list(self.STATION_TO_ID.keys())[index_of_loc]
-
+            loc = list(self.STATION_TO_ID.keys())[index_of_loc] 
             doc = self.db.get_collection("Aqi").find_one({"stationName": loc})
-            obj = {"aqi": p, "stationName": loc, "latitude": doc['latitude'], "longitude": doc['longitude'], "lastUpdatedTime": x[1], "id": doc['_id']}
+            obj = {"aqi": round(p), "stationName" : loc, "latitude" : doc['latitude'], "longitude" : doc['longitude']}
+            #obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
             response_predictions.append(obj)
+        return response_predictions
 
+    def get_aqi_predictions(self):
+        response_predictions = self.get_predictions()
         return Response.send_json_200(response_predictions)
+
+    def get_aqi_recommendation_from_prediction(self):
+        response_predictions = self.get_predictions(time.time())
+        sortedList = sorted(response_predictions, key=lambda d: d["aqi"])
+        lowest_aqi_station_data = sortedList[:5]
+        highest_aqi_station_data = sortedList[-5:]
+        highest_aqi_station_data.reverse()
+
+        data = {
+            'lowestAqiStationData': lowest_aqi_station_data,
+            'highestAqiStationData': highest_aqi_station_data
+        }
+        return Response.send_json_200(data)
+
+    def get_aqi_recommendation_from_future_prediction(self):
+        dtime = datetime.now() + timedelta(minutes=10)
+        unixtime = time.mktime(dtime.timetuple())
+
+        response_predictions = self.get_predictions(unixtime)
+        sortedList = sorted(response_predictions, key=lambda d: d["aqi"])
+        lowest_aqi_station_data = sortedList[:5]
+        highest_aqi_station_data = sortedList[-5:]
+        highest_aqi_station_data.reverse()
+
+        data = {
+            'lowestAqiStationData': lowest_aqi_station_data,
+            'highestAqiStationData': highest_aqi_station_data
+        }
+        return Response.send_json_200(data)
+

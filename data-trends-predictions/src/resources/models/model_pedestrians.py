@@ -1,14 +1,18 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import pickle
+import time
 from datetime import datetime
+from datetime import timedelta
 from src.utils import get_testing_data_using_epoch
-
 from src.common.response import Response
 from enum import Enum
 
 class EndPointMethods(Enum):
     getPedestrianPredictions = "get_pedestrian_predictions"
+    getPedestrianRecommendationFromPrediction = "get_recommendation_pedestrian_predictions"
+    getPedestrianRecommendationFromFuturePrediction = "get_recommendation_pedestrian_future_predictions"
     trainModel = 'train_pedestrian_model'
 
 class PedestrianModel():
@@ -52,7 +56,7 @@ class PedestrianModel():
             y_count = np.array(count)
 
             # train model with x features being the street name and the time, and the y being the count
-            model = LinearRegression()
+            model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y_count)
 
             to_db = pickle.dumps(model)
@@ -67,13 +71,13 @@ class PedestrianModel():
             return Response.send_json_200(info._UpdateResult__raw_result)
 
 
-    def get_pedestrian_predictions(self):
+    def get_predictions(self, unixTime):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "pedestrian"})['model']
 
         model = pickle.loads(model_)
 
-        x_test = get_testing_data_using_epoch(self.LOCATION_TO_ID)
+        x_test = get_testing_data_using_epoch(self.LOCATION_TO_ID, unixTime)
         preds = model.predict(x_test)
 
         response_predictions = []
@@ -84,8 +88,40 @@ class PedestrianModel():
             loc = list(self.LOCATION_TO_ID.keys())[index_of_loc]
 
             doc = self.db.get_collection("Pedestrian").find_one({"street": loc})
-            obj = {"count": p, "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": {}}
+            obj = {"count": round(p), "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": doc['_id']}
             response_predictions.append(obj)
+        return response_predictions
 
+    def get_pedestrian_predictions(self):
+        response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)
+
+    def get_recommendation_pedestrian_predictions(self):
+        response_predictions = self.get_predictions(time.time())
+        sortedList = sorted(response_predictions, key=lambda d: d["count"])
+        lowest_count_pedestrian_data = sortedList[:5]
+        highest_count_pedestrian_data = sortedList[-5:]
+        highest_count_pedestrian_data.reverse()
+
+        data = {
+            'lowestCountPedestrianData': lowest_count_pedestrian_data,
+            'highestCountPedestrianData': highest_count_pedestrian_data
+        }
+        return Response.send_json_200(data)
+
+    def get_recommendation_pedestrian_future_predictions(self):
+        dtime = datetime.now() + timedelta(minutes=10)
+        unixtime = time.mktime(dtime.timetuple())
+
+        response_predictions = self.get_predictions(unixtime)
+        sortedList = sorted(response_predictions, key=lambda d: d["count"])
+        lowest_count_pedestrian_data = sortedList[:5]
+        highest_count_pedestrian_data = sortedList[-5:]
+        highest_count_pedestrian_data.reverse()
+
+        data = {
+            'lowestCountPedestrianData': lowest_count_pedestrian_data,
+            'highestCountPedestrianData': highest_count_pedestrian_data
+        }
+        return Response.send_json_200(data)
 
