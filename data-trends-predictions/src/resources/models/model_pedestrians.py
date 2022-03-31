@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import pickle
 import time
 from datetime import datetime
@@ -55,7 +56,7 @@ class PedestrianModel():
             y_count = np.array(count)
 
             # train model with x features being the street name and the time, and the y being the count
-            model = LinearRegression()
+            model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y_count)
 
             to_db = pickle.dumps(model)
@@ -87,7 +88,7 @@ class PedestrianModel():
             loc = list(self.LOCATION_TO_ID.keys())[index_of_loc]
 
             doc = self.db.get_collection("Pedestrian").find_one({"street": loc})
-            obj = {"count": p, "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": {}}
+            obj = {"count": round(p), "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": {}}
             response_predictions.append(obj)
         return response_predictions
 

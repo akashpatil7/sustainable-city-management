@@ -1,13 +1,9 @@
-from flask import jsonify
 import numpy as np
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import pickle
 import time
-from datetime import datetime
 from datetime import timedelta
-from src.utils import top_aqi_locations
-from collections import OrderedDict
-import json
+from datetime import date, datetime
 from src.utils import get_testing_data_using_epoch
 from src.common.response import Response
 from enum import Enum
@@ -44,8 +40,7 @@ class AqiModel():
         collection = self.db.get_collection("Aqi")
         
         data = list(collection.find())
-        print(len(data))
-        
+
         if data != []:
             stations = []
             aqi = []
@@ -61,7 +56,7 @@ class AqiModel():
             y = np.array(aqi)
 
             # train model with x features being the station name and the time, and the y being the api
-            model = LinearRegression()
+            model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y)
 
             to_db = pickle.dumps(model)
@@ -91,8 +86,9 @@ class AqiModel():
             index_of_loc = list(self.STATION_TO_ID.values()).index(x[0])
             loc = list(self.STATION_TO_ID.keys())[index_of_loc]
 
+            #print(datetime.fromtimestamp(x[1]))
             doc = self.db.get_collection("Aqi").find_one({"stationName": loc})
-            obj = {"aqi": p, "stationName": loc, "latitude": doc['latitude'], "longitude": doc['longitude'], "lastUpdatedTime": x[1], "id": doc['_id']}
+            obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
             response_predictions.append(obj)
         return response_predictions
 
