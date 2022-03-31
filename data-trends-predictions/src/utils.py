@@ -3,7 +3,6 @@ import queue
 import time
 import numpy as np
 
-
 def closest_bike_stand(location, bike_station_data, used_stands):
     closest_stand_dist = float('inf')
     closest_stand = None
