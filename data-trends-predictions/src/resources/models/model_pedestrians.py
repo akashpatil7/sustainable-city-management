@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import pickle
 from datetime import datetime
 from src.utils import get_testing_data_using_epoch
@@ -52,7 +53,7 @@ class PedestrianModel():
             y_count = np.array(count)
 
             # train model with x features being the street name and the time, and the y being the count
-            model = LinearRegression()
+            model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y_count)
 
             to_db = pickle.dumps(model)
