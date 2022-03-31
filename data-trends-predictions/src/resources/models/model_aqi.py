@@ -70,13 +70,13 @@ class AqiModel():
 
             return Response.send_json_200(info._UpdateResult__raw_result)
     
-    def get_predictions(self):
+    def get_predictions(self, unixTime):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "aqi"})['model']
 
         model = pickle.loads(model_)
 
-        x_test = get_testing_data_using_epoch(self.STATION_TO_ID, time.time())
+        x_test = get_testing_data_using_epoch(self.STATION_TO_ID, unixTime)
         preds = model.predict(x_test)
 
         response_predictions = []
@@ -84,11 +84,10 @@ class AqiModel():
         # assign the predictions to each staion
         for x, p in zip(x_test, preds):
             index_of_loc = list(self.STATION_TO_ID.values()).index(x[0])
-            loc = list(self.STATION_TO_ID.keys())[index_of_loc]
-
-            #print(datetime.fromtimestamp(x[1]))
+            loc = list(self.STATION_TO_ID.keys())[index_of_loc] 
             doc = self.db.get_collection("Aqi").find_one({"stationName": loc})
-            obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
+            obj = {"aqi": round(p), "stationName" : loc, "latitude" : doc['latitude'], "longitude" : doc['longitude']}
+            #obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
             response_predictions.append(obj)
         return response_predictions
 
@@ -96,7 +95,7 @@ class AqiModel():
         response_predictions = self.get_predictions()
         return Response.send_json_200(response_predictions)
 
-    def get_recommendation_aqi_predictions(self):
+    def get_aqi_recommendation_from_prediction(self):
         response_predictions = self.get_predictions(time.time())
         sortedList = sorted(response_predictions, key=lambda d: d["aqi"])
         lowest_aqi_station_data = sortedList[:5]

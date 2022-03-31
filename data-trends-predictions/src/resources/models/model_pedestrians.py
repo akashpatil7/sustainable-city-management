@@ -88,7 +88,7 @@ class PedestrianModel():
             loc = list(self.LOCATION_TO_ID.keys())[index_of_loc]
 
             doc = self.db.get_collection("Pedestrian").find_one({"street": loc})
-            obj = {"count": round(p), "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": {}}
+            obj = {"count": round(p), "street": loc, "streetLatitude": doc['streetLatitude'], "streetLongitude": doc['streetLongitude'], "time": x[1], "id": doc['_id']}
             response_predictions.append(obj)
         return response_predictions
 
