@@ -36,16 +36,16 @@ public class UserLoginServiceTest {
     @Test
     public void testLogin(){
         UserLoginRequest userLoginRequest = new UserLoginRequest();
-        userLoginRequest.setEmail("admin@admin");
+        userLoginRequest.setEmail("admin@dublincity.ie");
         userLoginRequest.setPassword("admin");
 
         User user = new User();
         user.setPassword("admin");
-        user.setUserName("admin");
+        user.setUserEmail("admin@dublincity.ie");
 
         String generatedToken = "12345";
-        when(userRepository.findById(user.getUserName())).thenReturn(Optional.of(user));
-        when(jwTokenHelper.generateToken(user.getUserName())).thenReturn(generatedToken);
+        when(userRepository.findById(user.getUserEmail())).thenReturn(Optional.of(user));
+        when(jwTokenHelper.generateToken(user.getUserEmail())).thenReturn(generatedToken);
 
         ResponseEntity<Object> resp = userLoginService.login(userLoginRequest);
         assertNotNull("12345",resp.getBody());

@@ -18,7 +18,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class RealTimeDataProcessorController {
 
