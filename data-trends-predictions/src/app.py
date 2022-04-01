@@ -9,7 +9,7 @@ from src.resources.models import Models
 
 def create_app():
 	# INIT Flask App
-	app = Flask(__name__)
+	app = Flask(__name__)	
 
 	# INIT Configs
 	app.config.from_pyfile('settings.py')

@@ -2,7 +2,7 @@ server.port: 8005
 spring.application.name: real-time-data-processor
 app.eureka-server: localhost
 app.kafka-server: localhost
-
+app.simulationservice.serviceId: trends
 eureka:
   client:
     serviceUrl:

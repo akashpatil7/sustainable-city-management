@@ -1,5 +1,6 @@
 package com.tcd.ase.realtimedataprocessor.service;
 
+import com.netflix.discovery.EurekaClient;
 import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
 import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.Aqi;
@@ -26,6 +27,9 @@ public class AqiService {
 
     @Autowired
     AqiRepository aqiRepository;
+    
+    @Autowired
+    EurekaClient eurekaClient;
 
     @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {

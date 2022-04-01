@@ -1,14 +1,20 @@
 package com.tcd.ase.realtimedataprocessor.service;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import com.tcd.ase.realtimedataprocessor.entity.DublinBikeDAO;
+import com.tcd.ase.realtimedataprocessor.entity.SimulatedData;
 import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
 import com.tcd.ase.realtimedataprocessor.models.DublinBike;
 import com.tcd.ase.realtimedataprocessor.producers.DublinBikesProducer;
 import com.tcd.ase.realtimedataprocessor.repository.DublinBikesRepository;
+import com.tcd.ase.realtimedataprocessor.repository.SimulationRepository;
+
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,17 +32,45 @@ public class DublinBikeService {
 
     @Autowired
     DublinBikesRepository dublinBikesRepository;
+    
+    @Autowired
+    SimulationRepository repository;
+    
+    @Autowired
+    EurekaClient eurekaClient;
+    
+    @Value("${app.simulationservice.serviceId}")
+    private String simulationService;
 
     @Scheduled(fixedRate = 60000)
     public void processRealTimeDataForDublinBikes() {
         log.info("[BIKE] Processing");
-        DublinBike[] dublinBikes = getDublinBikeDataFromExternalSource();
-
+        SimulatedData simulated = repository.findAll().get(0);
+        DublinBike[] dublinBikes;
+        if(simulated.isSimulated()) {
+        	log.info("Staring simulation");
+        	dublinBikes = getDublinBikeDataFromSimulatedSource();
+        }
+        else {
+        	log.info("Staring actual data");
+        	dublinBikes = getDublinBikeDataFromExternalSource();
+        }
         producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
         saveDataToDB(dublinBikes);
     }
 
-    private DublinBike[] getDublinBikeDataFromExternalSource() {
+    private DublinBike[] getDublinBikeDataFromSimulatedSource() {
+    	log.info("=== In simulation data generation method === ");
+    	InstanceInfo instanceInfo = eurekaClient.getApplication(simulationService).getInstances().get(0);
+    	String url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/" + "models/bikes/get_bikes_predictions";
+    	log.info(url);
+    	RestTemplate restTemplate = new RestTemplate();
+        DublinBike[] dublinBikes = restTemplate.getForObject(DataIndicatorEnum.DUBLIN_BIKES.getEndpoint(), DublinBike[].class);
+        log.info(dublinBikes.toString());
+        return dublinBikes;
+	}
+
+	private DublinBike[] getDublinBikeDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         DublinBike[] dublinBikes = restTemplate.getForObject(DataIndicatorEnum.DUBLIN_BIKES.getEndpoint(), DublinBike[].class);
         log.info(dublinBikes.toString());
