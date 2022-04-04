@@ -13,6 +13,8 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 from datetime import datetime, timedelta
+from .DublinBike import DublinBike
+import json
 
 class EndPointMethods1(Enum):
     get_bikes_predictions = "get_bikes_predictions"
@@ -133,7 +135,25 @@ class BikesModel():
         test_poly = PolynomialFeatures(4)
         test_X_poly_2 = test_poly.fit_transform(test_array)
         prediction = model.predict(test_X_poly_2)
-        return math.ceil(prediction[0])
+        predicted_available_bikes = math.ceil(prediction[0])
+        
+        bikesPrediction = DublinBike()
+        bikesPrediction.setId(0)
+        bikesPrediction.setHarvestTime(None)
+        bikesPrediction.setStationId(21)
+        bikesPrediction.setAvailableBikeStands(30-predicted_available_bikes)
+        bikesPrediction.setBikeStands(30)
+        bikesPrediction.setAvailableBikes(predicted_available_bikes)
+        bikesPrediction.setBanking(None)
+        bikesPrediction.setBonus(None)
+        bikesPrediction.setLastUpdate(None)
+        bikesPrediction.setStatus("Open")
+        bikesPrediction.setAddress("Leinster Street South")
+        bikesPrediction.setName("LEINSTER STREET SOUTH")
+        bikesPrediction.setLatitude(53.342178)
+        bikesPrediction.setLongitude(-6.254485)
+        return Response.send_json_200(bikesPrediction.__dict__)
+        # return jsonify(json.dumps(bikesPrediction.__dict__))
 
     def last_3_months_bikes_data_processed(self):
         #TODO
