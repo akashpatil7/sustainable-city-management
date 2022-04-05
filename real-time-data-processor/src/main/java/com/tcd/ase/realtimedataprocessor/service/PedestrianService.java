@@ -8,6 +8,7 @@ import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
 import com.tcd.ase.realtimedataprocessor.producers.PedestrianProducer;
 import com.tcd.ase.realtimedataprocessor.repository.PedestrianInfoRepository;
 import com.tcd.ase.realtimedataprocessor.repository.PedestrianRepository;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -30,7 +31,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Log4j2
 @Service
 public class PedestrianService {
 
@@ -43,15 +44,15 @@ public class PedestrianService {
     @Autowired
     PedestrianInfoRepository pedestrianInfoRepository;
 
-    private static final Logger log = LogManager.getLogger(PedestrianProducer.class);
-
     public Resource loadEmployeesWithClassPathResource() {
         return new ClassPathResource("DublinStreetsLatLon.json");
     }
 
     @Scheduled(fixedRate = 360000)
     public void processRealTimeDataForPedestrian() {
+        log.info("[PEDESTRIAN] Processing");
         PedestrianCount[] pedestrian = getPedestrianDataFromExternalSource();
+
         producer.sendMessage(DataIndicatorEnum.PEDESTRIAN.getTopic(), pedestrian);
         saveDataToDB(pedestrian);
     }
@@ -101,7 +102,7 @@ public class PedestrianService {
     }
 
     private PedestrianCount[] getPedestrianCounts(JSONObject obj, Long timestamp) {
-        PedestrianCount[] counts = null;
+        PedestrianCount[] counts = new PedestrianCount[]{};
         try {
             List<PedestrianInfoDAO> streets = pedestrianInfoRepository.findAll();
             counts = new PedestrianCount[streets.size()];
@@ -135,18 +136,18 @@ public class PedestrianService {
     }
 
     private void saveDataToDB(PedestrianCount[] data) {
-        log.info("Comparing the data from the database");
+        log.info("[PEDESTRIAN] Updating database");
         try {
             Long currentEpoch = data[0].getTime();
             PedestrianDAO latestPedestrianFromDB = pedestrianRepository.findFirstByOrderByTimeDesc().orElse(null);
 
             if (latestPedestrianFromDB == null || currentEpoch > latestPedestrianFromDB.getTime()) {
-                log.info("New Data found");
+                log.info("[PEDESTRIAN] New Data found");
                 log.info(convertData(data));
                 pedestrianRepository.saveAll(convertData(data));
             }
         } catch (Exception e) {
-            log.error("Error occurred while parsing response from pedestrian " + e.getMessage());
+            log.error("[PEDESTRIAN] Error occurred while parsing response from pedestrian " + e.getMessage());
         }
     }
 

@@ -16,7 +16,7 @@ public class DublinBikesConsumer {
 
     @KafkaListener(topics = "dublin_bike", groupId = "mygroup")
     public void consume(DublinBike[] message) {
-        log.info(String.format("#### -> Consumed message -> %s", message));
+        log.info("[BIKE] Consumed Message of " + message.length + " elements");
         this.bikeSink.tryEmitNext(message);
     }
 }
