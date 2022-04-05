@@ -45,7 +45,7 @@ spring.cloud.gateway.routes:
 - id: trends
   uri: lb://trends
   predicates:
-  - Path=/trends/**, /recommendations/**
+  - Path=/trends/**, /recommendations/**, models/**
   filters:
   - AuthenticationGatewayFilter
 

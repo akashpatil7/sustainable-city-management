@@ -21,19 +21,19 @@ class DublinBike:
         self.id = id  
     
     def setHarvestTime(self, harvestTime):
-        self.harvestTime = harvestTime
+        self.harvest_time = harvestTime
     
     def setStationId(self, stationId):
-        self.stationId = stationId
+        self.station_id = stationId
     
     def setAvailableBikeStands(self, availableBikeStands):
-        self.availableBikeStands = availableBikeStands
+        self.available_bike_stands = availableBikeStands
 
     def setBikeStands(self, bikeStands):
-        self.bikeStands = bikeStands  
+        self.bike_stands = bikeStands  
     
     def setAvailableBikes(self, availableBikes):
-        self.availableBikes = availableBikes
+        self.available_bikes = availableBikes
     
     def setBanking(self, banking):
         self.banking = banking
@@ -42,7 +42,7 @@ class DublinBike:
         self.bonus = bonus
 
     def setLastUpdate(self, lastUpdate):
-        self.lastUpdate = lastUpdate  
+        self.last_update = lastUpdate  
     
     def setStatus(self, status):
         self.status = status

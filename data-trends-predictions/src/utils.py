@@ -90,16 +90,17 @@ def most_delayed_buses(buses):
                 most_delayed.put((avg_delay, bus["routeLong"]))
         else:
             most_delayed.put((avg_delay, bus["routeLong"]))
-    return most_delayed.queue
+    most_delayed = most_delayed.queue
+    most_delayed.reverse()
+    return most_delayed
 
 
 def get_testing_data_using_epoch(x_values, unixTime):
     epoch_times = []
     for i in range(len(x_values.values())):
         epoch_times.append(unixTime)
-    
-    return np.column_stack((list(x_values.values()), epoch_times))
 
+    return np.column_stack((list(x_values.values()), epoch_times))
 
 def update_average_departure_delays_for_predictions(db):
     average_delays = defaultdict(list)
@@ -126,4 +127,3 @@ def update_average_departure_delays_for_predictions(db):
     info = db.get_collection('predictive_models').update_one({"task": 'predictions'}, new_entry)
 
     return info
-

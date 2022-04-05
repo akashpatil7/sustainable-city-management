@@ -89,7 +89,12 @@ class BusModel():
         model = pickle.loads(model_)
 
         predictions = model.predict(x_test)
-        return predictions
+        return_obj = []
+        for i in range(len(self.STOP_NUMBERS)):
+            entry = {"stop number": self.STOP_NUMBERS[i], "arrival_delay": predictions[i]}
+            return_obj.append(entry)
+
+        return Response.send_json_200(return_obj)
 
     def get_bus_predictions(self):
         response_predictions = self.get_predictions(time.time())
