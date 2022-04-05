@@ -1,4 +1,4 @@
-/flask-microservice
+/src/.env
 /test-py
 **/__pycache__/ 
 **.pyc

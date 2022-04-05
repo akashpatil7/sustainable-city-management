@@ -13,7 +13,7 @@ public class RouterValidator {
                 "/user/login"
     });
 
-    public boolean isSecured(ServerHttpRequest request) {
+    public boolean useSecurity(ServerHttpRequest request) {
         return openApiEndpoints.stream()
                 .noneMatch(uri -> request.getURI().getPath().contains(uri));
     }

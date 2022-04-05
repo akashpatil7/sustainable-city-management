@@ -152,7 +152,10 @@ class BikesModel():
         bikesPrediction.setName("LEINSTER STREET SOUTH")
         bikesPrediction.setLatitude(53.342178)
         bikesPrediction.setLongitude(-6.254485)
-        return Response.send_json_200(bikesPrediction.__dict__)
+
+        return_json = []
+        return_json.append(bikesPrediction.__dict__)
+        return Response.send_json_200(return_json)
         # return jsonify(json.dumps(bikesPrediction.__dict__))
 
     def last_3_months_bikes_data_processed(self):

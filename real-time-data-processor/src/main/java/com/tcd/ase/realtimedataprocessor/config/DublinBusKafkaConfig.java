@@ -43,12 +43,12 @@ public class DublinBusKafkaConfig {
     }
 
     @Bean("producerFactoryForDublinBus")
-    public ProducerFactory<String, List<DublinBusHistorical>> producerFactoryForDublinBus() {
+    public ProducerFactory<String, List<String>> producerFactoryForDublinBus() {
         return new DefaultKafkaProducerFactory<>(producerConfigsForDublinBus());
     }
 
     @Bean("kafkaTemplateForDublinBus")
-    public KafkaTemplate<String, List<DublinBusHistorical>> kafkaTemplateForDublinBus() {
+    public KafkaTemplate<String, List<String>> kafkaTemplateForDublinBus() {
         return new KafkaTemplate<>(producerFactoryForDublinBus());
     }
 
@@ -65,14 +65,14 @@ public class DublinBusKafkaConfig {
     }
 
     @Bean("consumerFactoryForDublinBus")
-    public ConsumerFactory<String, List<DublinBusHistorical>> consumerFactoryForDublinBus() {
+    public ConsumerFactory<String, List<String>> consumerFactoryForDublinBus() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigsDublinBus(), new StringDeserializer(),
                 new JsonDeserializer<>(List.class));
     }
 
     @Bean("kafkaListenerContainerFactoryForDublinBus")
-    public ConcurrentKafkaListenerContainerFactory<String, List<DublinBusHistorical>> kafkaListenerContainerFactoryForDublinBus() {
-        ConcurrentKafkaListenerContainerFactory<String, List<DublinBusHistorical>> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, List<String>> kafkaListenerContainerFactoryForDublinBus() {
+        ConcurrentKafkaListenerContainerFactory<String, List<String>> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryForDublinBus());
         return factory;
