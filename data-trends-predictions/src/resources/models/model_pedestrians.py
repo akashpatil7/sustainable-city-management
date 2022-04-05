@@ -43,6 +43,7 @@ class PedestrianModel():
         collection = self.db.get_collection("Pedestrian")
         data = collection.find()
         
+        # build training dataset using streets, counts and epoch times
         if data != []:
             streets = []
             count = []
@@ -59,8 +60,10 @@ class PedestrianModel():
             model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y_count)
 
+            # convert model to byte object
             to_db = pickle.dumps(model)
 
+            # store in db
             date = datetime.now()
             new_entry = {"$set": {"model": to_db, "date_of_training": date}}
 
@@ -72,12 +75,17 @@ class PedestrianModel():
 
 
     def get_predictions(self, unixTime):
+        # get model from db
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "pedestrian"})['model']
 
+        # load model
         model = pickle.loads(model_)
 
+        # get testing data for predictions
         x_test = get_testing_data_using_epoch(self.LOCATION_TO_ID, unixTime)
+
+        # get predictions
         preds = model.predict(x_test)
 
         response_predictions = []
