@@ -50,13 +50,15 @@ public class DublinBikeService {
         if(simulated.isSimulated()) {
         	log.info("Staring simulation");
         	dublinBikes = getDublinBikeDataFromSimulatedSource();
+        	producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
         }
         else {
         	log.info("Staring actual data");
         	dublinBikes = getDublinBikeDataFromExternalSource();
+        	producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
+            saveDataToDB(dublinBikes);
         }
-        producer.sendMessage(DataIndicatorEnum.DUBLIN_BIKES.getTopic(), dublinBikes);
-        saveDataToDB(dublinBikes);
+        
     }
 
     private DublinBike[] getDublinBikeDataFromSimulatedSource() {
@@ -65,8 +67,9 @@ public class DublinBikeService {
     	String url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/" + "models/bikes/get_bikes_predictions";
     	log.info(url);
     	RestTemplate restTemplate = new RestTemplate();
-        DublinBike[] dublinBikes = restTemplate.getForObject(DataIndicatorEnum.DUBLIN_BIKES.getEndpoint(), DublinBike[].class);
+        DublinBike[] dublinBikes = restTemplate.getForObject(url, DublinBike[].class);
         log.info(dublinBikes.toString());
+//        DublinBike[] response  = {dublinBikes};
         return dublinBikes;
 	}
 
