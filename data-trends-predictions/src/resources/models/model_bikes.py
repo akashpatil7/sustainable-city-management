@@ -28,12 +28,12 @@ class BikesModel():
     def perform_action(self, action):
             # try:
             return getattr(self, EndPointMethods1[action].value)()
-            # except KeyError:
-            #     print("[Bikes Model] EndPoint not found")
-            # except AttributeError:
-            #     print("[Bikes Model] EndPoint cannot be resolved")
-            # return Response.not_found_404("Bikes Model: " + action +
-            #                             " not found")
+            except KeyError:
+                print("[Bikes Model] EndPoint not found")
+            except AttributeError:
+                print("[Bikes Model] EndPoint cannot be resolved")
+            return Response.not_found_404("Bikes Model: " + action +
+                                        " not found")
 
     def train_bikes_model(self):
         print("blah")
