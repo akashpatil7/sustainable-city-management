@@ -23,36 +23,62 @@ public class AuthenticationFilter implements GatewayFilter {
 		ServerHttpRequest request = exchange.getRequest();
 		ServerHttpResponse response = exchange.getResponse();
 		JWTokenHelper helper = new JWTokenHelper();
-		String token;
-		if (routerValidator.isSecured(request)) {
-			System.out.println("Is secured");
-			if (!request.getHeaders().containsKey("Authorization")) {
-				System.out.println("no header");
-				if(!request.getQueryParams().containsKey("Authorization")) {
-					System.out.println("no param");
+		String token = "";
+		if (routerValidator.useSecurity(request)) {
+			System.out.println("Needs security checks");
+			if (request.getHeaders().containsKey("Authorization") || request.getQueryParams().containsKey("Authorization")) {
+				if(request.getHeaders().containsKey("Authorization")) {
+					String header = request.getHeaders().getFirst("Authorization");
+					token = getToken(header, helper);
+				}
+				else {
+					token = getTokenFromQueryParam(request, helper);
+				}
+				if (token != "") {
+					exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
+				}
+				else {
 					response.setStatusCode(HttpStatus.UNAUTHORIZED);
 					return response.setComplete();
 				}
-				System.out.println("Is param!");
-				token = request.getQueryParams().getFirst("Authorization");
-				exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
 			}
 			else {
-				String header = request.getHeaders().getFirst("Authorization");
-				if (header != null && header.contains("Bearer")) {
-					token = header.split(" ")[1].trim();
-					if (helper.isValid(token)) {
-						exchange.getRequest().mutate().header("user", helper.getUser(token)).build();
-					} else {
-						response.setStatusCode(HttpStatus.UNAUTHORIZED);
-						return response.setComplete();
-					}
-				} else {
-					response.setStatusCode(HttpStatus.UNAUTHORIZED);
-					return response.setComplete();
-				}
+				response.setStatusCode(HttpStatus.UNAUTHORIZED);
+				return response.setComplete();
 			}
 		}
 		return chain.filter(exchange);
+	}
+
+	public String getToken(String header, JWTokenHelper helper) {
+		if (header != null && header.contains("Bearer")) {
+			String token = header.split(" ")[1].trim();
+			if (helper.isValid(token)) {
+				return token;
+			} else {
+				return "";
+			}
+		} else {
+			
+			return "";
+		}
+	}
+
+	public String getTokenFromQueryParam(ServerHttpRequest request, JWTokenHelper helper) {
+		System.out.println("Has no header");
+		if(request.getQueryParams().containsKey("Authorization")) {
+			String token = request.getQueryParams().get("Authorization").get(0);
+			if (helper.isValid(token)) {
+				System.out.println("Is param!");
+				return token;
+			}
+			else {
+				return "";
+			}
+		}
+		else {
+			return "";
+		}
+			
 	}
 }
