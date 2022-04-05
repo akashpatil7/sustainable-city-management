@@ -3,7 +3,8 @@ from sklearn.ensemble import RandomForestRegressor
 import pickle
 import time
 from datetime import timedelta
-from datetime import date, datetime
+from datetime import datetime
+import time
 from src.utils import get_testing_data_using_epoch
 from src.common.response import Response
 from enum import Enum
@@ -92,7 +93,7 @@ class AqiModel():
         return response_predictions
 
     def get_aqi_predictions(self):
-        response_predictions = self.get_predictions()
+        response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)
 
     def get_aqi_recommendation_from_prediction(self):
