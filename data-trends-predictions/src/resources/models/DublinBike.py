@@ -59,3 +59,6 @@ class DublinBike:
     def setLongitude(self, longitude):
         self.longitude = longitude
     
+    def setSimulation(self):
+        self.simulation = True
+    

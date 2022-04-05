@@ -26,14 +26,14 @@ class BikesModel():
         self.db = db
 
     def perform_action(self, action):
-            # try:
-            return getattr(self, EndPointMethods1[action].value)()
-            # except KeyError:
-            #     print("[Bikes Model] EndPoint not found")
-            # except AttributeError:
-            #     print("[Bikes Model] EndPoint cannot be resolved")
-            # return Response.not_found_404("Bikes Model: " + action +
-            #                             " not found")
+            try:
+                return getattr(self, EndPointMethods1[action].value)()
+            except KeyError:
+                print("[Bikes Model] EndPoint not found")
+            except AttributeError:
+                print("[Bikes Model] EndPoint cannot be resolved")
+            return Response.not_found_404("Bikes Model: " + action +
+                                        " not found")
 
     def train_bikes_model(self):
         print("blah")
@@ -152,6 +152,7 @@ class BikesModel():
         bikesPrediction.setName("LEINSTER STREET SOUTH")
         bikesPrediction.setLatitude(53.342178)
         bikesPrediction.setLongitude(-6.254485)
+        bikesPrediction.setSimulation()
 
         return_json = []
         return_json.append(bikesPrediction.__dict__)
