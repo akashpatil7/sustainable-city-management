@@ -42,6 +42,7 @@ class AqiModel():
         
         data = list(collection.find())
 
+        # build training dataset using stations, aqi level and the epoch times
         if data != []:
             stations = []
             aqi = []
@@ -56,12 +57,14 @@ class AqiModel():
             X = np.column_stack((stations, epoch_time))
             y = np.array(aqi)
 
-            # train model with x features being the station name and the time, and the y being the api
+            # train model with x features being the station name and the time, and the y being the aqi level
             model = RandomForestRegressor(n_estimators=15, max_depth=10, criterion='mse')
             model.fit(X, y)
 
+            # convert model to byte object
             to_db = pickle.dumps(model)
 
+            # store object in db
             date = datetime.now()
             new_entry = {"$set": {"model": to_db, "date_of_training": date}}
 
@@ -72,12 +75,17 @@ class AqiModel():
             return Response.send_json_200(info._UpdateResult__raw_result)
     
     def get_predictions(self, unixTime):
+        # get model from db
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "aqi"})['model']
 
+        # load model from byte object
         model = pickle.loads(model_)
 
+        # generate testing data
         x_test = get_testing_data_using_epoch(self.STATION_TO_ID, unixTime)
+
+        # get predictions
         preds = model.predict(x_test)
 
         response_predictions = []
@@ -88,7 +96,6 @@ class AqiModel():
             loc = list(self.STATION_TO_ID.keys())[index_of_loc] 
             doc = self.db.get_collection("Aqi").find_one({"stationName": loc})
             obj = {"aqi": round(p), "stationName" : loc, "latitude" : doc['latitude'], "longitude" : doc['longitude']}
-            #obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": x[1]}, "uid": doc['_id']}
             response_predictions.append(obj)
         return response_predictions
 

@@ -35,10 +35,13 @@ class BusModel():
     
     def train_bus_model(self):
         update_average_departure_delays_for_predictions(self.db)
+
+        # get data from db
         data = self.db.get_collection('DBus_Historical').find({
             'routeShort': '7'
         })
 
+        # build training dataset using stop numbers, route start times, departure delays & arrival delays
         if data != []:
             stop_numbers = []
             route_start_timestamp = []
@@ -63,11 +66,14 @@ class BusModel():
             X = np.column_stack((stop_numbers, route_start_timestamp, departure_delays))
             y = np.array(arrival_delays)
 
+            # train model 
             model = RandomForestRegressor(n_estimators=10, max_depth=5, criterion='mse')
             model.fit(X, y)
             
+            # convert model to byte object
             to_db = pickle.dumps(model)
 
+            # store in db
             new_entry = {"$set": {"model": to_db, "date_of_training": datetime.now()}}
             info = self.db.get_collection('predictive_models').update_one({'indicator': "bus", "route": '7'}, new_entry)
             return Response.send_json_200(info._UpdateResult__raw_result)
@@ -80,21 +86,23 @@ class BusModel():
         # convert to dict
         stops = {int(stop['stop_number']): stop['average_departure_delay'] for stop in data['average_departure_delays']}
         
-        # build data for predictions
+        # build testing data for predictions
         dep_delays = [stops[s] for s in self.STOP_NUMBERS]
         epoch = [unixTime for i in range(len(self.STOP_NUMBERS))]
         x_test = np.column_stack((self.STOP_NUMBERS, epoch, dep_delays))
 
+        # load model
         model_ = collection.find_one({"indicator": "bus", "route": "7"})['model']
         model = pickle.loads(model_)
 
+        # get predictions
         predictions = model.predict(x_test)
         return_obj = []
         for i in range(len(self.STOP_NUMBERS)):
-            entry = {"stop number": self.STOP_NUMBERS[i], "arrival_delay": predictions[i]}
+            entry = {"simulation": True, "stop_number": self.STOP_NUMBERS[i], "arrival_delay": round(predictions[i])}
             return_obj.append(entry)
 
-        return Response.send_json_200(return_obj)
+        return return_obj
 
     def get_bus_predictions(self):
         response_predictions = self.get_predictions(time.time())
