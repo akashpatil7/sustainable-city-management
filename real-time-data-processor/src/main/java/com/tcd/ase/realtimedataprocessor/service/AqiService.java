@@ -1,22 +1,24 @@
 package com.tcd.ase.realtimedataprocessor.service;
 
-import com.netflix.discovery.EurekaClient;
-import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
-import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
-import com.tcd.ase.realtimedataprocessor.models.Aqi;
-import com.tcd.ase.realtimedataprocessor.models.Aqis;
-import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
-import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
-import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.netflix.discovery.EurekaClient;
+import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.models.Aqis;
+import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
+import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
+import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
+import com.tcd.ase.realtimedataprocessor.repository.SimulationRepository;
+
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
@@ -30,6 +32,12 @@ public class AqiService {
     
     @Autowired
     EurekaClient eurekaClient;
+    
+    @Autowired
+    SimulationRepository repository;
+    
+    @Value("${app.simulationservice.serviceId}")
+    private String simulationService;
 
     @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {
