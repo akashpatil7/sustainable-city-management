@@ -53,7 +53,7 @@ public class AqiService {
         SimulatedData simulated = repository.findAll().get(0);
         if(simulated.isSimulated()) {
         	log.info("Staring simulation");
-        	aqi = getDataFromSimulatedSource();
+        	aqi = (Aqi[]) getDataFromSimulatedSource();
         }
         else {
         	aqi = getAqiDataFromExternalSource();
@@ -70,7 +70,7 @@ public class AqiService {
     	log.info(url);
     	RestTemplate restTemplate = new RestTemplate();
     	SimulatedAqi[] simaqi = restTemplate.getForObject(url, SimulatedAqi[].class);
-    	List<Aqi> aqilist = new ArrayList<>();
+    	Aqi[] aqilist = new Aqi[simaqi.length];
     	for(int i=0;i<simaqi.length;i++) {
     		SimulatedAqi sim = simaqi[i];
     		Aqi aqi = new Aqi();
@@ -82,9 +82,9 @@ public class AqiService {
     		geo[1] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
     		station.setGeo(geo);
     		aqi.setStation(station);
-    		aqilist.add(aqi);
+    		aqilist[i] = aqi;
     	}
-        return (Aqi[]) aqilist.toArray();
+        return aqilist;
 	
 	
 	}
