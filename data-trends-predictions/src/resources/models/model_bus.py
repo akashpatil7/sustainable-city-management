@@ -37,7 +37,7 @@ class BusModel():
         update_average_departure_delays_for_predictions(self.db)
 
         # get data from db
-        data = self.db.get_collection('DBus_Historical').find({
+        data = self.db.get_collection('DBus_Historical_Test').find({
             'routeShort': '7'
         })
 
