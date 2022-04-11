@@ -33,17 +33,23 @@ public class UserLoginService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not exist");
         }
         else {
-            User ruser = user.get();
-            if(!request.getPassword().equals(ruser.getPassword())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect password");
+            try {
+                User ruser = user.get();
+                PasswordHashing hashing = new PasswordHashing();
+                if (!hashing.match(request.getPassword(), ruser.getPassword(), ruser.getSalt())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incorrect password");
+                }
+                token = helper.generateToken(ruser.getUserName());
+                if (token == null || token.isEmpty()) {
+                    throw new Exception("System cannot process request at this time");
+                }
+                UserLoginResponse response = new UserLoginResponse();
+                response.setToken(token);
+                return new ResponseEntity<Object>(response, HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error in UserRegistrationService register method", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
-            token = helper.generateToken(ruser.getUserName());
-            if(token == null || token.isEmpty()) {
-            	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("System cannot process request at this time");
-            }
-            UserLoginResponse response = new UserLoginResponse();
-            response.setToken(token);
-            return new ResponseEntity<Object>(response, HttpStatus.OK);
         }
     }
 }
