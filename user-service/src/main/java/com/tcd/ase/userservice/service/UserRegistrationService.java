@@ -26,16 +26,16 @@ public class UserRegistrationService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
         }
         UserMapper mapper = new UserMapper();
-        User user = mapper.fromRegistrationRequestToEntity(request);
-        Optional<User> existingUser = repository.findById(request.getEmail());
-        if(existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A user with that email already exists.");
-        }
         try {
+            User user = mapper.fromRegistrationRequestToEntity(request);
+            Optional<User> existingUser = repository.findById(request.getEmail());
+            if(existingUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A user with that email already exists.");
+            }
             repository.save(user);
         }
         catch(Exception e){
-          logger.error("Error in UserRegistrationService register method", e);
+            logger.error("Error in UserRegistrationService register method", e);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
         return new ResponseEntity<Object>(HttpStatus.OK);

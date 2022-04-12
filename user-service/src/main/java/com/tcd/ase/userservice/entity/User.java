@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("Users")
 public class User {
+
+	private byte[] salt;
 	private String userName;
 	@Id
 	private String userEmail;
@@ -27,5 +29,11 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public byte[] getSalt() {
+		return salt;
+	}
+	public void setSalt(byte[] salt) {
+		this.salt = salt;
 	}
 }
