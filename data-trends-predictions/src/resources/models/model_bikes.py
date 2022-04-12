@@ -1,20 +1,17 @@
-from flask import jsonify
 import numpy as np
 import pickle
 import os
 from src.common.response import Response
 from enum import Enum
-# import appname.app
 import pandas as pd
-import math, sys
+import math
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
-from datetime import datetime, timedelta
+from datetime import datetime
 from .DublinBike import DublinBike
-import json
 
 class EndPointMethods1(Enum):
     get_bikes_predictions = "get_bikes_predictions"

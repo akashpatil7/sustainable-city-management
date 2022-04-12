@@ -2,9 +2,8 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 import pickle
 import time
-from datetime import timedelta
 from datetime import datetime
-from src.utils import get_testing_data_using_epoch, update_average_departure_delays_for_predictions
+from src.utils import update_average_departure_delays_for_predictions
 from src.common.response import Response
 from enum import Enum
 
