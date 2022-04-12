@@ -8,6 +8,10 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+* The class maps Pedestrian data data to a Pedestrian DAO object
+*/
+
 @Data
 @Document("Pedestrian")
 @Builder()

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
-* The class maps all Dublin bus data to a DublinBusHistorical DAO object
+* The class maps all Dublin bus data to a DublinBusHistorical object
 */
 
 @Document("DBus_Historical_Test")
