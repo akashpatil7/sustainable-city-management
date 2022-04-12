@@ -1,27 +1,14 @@
 from src.common.response import Response
 from enum import Enum
 
-
-class EndPointMethods(Enum):
-    getRecommendations = "get_recommendations"
-
-
 class Pedestrian():
     def __init__(self, db):
         self.db = db
         print("Initiating Pedestrian Recommendations")
 
-    def perform_action(self, action):
-        try:
-            return getattr(self, EndPointMethods[action].value)()
-        except KeyError:
-            print("[Pedestrian Recommendations] EndPoint not found")
-        except AttributeError:
-            print("[Pedestrian Recommendations] EndPoint cannot be resolved")
-        return Response.not_found_404("Recommendations pedestrian: " + action +
-                                      " not found")
-
-    def get_recommendations(self):
+    """ Endpoint
+    """
+    def getRecommendations(self):
         print("[Pedestrian Recommendations] Get")
         ped = self.db.get_collection("Pedestrian")
         latest_time = 0

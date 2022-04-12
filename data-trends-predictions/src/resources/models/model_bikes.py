@@ -13,27 +13,15 @@ from sklearn.metrics import mean_squared_error
 from datetime import datetime
 from .DublinBike import DublinBike
 
-class EndPointMethods1(Enum):
-    get_bikes_predictions = "get_bikes_predictions"
-    train_bikes_model = "train_bikes_model"
 
 class BikesModel():
     def __init__(self, db):
         print("Initialising Bikes Model")
         self.db = db
 
-    def perform_action(self, action):
-            try:
-                return getattr(self, EndPointMethods1[action].value)()
-            except KeyError:
-                print("[Bikes Model] EndPoint not found")
-            except AttributeError:
-                print("[Bikes Model] EndPoint cannot be resolved")
-            return Response.not_found_404("Bikes Model: " + action +
-                                        " not found")
-
+    """ Endpoint
+    """
     def train_bikes_model(self):
-        print("blah")
         y, dt = self.last_3_months_bikes_data_processed()
         q=1
         lag=6; stride=1
@@ -112,7 +100,6 @@ class BikesModel():
         minutes = diff.total_seconds()/60
         instances_to_go_back = int((minutes + (5-(minutes%5)))/5)
         lag = 6
-        print(instances_to_go_back)
         prediction_array = []
         y_length = len(y)
         prediction_array.append(y[y_length - 1 - instances_to_go_back])
@@ -123,6 +110,8 @@ class BikesModel():
             prediction_array.append(y[y_length -1 - instances_to_go_back - (i*288)])
         return [prediction_array]
 
+    """ Endpoint
+    """
     def get_bikes_predictions(self):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "dublin_bikes"})['model']
@@ -154,16 +143,12 @@ class BikesModel():
         return_json = []
         return_json.append(bikesPrediction.__dict__)
         return Response.send_json_200(return_json)
-        # return jsonify(json.dumps(bikesPrediction.__dict__))
 
     def last_3_months_bikes_data_processed(self):
-        #TODO
-        # Get this data form DB.
+
         site_root = os.path.realpath(os.path.dirname(__file__))
         csv_url = os.path.join(site_root, "./sls_bikes_data.csv")
-        # filename = os.path.join(appname.app.instance_path, 'resources', 'models', 'sls_bikes_data.csv')
         df = pd.read_csv(csv_url,usecols = [1,2,3])
-        # df = pd.read_csv(filename, usecols = [1,2,3])
         t_full=pd.array(pd.DatetimeIndex(df.iloc[:,1]).astype(np.int64))/1000000000
         dt = t_full[1] - t_full[0]
         start=pd.to_datetime('01−01−2020',format='%d−%m−%Y')
