@@ -95,7 +95,7 @@ class AqiModel():
             index_of_loc = list(self.STATION_TO_ID.values()).index(x[0])
             loc = list(self.STATION_TO_ID.keys())[index_of_loc] 
             doc = self.db.get_collection("Aqi").find_one({"stationName": loc})
-            obj = {"aqi": round(p), "stationName" : loc, "latitude" : doc['latitude'], "longitude" : doc['longitude']}
+            obj = {"aqi": round(p), "station": {"name": loc, "geo": [doc['latitude'], doc['longitude']], "url": '', "country": ''}, "time": { "tz": '', "stime": str(datetime.fromtimestamp(x[1])), "vtime": round(x[1])}, "uid": doc['_id']}
             response_predictions.append(obj)
         return response_predictions
 
