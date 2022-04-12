@@ -7,7 +7,6 @@ from datetime import datetime
 import time
 from src.utils import get_testing_data_using_epoch
 from src.common.response import Response
-from enum import Enum
 
 
 class AqiModel():
@@ -21,8 +20,7 @@ class AqiModel():
         'Dublin Port, Dublin 1, Ireland': 14, 'Finglas, Dublin 11, Ireland': 15, 'Rathmines, Ireland': 16, 'Lord Edward Street, Dublin 2, Ireland': 17, 
         'Walkinstown Library, Dublin 12, Ireland': 18}
     
-    """ Endpoint
-    """
+    #Endpoint
     def trainModel(self):
         # get data from db
         collection = self.db.get_collection("Aqi")
@@ -87,15 +85,13 @@ class AqiModel():
         return response_predictions
 
 
-    """ Endpoint
-    """
+    #Endpoint
     def getAqiPredictions(self):
         response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)
 
 
-    """ Endpoint
-    """
+    #Endpoint
     def getAqiRecommendationFromPrediction(self):
         response_predictions = self.get_predictions(time.time())
         sortedList = sorted(response_predictions, key=lambda d: d["aqi"])
@@ -110,8 +106,7 @@ class AqiModel():
         return Response.send_json_200(data)
 
 
-    """ Endpoint
-    """
+    #Endpoint
     def getAqiRecommendationFromFuturePrediction(self):
         dtime = datetime.now() + timedelta(minutes=10)
         unixtime = time.mktime(dtime.timetuple())

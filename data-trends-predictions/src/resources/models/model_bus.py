@@ -6,10 +6,6 @@ from datetime import datetime
 from src.utils import update_average_departure_delays_for_predictions
 from src.common.response import Response
 from enum import Enum
-
-class EndPointMethods(Enum):
-    getBusPredictions = "get_bus_predictions"
-    trainModel = "train_bus_model"
     
 class BusModel():
     def __init__(self, db):
@@ -22,10 +18,7 @@ class BusModel():
             476, 7641, 3034, 7642, 3036, 3037, 7645, 7646, 7643, 3038, 3039, 3041, 3042, 3047, 488, 485, 
             493, 494, 495, 2035, 2036, 2040, 2041, 3068, 3069, 3070, 3071]
 
-
-    
-    """ Endpoint
-    """
+    #Endpoint
     def trainModel(self):
         update_average_departure_delays_for_predictions(self.db)
 
@@ -97,9 +90,7 @@ class BusModel():
 
         return return_obj
 
-
-    """ Endpoint
-    """
+    #Endpoint
     def getBusPredictions(self):
         response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)

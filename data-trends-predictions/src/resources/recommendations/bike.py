@@ -7,8 +7,7 @@ class Bike():
         self.db = db
         print("Initiating Bike Recommendations")
 
-    """ Endpoint
-    """
+    #Endpoint
     def getRecommendations(self):
         print("[Bike Recommendations] Get")
         dublin_bikes = self.db.get_collection("Dublin_Bikes")
@@ -42,6 +41,7 @@ class Bike():
 
         return Response.send_json_200(data)
 
+    #Endpoint
     def getBikePedestrianRecommendations(self):
         print("[Bike-Pedestrian Recommendations] Get")
         dublin_bikes = self.db.get_collection("Dublin_Bikes")

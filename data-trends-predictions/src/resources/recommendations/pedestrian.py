@@ -6,8 +6,7 @@ class Pedestrian():
         self.db = db
         print("Initiating Pedestrian Recommendations")
 
-    """ Endpoint
-    """
+    #Endpoint
     def getRecommendations(self):
         print("[Pedestrian Recommendations] Get")
         ped = self.db.get_collection("Pedestrian")

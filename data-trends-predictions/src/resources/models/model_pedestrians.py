@@ -21,7 +21,7 @@ class PedestrianModel():
         'Phibsborough Rd/Munster St': 21, 'North Wall Quay/Samuel Beckett bridge East': 22, 'Grafton st/Monsoon': 23, 'Baggot st upper/Mespil rd/Bank': 24, 'Talbot st/Murrays Pharmacy': 25, 
         "O'Connell St/Parnell St/AIB": 26, 'Phibsborough Rd/Enniskerry Road': 27, 'College Green/Bank Of Ireland': 28, 'Capel st/Mary street': 29}
 
-
+    #Endpoint
     def trainModel(self):
         # get data from db
         collection = self.db.get_collection("Pedestrian")
@@ -84,10 +84,12 @@ class PedestrianModel():
             response_predictions.append(obj)
         return response_predictions
 
+    #Endpoint
     def getPedestrianPredictions(self):
         response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)
 
+    #Endpoint
     def getPedestrianRecommendationFromPrediction(self):
         response_predictions = self.get_predictions(time.time())
         sortedList = sorted(response_predictions, key=lambda d: d["count"])
@@ -101,6 +103,7 @@ class PedestrianModel():
         }
         return Response.send_json_200(data)
 
+    #Endpoint
     def getPedestrianRecommendationFromFuturePrediction(self):
         dtime = datetime.now() + timedelta(minutes=10)
         unixtime = time.mktime(dtime.timetuple())

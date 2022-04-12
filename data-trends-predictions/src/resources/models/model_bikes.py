@@ -19,8 +19,7 @@ class BikesModel():
         print("Initialising Bikes Model")
         self.db = db
 
-    """ Endpoint
-    """
+    #Endpoint
     def train_bikes_model(self):
         y, dt = self.last_3_months_bikes_data_processed()
         q=1
@@ -110,8 +109,7 @@ class BikesModel():
             prediction_array.append(y[y_length -1 - instances_to_go_back - (i*288)])
         return [prediction_array]
 
-    """ Endpoint
-    """
+    #Endpoint
     def get_bikes_predictions(self):
         collection = self.db.get_collection("predictive_models")
         model_ = collection.find_one({"indicator": "dublin_bikes"})['model']

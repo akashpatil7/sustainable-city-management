@@ -17,10 +17,10 @@ class Models(Resource):
 
     def get(self, data_indicator, action):
         if data_indicator == 'pedestrian':
-            return self.pedestrian_model.perform_action(action)
+            return EndPointResolver.perform_action(self.pedestrian_model, action)
         if data_indicator == 'aqi':
-            return self.aqi_model.perform_action(action)
+            return EndPointResolver.perform_action(self.aqi_model, action)
         if data_indicator == 'bikes':
             return EndPointResolver.perform_action(self.bikes_model, action)
         if data_indicator == 'bus':
-            return self.bus_model.perform_action(action)
+            return EndPointResolver.perform_action(self.bus_model, action)

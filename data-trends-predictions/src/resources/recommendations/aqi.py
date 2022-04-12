@@ -7,8 +7,7 @@ class Aqi():
         self.db = db
         print("Initiating Aqi Recommendations")
 
-    """ Endpoint
-    """
+    #Endpoint
     def getRecommendations(self):
         print("[Aqi Recommendations] Get")
         aqi = self.db.get_collection("Aqi")

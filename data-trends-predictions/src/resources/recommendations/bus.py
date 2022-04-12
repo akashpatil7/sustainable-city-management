@@ -8,8 +8,7 @@ class Bus():
         self.db = db
         print("Initiating Bus Recommendations")
 
-    """ Endpoint
-    """
+    #Endpoint
     def getRecommendations(self):
         print("[Bus Recommendations] Get")
         bus = self.db.get_collection("DBus_Historical_Test")
