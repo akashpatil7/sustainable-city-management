@@ -1,8 +1,14 @@
 import math
 import queue
 
+# -----------------------------------------------------------
+# Utils file that performs calculations for trends and 
+# predictions for different data indicators
+# -----------------------------------------------------------
+
 
 def closest_bike_stand(location, bike_station_data, used_stands):
+    """Get closest bike stand using latitude and longitude."""
     closest_stand_dist = float('inf')
     closest_stand = None
     for stand in bike_station_data:
@@ -17,6 +23,7 @@ def closest_bike_stand(location, bike_station_data, used_stands):
 
 
 def get_distance(stand_lat, stand_lon, loc_lat, loc_lon):
+    """Get Euclidean distance between two points."""
     if '' in (stand_lat, stand_lon, loc_lat, loc_lon):
         return float('inf')
     distance = math.sqrt((float(stand_lat) - float(loc_lat))**2 +
@@ -25,6 +32,7 @@ def get_distance(stand_lat, stand_lon, loc_lat, loc_lon):
 
 
 def top_aqi_locations(aqi_station_data, top_n, is_reverse):
+    """Sort AQI data by value."""
     aqi_station_data = [x for x in aqi_station_data if x["aqi"] != "-"]
     aqi_station_data.sort(key=lambda x: int(x["aqi"]), reverse=is_reverse)
     aqi_station_data = aqi_station_data[0:top_n]
@@ -32,6 +40,7 @@ def top_aqi_locations(aqi_station_data, top_n, is_reverse):
 
 
 def get_avg_delay(bus):
+    """Get average delay of a given bus."""
     total_delay = 0
     index = 0
     for stop in bus["stopSequence"]:
@@ -41,6 +50,7 @@ def get_avg_delay(bus):
 
 
 def get_most_polluted(buses, aqis):
+    """Get most polluted bus route depending on AQI values in geographical space."""
     most_polluted = {}
     for aqi in aqis:
         if "latitude" not in aqi or "longitude" not in aqi:

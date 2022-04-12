@@ -1,5 +1,9 @@
 from pymongo import MongoClient
 
+# -----------------------------------------------------------
+# Connect to views and collections in the database
+# -----------------------------------------------------------
+
 class Database:
 	def __init__(self, connection_string, database):
 		self._client = MongoClient(connection_string)

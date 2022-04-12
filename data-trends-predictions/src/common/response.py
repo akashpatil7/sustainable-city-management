@@ -1,6 +1,11 @@
 from bson.json_util import dumps
 from flask import make_response
 
+# -----------------------------------------------------------
+# Defines the response values for successful or unsusseful 
+# database connections
+# -----------------------------------------------------------
+
 class Response:
 
 	@staticmethod

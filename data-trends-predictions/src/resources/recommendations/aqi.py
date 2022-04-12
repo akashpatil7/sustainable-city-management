@@ -2,6 +2,10 @@ from src.common.response import Response
 from enum import Enum
 from src.utils import top_aqi_locations
 
+# -----------------------------------------------------------
+# Creates an AQI class and functions to get the highest and 
+# lowest AQI values
+# -----------------------------------------------------------
 
 class EndPointMethods(Enum):
     getRecommendations = "get_recommendations"
@@ -23,9 +27,11 @@ class Aqi():
                                       " not found")
 
     def get_recommendations(self):
+        """Get the lowest and highest AQI values."""
         print("[Aqi Recommendations] Get")
         aqi = self.db.get_collection("Aqi")
 
+        # get top 5 lowest AQI values from the DB
         lowest_aqi_station_data = list(
             aqi.find({}, {
                 'aqi': True,
@@ -38,7 +44,7 @@ class Aqi():
             ]))
         lowest_aqi_station_data = top_aqi_locations(lowest_aqi_station_data, 5,
                                                     False)
-
+        # get top 5 highest AQI values from the DB                                            
         highest_aqi_station_data = list(
             aqi.find({}, {
                 'aqi': True,

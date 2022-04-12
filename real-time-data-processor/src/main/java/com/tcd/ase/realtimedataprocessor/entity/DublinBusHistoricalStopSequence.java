@@ -4,6 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+* The class maps Bus with historical route data to a DublinBusHistoricalStopSequence DAO object
+*/
+
 @Getter
 @Setter
 @Builder()

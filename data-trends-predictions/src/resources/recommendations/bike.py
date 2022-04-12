@@ -2,6 +2,10 @@ from src.common.response import Response
 from enum import Enum
 from src.utils import closest_bike_stand
 
+# -----------------------------------------------------------
+# Creates a Bike class and functions to get bike availabiliy 
+# and compare with pedestrian data
+# -----------------------------------------------------------
 
 class EndPointMethods(Enum):
     getRecommendations = "get_recommendations"
@@ -22,6 +26,7 @@ class Bike():
                                       " not found")
 
     def get_recommendations(self):
+        """Get the most empty and most available bike stations."""
         print("[Bike Recommendations] Get")
         dublin_bikes = self.db.get_collection("Dublin_Bikes")
 
@@ -55,11 +60,12 @@ class Bike():
         return Response.send_json_200(data)
 
     def get_bike_pedestrian_recommendations(self):
+        """Get the bike station with the most bikes to move to areas of high population."""
         print("[Bike-Pedestrian Recommendations] Get")
         dublin_bikes = self.db.get_collection("Dublin_Bikes")
         pedestrian = self.db.get_collection("Pedestrian")
 
-        # get 5 most filled stations
+        # get 5 most filled bike stations
         most_available_bike_station_data = list(
             dublin_bikes.find({}, {
                 'name': True,
@@ -72,7 +78,7 @@ class Bike():
                 'longitude': True
             }).sort([("harvestTime", -1), ("availableBikes", -1)]).limit(5))
 
-        # get 5 most busy areas
+        # get 5 most busy pedestrian areas
         highest_count_pedestrian_data = list(
             pedestrian.find({}, {
                 'count': True,

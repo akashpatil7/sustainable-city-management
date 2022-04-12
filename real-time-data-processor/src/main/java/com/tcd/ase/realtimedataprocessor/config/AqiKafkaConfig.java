@@ -16,6 +16,18 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+
+* The class configures the AQI data with Kafka
+
+* And output
+
+* @version 8.9
+
+* @author Nitish Singh
+
+*/
+
 @Configuration
 public class AqiKafkaConfig {
     @Value("${spring.kafka.producer.bootstrap-servers}")

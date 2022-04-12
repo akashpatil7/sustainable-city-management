@@ -7,6 +7,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Sinks;
 
+/**
+* The class pulls Bike data from the Kafka cluster
+*/
+
 @Service
 @Log4j2
 public class DublinBikesConsumer {

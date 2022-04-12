@@ -13,6 +13,10 @@ import reactor.core.publisher.Sinks;
 
 import java.util.List;
 
+/**
+* The class configures the sinks needed to send objects to the frontend 
+*/
+
 @Configuration
 public class FluxConfig {
 

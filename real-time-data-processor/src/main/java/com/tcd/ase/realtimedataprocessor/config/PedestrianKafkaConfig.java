@@ -18,6 +18,10 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+* The class configures the Pedestrian data with Kafka
+*/
+
 @Configuration
 public class PedestrianKafkaConfig {
     @Value("${spring.kafka.producer.bootstrap-servers}")

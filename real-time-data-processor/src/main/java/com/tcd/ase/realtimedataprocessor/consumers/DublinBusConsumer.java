@@ -13,6 +13,10 @@ import reactor.core.publisher.Sinks;
 
 import java.util.List;
 
+/**
+* The class pulls Bus data from the Kafka cluster
+*/
+
 @Service
 @Log4j2
 public class DublinBusConsumer {

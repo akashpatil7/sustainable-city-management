@@ -9,6 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+* The class maps all Dublin bus data to a DublinBusHistorical DAO object
+*/
+
 @Document("DBus_Historical_Test")
 @Getter
 @Setter

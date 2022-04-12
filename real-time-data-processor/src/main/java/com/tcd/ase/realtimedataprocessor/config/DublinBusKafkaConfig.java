@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+* The class configures the Bus data with Kafka
+*/
+
 @Configuration
 public class DublinBusKafkaConfig {
 

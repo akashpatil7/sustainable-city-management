@@ -6,6 +6,10 @@ from src.common.database import Database
 from src.resources.recommendations import Recommendations
 from src.resources.trends import Trends
 
+# -----------------------------------------------------------
+# Flask App that runs the recommendations and trends engines
+# -----------------------------------------------------------
+
 def create_app():
 	# INIT Flask App
 	app = Flask(__name__)
@@ -33,7 +37,7 @@ def create_app():
 	# INIT DB Object
 	db = Database(connection_string=DB_CONNECTION_STRING, database=DB_NAME)
 
-	# ADD Routes
+	# Routes
 	route_args = {'db': db}
 
 	api.add_resource(

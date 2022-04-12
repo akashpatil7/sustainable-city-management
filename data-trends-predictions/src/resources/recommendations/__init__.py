@@ -4,6 +4,11 @@ from .aqi import Aqi
 from .pedestrian import Pedestrian
 from .bus import Bus
 
+# -----------------------------------------------------------
+# Determines which data indicator and which recommendation 
+# to retrieve
+# -----------------------------------------------------------
+
 class Recommendations(Resource):
 	def __init__(self, **kwargs):
 		self.db = kwargs['db']
@@ -13,6 +18,7 @@ class Recommendations(Resource):
 		self.bus = Bus(self.db)
 
 	def get(self, data_indicator, action):
+		"""Call function from class depending on data indicator."""
 		if data_indicator == 'bike':
 			return self.bike.perform_action(action)
 		if data_indicator == 'aqi':

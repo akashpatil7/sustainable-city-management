@@ -9,6 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
+/**
+* The class maps AQI data to an AQI DAO object
+*/
+
 @Data
 @Document("Aqi")
 @Builder()

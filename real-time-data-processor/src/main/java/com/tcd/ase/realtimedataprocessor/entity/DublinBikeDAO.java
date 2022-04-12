@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+* The class maps Bike data to a Bike DAO object
+*/
+
 @Data
 @Document("Dublin_Bikes")
 @Builder()

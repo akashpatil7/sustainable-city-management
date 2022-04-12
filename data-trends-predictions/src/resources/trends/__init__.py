@@ -2,6 +2,10 @@ from flask_restful import Resource
 from .bike import Bike
 from src.common.response import Response
 
+# -----------------------------------------------------------
+# Determines which trends to retrieve
+# -----------------------------------------------------------
+
 class Trends(Resource):
 	def __init__(self, **kwargs):
 		self.db = kwargs['db']

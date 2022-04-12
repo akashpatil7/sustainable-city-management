@@ -1,6 +1,11 @@
 from src.common.response import Response
 from enum import Enum
 
+# -----------------------------------------------------------
+# Creates a Pedestrian class and functions to get pedestrian
+# count information for given locations
+# -----------------------------------------------------------
+
 
 class EndPointMethods(Enum):
     getRecommendations = "get_recommendations"
@@ -22,9 +27,12 @@ class Pedestrian():
                                       " not found")
 
     def get_recommendations(self):
+        """Get highest and lowest pedestrian count."""
         print("[Pedestrian Recommendations] Get")
         ped = self.db.get_collection("Pedestrian")
         latest_time = 0
+        
+        # get most recent pedestrian data
         pedestrian_time = list(
             ped.find({}, {
                 'time': True,
@@ -32,6 +40,7 @@ class Pedestrian():
         for x in pedestrian_time:
             latest_time = x["time"]
 
+        # get lowest pedestrian counts for most recent data
         lowest_count_pedestrian_data = list(
             ped.find({
                 'time': {
@@ -45,6 +54,7 @@ class Pedestrian():
                 'time': True,
             }).sort([("count", -1)]).limit(5))
 
+        # get highest pedestrian counts for most recent data
         highest_count_pedestrian_data = list(
             ped.find({}, {
                 'count': True,

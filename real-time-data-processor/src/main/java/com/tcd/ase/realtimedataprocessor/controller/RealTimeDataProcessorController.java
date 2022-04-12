@@ -18,6 +18,10 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
+/**
+* The class returns the data flux for all four data indicators
+*/
+
 //@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class RealTimeDataProcessorController {
