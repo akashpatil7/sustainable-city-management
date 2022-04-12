@@ -69,21 +69,21 @@ public class AqiService {
     	String url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/" + "models/aqi/getAqiPredictions";
     	log.info(url);
     	RestTemplate restTemplate = new RestTemplate();
-    	SimulatedAqi[] simaqi = restTemplate.getForObject(url, SimulatedAqi[].class);
-    	Aqi[] aqilist = new Aqi[simaqi.length];
-    	for(int i=0;i<simaqi.length;i++) {
-    		SimulatedAqi sim = simaqi[i];
-    		Aqi aqi = new Aqi();
-    		aqi.setAqi(String.valueOf(sim.getAqi()));
-    		DublinAqiDataStation station = new DublinAqiDataStation();
-    		station.setName(sim.getStationName());
-    		BigDecimal geo[] = new BigDecimal[2];
-    		geo[0] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
-    		geo[1] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
-    		station.setGeo(geo);
-    		aqi.setStation(station);
-    		aqilist[i] = aqi;
-    	}
+    	Aqi[] aqilist = restTemplate.getForObject(url, Aqi[].class);
+//    	Aqi[] aqilist = new Aqi[simaqi.length];
+//    	for(int i=0;i<simaqi.length;i++) {
+//    		SimulatedAqi sim = simaqi[i];
+//    		Aqi aqi = new Aqi();
+//    		aqi.setAqi(String.valueOf(sim.getAqi()));
+//    		DublinAqiDataStation station = new DublinAqiDataStation();
+//    		station.setName(sim.getStationName());
+//    		BigDecimal geo[] = new BigDecimal[2];
+//    		geo[0] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
+//    		geo[1] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
+//    		station.setGeo(geo);
+//    		aqi.setStation(station);
+//    		aqilist[i] = aqi;
+//    	}
         return aqilist;
 	
 	
