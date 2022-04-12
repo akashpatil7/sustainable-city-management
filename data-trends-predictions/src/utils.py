@@ -1,6 +1,9 @@
 import math
 import queue
-
+import numpy as np
+from collections import defaultdict
+import statistics
+from datetime import datetime
 
 def closest_bike_stand(location, bike_station_data, used_stands):
     closest_stand_dist = float('inf')
@@ -90,3 +93,47 @@ def most_delayed_buses(buses):
     most_delayed = most_delayed.queue
     most_delayed.reverse()
     return most_delayed
+
+
+def get_testing_data_using_epoch(x_values, unixTime):
+    # generating testing dataset using current epoch time
+    epoch_times = []
+    for i in range(len(x_values.values())):
+        epoch_times.append(unixTime)
+
+    return np.column_stack((list(x_values.values()), epoch_times))
+
+def update_average_departure_delays_for_predictions(db):
+    # calculates the average departure delay for each stop on route 7 and stores in db
+    # updated in training, used in getting predictions
+
+    average_delays = defaultdict(list)
+
+    # get data from db
+    collection = db.get_collection('DBus_Historical')
+    data = collection.find({
+        'routeShort': '7'
+    })
+
+    # build dict of stop numbers and a list of departure delays
+    for doc in data:
+        for stop in doc['stopSequence']:
+            stop_ = db.get_collection('DBus_Stops').find_one({
+                    'stop_id': stop['stopId']
+                })
+
+            stop_number_index = stop_['stop_name'].index('stop ') + 5
+            average_delays[stop_['stop_name'][stop_number_index:]].append(stop['departureDelay'])
+
+
+    # build json array of stop number and the average departure delay
+    store_to_db = []
+    for stop in average_delays.keys():
+        entry = {'stop_number': stop, 'average_departure_delay': statistics.mean(average_delays[stop])}
+        store_to_db.append(entry)
+    
+    # store in db
+    new_entry = {"$set": {"average_departure_delays": store_to_db, "last_updated": datetime.now()}}
+    info = db.get_collection('predictive_models').update_one({"task": 'predictions'}, new_entry)
+
+    return info

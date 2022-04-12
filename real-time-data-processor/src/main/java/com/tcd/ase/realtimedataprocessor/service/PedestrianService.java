@@ -1,35 +1,39 @@
 package com.tcd.ase.realtimedataprocessor.service;
 
-import com.tcd.ase.realtimedataprocessor.entity.PedestrianDAO;
-import com.tcd.ase.realtimedataprocessor.entity.PedestrianInfoDAO;
-import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
-import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
-import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
-import com.tcd.ase.realtimedataprocessor.producers.PedestrianProducer;
-import com.tcd.ase.realtimedataprocessor.repository.PedestrianInfoRepository;
-import com.tcd.ase.realtimedataprocessor.repository.PedestrianRepository;
-import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+import com.tcd.ase.realtimedataprocessor.entity.PedestrianDAO;
+import com.tcd.ase.realtimedataprocessor.entity.PedestrianInfoDAO;
+import com.tcd.ase.realtimedataprocessor.entity.SimulatedData;
+import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
+import com.tcd.ase.realtimedataprocessor.models.Pedestrian;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
+import com.tcd.ase.realtimedataprocessor.producers.PedestrianProducer;
+import com.tcd.ase.realtimedataprocessor.repository.PedestrianInfoRepository;
+import com.tcd.ase.realtimedataprocessor.repository.PedestrianRepository;
+import com.tcd.ase.realtimedataprocessor.repository.SimulationRepository;
+
+import lombok.extern.log4j.Log4j2;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 
 @Log4j2
 @Service
@@ -43,6 +47,15 @@ public class PedestrianService {
 
     @Autowired
     PedestrianInfoRepository pedestrianInfoRepository;
+    
+    @Autowired
+    SimulationRepository repository;
+    
+    @Autowired
+    EurekaClient eurekaClient;
+    
+    @Value("${app.simulationservice.serviceId}")
+    private String simulationService;
 
     public Resource loadEmployeesWithClassPathResource() {
         return new ClassPathResource("DublinStreetsLatLon.json");
@@ -51,13 +64,32 @@ public class PedestrianService {
     @Scheduled(fixedRate = 360000)
     public void processRealTimeDataForPedestrian() {
         log.info("[PEDESTRIAN] Processing");
-        PedestrianCount[] pedestrian = getPedestrianDataFromExternalSource();
-
+        SimulatedData simulated = repository.findAll().get(0);
+        PedestrianCount[] pedestrian;
+        if(simulated.isSimulated()) {
+        	log.info("Staring simulation");
+        	pedestrian = getDataFromSimulatedSource();
+        }
+        else {
+        	pedestrian = getPedestrianDataFromExternalSource();
+        }
         producer.sendMessage(DataIndicatorEnum.PEDESTRIAN.getTopic(), pedestrian);
         saveDataToDB(pedestrian);
     }
 
-    private PedestrianCount[] getPedestrianDataFromExternalSource() {
+    private PedestrianCount[] getDataFromSimulatedSource() {
+    	log.info("=== In simulation data generation method === ");
+    	InstanceInfo instanceInfo = eurekaClient.getApplication(simulationService).getInstances().get(0);
+    	String url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/" + "models/pedestrian/getPedestrianPredictions";
+    	log.info(url);
+    	RestTemplate restTemplate = new RestTemplate();
+    	PedestrianCount[] pedestrian = restTemplate.getForObject(url, PedestrianCount[].class);
+        log.info(pedestrian.toString());
+        return pedestrian;
+	
+	}
+
+	private PedestrianCount[] getPedestrianDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         JSONObject pedestrianBodyData = restTemplate.getForObject(DataIndicatorEnum.PEDESTRIAN.getEndpoint(),
                 JSONObject.class);

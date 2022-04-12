@@ -1,21 +1,31 @@
 package com.tcd.ase.realtimedataprocessor.service;
 
-import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
-import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
-import com.tcd.ase.realtimedataprocessor.models.Aqi;
-import com.tcd.ase.realtimedataprocessor.models.Aqis;
-import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
-import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
-import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+import com.tcd.ase.realtimedataprocessor.entity.AqiDAO;
+import com.tcd.ase.realtimedataprocessor.entity.SimulatedData;
+import com.tcd.ase.realtimedataprocessor.models.Aqi;
+import com.tcd.ase.realtimedataprocessor.models.Aqis;
+import com.tcd.ase.realtimedataprocessor.models.DataIndicatorEnum;
+import com.tcd.ase.realtimedataprocessor.models.DublinAqiDataStation;
+import com.tcd.ase.realtimedataprocessor.models.PedestrianCount;
+import com.tcd.ase.realtimedataprocessor.models.SimulatedAqi;
+import com.tcd.ase.realtimedataprocessor.producers.AqiProducer;
+import com.tcd.ase.realtimedataprocessor.repository.AqiRepository;
+import com.tcd.ase.realtimedataprocessor.repository.SimulationRepository;
+
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
@@ -26,17 +36,60 @@ public class AqiService {
 
     @Autowired
     AqiRepository aqiRepository;
+    
+    @Autowired
+    EurekaClient eurekaClient;
+    
+    @Autowired
+    SimulationRepository repository;
+    
+    @Value("${app.simulationservice.serviceId}")
+    private String simulationService;
 
     @Scheduled(fixedRate = 3600000)
     public void processRealTimeDataForAqi() {
         log.info("[AQI] Processing");
-        Aqi[] aqi = getAqiDataFromExternalSource();
-
+        Aqi[] aqi;
+        SimulatedData simulated = repository.findAll().get(0);
+        if(simulated.isSimulated()) {
+        	log.info("Staring simulation");
+        	aqi = (Aqi[]) getDataFromSimulatedSource();
+        }
+        else {
+        	aqi = getAqiDataFromExternalSource();
+        	saveDataToDB(aqi);
+        }
         producer.sendMessage(DataIndicatorEnum.AQI.getTopic(), aqi);
-        saveDataToDB(aqi);
+        
     }
 
-    public Aqi[] getAqiDataFromExternalSource() {
+    private Aqi[] getDataFromSimulatedSource() {
+    	log.info("=== In simulation data generation method === ");
+    	InstanceInfo instanceInfo = eurekaClient.getApplication(simulationService).getInstances().get(0);
+    	String url = "http://" + instanceInfo.getIPAddr() + ":" + instanceInfo.getPort() + "/" + "models/aqi/getAqiPredictions";
+    	log.info(url);
+    	RestTemplate restTemplate = new RestTemplate();
+    	Aqi[] aqilist = restTemplate.getForObject(url, Aqi[].class);
+//    	Aqi[] aqilist = new Aqi[simaqi.length];
+//    	for(int i=0;i<simaqi.length;i++) {
+//    		SimulatedAqi sim = simaqi[i];
+//    		Aqi aqi = new Aqi();
+//    		aqi.setAqi(String.valueOf(sim.getAqi()));
+//    		DublinAqiDataStation station = new DublinAqiDataStation();
+//    		station.setName(sim.getStationName());
+//    		BigDecimal geo[] = new BigDecimal[2];
+//    		geo[0] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
+//    		geo[1] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
+//    		station.setGeo(geo);
+//    		aqi.setStation(station);
+//    		aqilist[i] = aqi;
+//    	}
+        return aqilist;
+	
+	
+	}
+
+	public Aqi[] getAqiDataFromExternalSource() {
         RestTemplate restTemplate = new RestTemplate();
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();

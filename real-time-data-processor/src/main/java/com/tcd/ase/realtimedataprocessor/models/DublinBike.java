@@ -15,6 +15,7 @@ public class DublinBike {
     private Integer available_bikes;
     private Boolean banking;
     private Boolean bonus;
+    private Boolean simulation;
     private String last_update;
     private String status;
     private String address;
