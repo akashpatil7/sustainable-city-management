@@ -13,15 +13,11 @@ class Bus():
         print("[Bus Recommendations] Get")
         bus = self.db.get_collection("DBus_Historical_Test")
 
-        yesterday = time.time() - 86400
 
         buses = list(
             bus.find(
                 {
                     'scheduleRelationship': 'Scheduled',
-                    'startTimestamp': {
-                        '$gt': yesterday
-                    },
                 }, {
                     'routeLong': True,
                     'stopSequence': True,
@@ -29,8 +25,8 @@ class Bus():
                     'stopLon': True,
                 }).sort([("startTimestamp", -1), ("routeLong", -1)]))
 
-
         most_delayed = most_delayed_buses(buses)
+        print(most_delayed)
         aqi = self.db.get_collection("Aqi")
         highest_aqi_station = list(
             aqi.find({}, {
