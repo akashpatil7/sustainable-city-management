@@ -25,9 +25,9 @@ class Bus():
 
     def get_recommendations(self):
         print("[Bus Recommendations] Get")
-        bus = self.db.get_collection("DBus_Historical_Test")
+        bus = self.db.get_collection("DBus_Historical")
 
-        yesterday = time.time() - 86400
+        yesterday = time.time() - (86400 * 2)
 
         buses = list(
             bus.find(
