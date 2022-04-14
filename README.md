@@ -35,7 +35,7 @@ To run the application locally run the following commands in sequence (N.B. TCD 
    Run from main project directory - `cd gateway`<br>
    `mvn clean package`<br>
 
-6. After running the above commands, Docker can be used to run the application on the local setup.  Run the following commands get application up and running (N.B. TCD Wifi    interferes with this so please be on another network)
+6. After running the above commands, Docker can be used to run the application on the local setup.  Run the following commands get application up and running (N.B. TCD Wifi    interferes with this so please be on another network)</br>
    `docker-compose build`</b></br>
    `docker-compose up -d`</b></br>
    
