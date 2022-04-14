@@ -1,39 +1,44 @@
 # Sustainable City Management
-ASE project - 
-To Run the project execute following commands in sequence - 
+This application provides easy and intuitive real time visualisation of different data indicators in dublin city like dublin bikes, dublin bus , Pedestrian Data, Dublin AQI levels. It further uses complex predictive models to generate real time trends from this real time data. The trends within different data points are then combined together to generate real time recommendations based on the co-relation analysis within these data points. These recommendation will help the city managers/planners to efficeintly plan out city resources. In addition this application will also provvide the simulated data in case of failure or absesne/failure of any of the external data sources
+This repository contains the backend services of this application. This application is divided into a set of individual microservice projects representing a unique service. Following are the set of microservices representing different services:</br>
+</br>
+<b> Gateway </b>- (gateway) Gateway service acts as an entry point for the application. All the external requests are routed to the individual microservices through the gateway. It's also used to perform security checks and filter out requests that fail to satisfy the security requirements.  authorization. It routes requests to individual services using a service address registry. </br>
+<b> Eureka </b>- (eurekaserver) Acts as a service registry.</br> 
+<b> User </b> - (user-service)  handles user registration and login.</br>
+<b> Util </b>- (util) A simple library project having utility functions like generating tokens etc.</br>
+<b> Real Time Data </b>- (real-time-data-processor) service  is responsible for fetching the real time data from external data providers. It also provides simulated data in case of failure of external data source.</br>
+<b> Trends And Recommendations </b>- (data-trends-predictions) python service is used to provide real time trend analysis and recommendations. IT also implements simulation models to generate simulated data.</br>
+
+### Prerequisites to run the project -
+Java 8/8+ </br>
+Docker https://docs.docker.com/get-docker/ </br>
+
+To run the application locally run the following commands in sequence (N.B. TCD Wifi interferes with this so please be on another network)
+
 1. Eureka (Discovery Service)
    <br> From the main project directory: `cd eurekaserver`
-   <br>`mvn clean package`
-   <br>`java -jar target/eurekaserver-0.0.1-SNAPSHOT.jar`
+   <br>`mvn clean package`</br>
    
 2. Run utility/library project - <br>
-   Run from main project directory - <b> cd utils </b><br>
-   <b> mvn clean install </b><br>
+   Run from main project directory - `cd utils`
+   <br> `mvn clean install`</br>
 
 3. Run gateway service - <br>
-   Run from main project directory - <b> cd gateway </b><br>
-   <b>mvn clean package</b><br>
-   <b>java -jar target/gateway-0.0.1-SNAPSHOT.jar</b><br>
+   Run from main project directory - `cd gateway`<br>
+   `mvn clean package`<br>
 
 4. Run user service - <br>
-   Run from main project directory - <b> cd user-service </b><br>
-   <b>mvn clean package</b><br>
-   <b>java -jar target/user-service-0.0.1-SNAPSHOT.jar</b><br>
+   Run from main project directory - `cd user-service`<br>
+   `mvn clean package`<br>
 
-5. Run real-time-data-processor (run kafka/zookeeper commands below first)- <br>
-   Run from main project directory - <b> cd gateway </b><br>
-   <b>mvn clean package</b><br>
-   <b>java -jar target/real-time-data-processor-0.0.1-SNAPSHOT.jar</b><br>
+5. Run real-time-data-processor - <br>
+   Run from main project directory - `cd gateway`<br>
+   `mvn clean package`<br>
 
-6. For running the python microservice, initial setup is required first. 
-   <br> Run from the main project directory - 
-   <b> cd data-trends-predictions </b>
-   <b> flask run </b>
+6. After running the above commands, Docker can be used to run the application on the local setup.  Run the following commands get application up and running (N.B. TCD Wifi    interferes with this so please be on another network)
+   `docker-compose build`</b></br>
+   `docker-compose up -d`</b></br>
    
-## Docker Configurarions
-#### To Run the project with docker run following commands in a sequence: <br>
-`docker-compose build` <br>
-`docker-compose up -d` <br>
 
 #### To Build only a particular service/container - <br> 
 `docker-compose up -d --no-deps --build <service_name>`<br>
@@ -43,20 +48,3 @@ To Run the project execute following commands in sequence -
 
 #### To see logs of the service container - <br>
 `docker-compose logs <service_name>/<container_name>`
-
-### Installing and Running Kafka & Zookeeper<br>
-Links for installation: <br>
-MAC: [https://hevodata.com/learn/install-kafka-on-mac/](url)<br>
-Windows: [https://www.goavega.com/install-apache-kafka-on-windows/](url)<br>
-
-Follow instructions in links to install and run zookeeper and kafka <br>
-Install Scala 2.13 Binary in Kafka downloads page <br>
-
-For example, on mac you navigate to the kafka directory (e.g. `cd kafka_2.13-3.0.0`) and run the following in separate terminals:
-
-`bin/zookeeper-server-start.sh config/zookeeper.properties`
-
-`bin/kafka-server-start.sh config/server.properties`
-
-With Zookeeper and Kafka running the real-time-data-processor project should work
-
