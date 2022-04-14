@@ -69,7 +69,6 @@ public class DublinBikeService {
     	RestTemplate restTemplate = new RestTemplate();
         DublinBike[] dublinBikes = restTemplate.getForObject(url, DublinBike[].class);
         log.info(dublinBikes.toString());
-//        DublinBike[] response  = {dublinBikes};
         return dublinBikes;
 	}
 
@@ -89,7 +88,6 @@ public class DublinBikeService {
             if (latestBikeFromDB != null && currentEpoch > latestBikeFromDB.getHarvestTime()) {
                 log.info("[BIKE] New Data found");
                 dublinBikesRepository.saveAll(convertData(data));
-                //this.sink.tryEmitNext(bikeResponseDTO);
             }
         } catch (Exception e) {
             log.error("[BIKE] Error occurred while parsing response from dublin bikes "+ e.getMessage());

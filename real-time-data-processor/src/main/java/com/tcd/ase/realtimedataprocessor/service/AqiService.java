@@ -70,23 +70,7 @@ public class AqiService {
     	log.info(url);
     	RestTemplate restTemplate = new RestTemplate();
     	Aqi[] aqilist = restTemplate.getForObject(url, Aqi[].class);
-//    	Aqi[] aqilist = new Aqi[simaqi.length];
-//    	for(int i=0;i<simaqi.length;i++) {
-//    		SimulatedAqi sim = simaqi[i];
-//    		Aqi aqi = new Aqi();
-//    		aqi.setAqi(String.valueOf(sim.getAqi()));
-//    		DublinAqiDataStation station = new DublinAqiDataStation();
-//    		station.setName(sim.getStationName());
-//    		BigDecimal geo[] = new BigDecimal[2];
-//    		geo[0] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
-//    		geo[1] = BigDecimal.valueOf(Double.valueOf(sim.getLatitude()));
-//    		station.setGeo(geo);
-//    		aqi.setStation(station);
-//    		aqilist[i] = aqi;
-//    	}
         return aqilist;
-	
-	
 	}
 
 	public Aqi[] getAqiDataFromExternalSource() {
@@ -94,7 +78,6 @@ public class AqiService {
         Aqis aqiData = restTemplate.getForObject(DataIndicatorEnum.AQI.getEndpoint(), Aqis.class);
         Aqi[] aqis = aqiData.getData();
         Aqi[] irishAqis = getIrishStations(aqis);
-        //log.info("the number irish number " + irishAqis.length);
         return irishAqis;
     }
 
@@ -114,7 +97,6 @@ public class AqiService {
 
             if (latestAqiFromDB == null || currentEpoch > latestAqiFromDB.getLastUpdatedTime()) {
                 log.info("[AQI] New Data found");
-                //log.info(convertData(data));
                 aqiRepository.saveAll(convertData(data));
             }
         } catch (Exception e) {

@@ -68,7 +68,6 @@ public class DublinBusService {
 
     public List<DublinBusHistorical> getDublinBusUpdate() {
         List<DublinBusHistorical> updatedBusList = new ArrayList<>();
-        // 72,00,000 denotes 2 hours
         Long now = System.currentTimeMillis() - 7200000;
         Optional<List<DublinBusHistorical>> updatedBus = dublinBusHistoricalRepository.findByStartTimestampGreaterThan(now);
         if (updatedBus.isPresent()) {
