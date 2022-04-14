@@ -7,13 +7,7 @@ from datetime import datetime
 import time
 from src.utils import get_testing_data_using_epoch
 from src.common.response import Response
-from enum import Enum
 
-class EndPointMethods(Enum):
-    getAqiPredictions = "get_aqi_predictions"
-    trainModel = "train_aqi_model"
-    getAqiRecommendationFromPrediction = "get_aqi_recommendation_from_prediction"
-    getAqiRecommendationFromFuturePrediction = "get_aqi_recommendation_from_future_prediction"
 
 class AqiModel():
     def __init__(self, db):
@@ -25,18 +19,9 @@ class AqiModel():
         'Drumcondra Library, Dublin 9, Ireland': 10, 'Coolock, Dublin 5, Ireland': 11, 'Clonskeagh, Ireland': 12, 'Ringsend, Dublin 4, Ireland': 13, 
         'Dublin Port, Dublin 1, Ireland': 14, 'Finglas, Dublin 11, Ireland': 15, 'Rathmines, Ireland': 16, 'Lord Edward Street, Dublin 2, Ireland': 17, 
         'Walkinstown Library, Dublin 12, Ireland': 18}
-
-    def perform_action(self, action):
-            try:
-                return getattr(self, EndPointMethods[action].value)()
-            except KeyError:
-                print("[Aqi Model] EndPoint not found")
-            except AttributeError:
-                print("[Aqi Model] EndPoint cannot be resolved")
-            return Response.not_found_404("Aqi Model: " + action +
-                                        " not found")
     
-    def train_aqi_model(self):
+    #Endpoint
+    def trainModel(self):
         # get data from db
         collection = self.db.get_collection("Aqi")
         
@@ -99,11 +84,15 @@ class AqiModel():
             response_predictions.append(obj)
         return response_predictions
 
-    def get_aqi_predictions(self):
+
+    #Endpoint
+    def getAqiPredictions(self):
         response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)
 
-    def get_aqi_recommendation_from_prediction(self):
+
+    #Endpoint
+    def getAqiRecommendationFromPrediction(self):
         response_predictions = self.get_predictions(time.time())
         sortedList = sorted(response_predictions, key=lambda d: d["aqi"])
         lowest_aqi_station_data = sortedList[:5]
@@ -116,7 +105,9 @@ class AqiModel():
         }
         return Response.send_json_200(data)
 
-    def get_aqi_recommendation_from_future_prediction(self):
+
+    #Endpoint
+    def getAqiRecommendationFromFuturePrediction(self):
         dtime = datetime.now() + timedelta(minutes=10)
         unixtime = time.mktime(dtime.timetuple())
 

@@ -9,11 +9,6 @@ from src.utils import get_testing_data_using_epoch
 from src.common.response import Response
 from enum import Enum
 
-class EndPointMethods(Enum):
-    getPedestrianPredictions = "get_pedestrian_predictions"
-    getPedestrianRecommendationFromPrediction = "get_recommendation_pedestrian_predictions"
-    getPedestrianRecommendationFromFuturePrediction = "get_recommendation_pedestrian_future_predictions"
-    trainModel = 'train_pedestrian_model'
 
 class PedestrianModel():
     def __init__(self, db):
@@ -26,19 +21,8 @@ class PedestrianModel():
         'Phibsborough Rd/Munster St': 21, 'North Wall Quay/Samuel Beckett bridge East': 22, 'Grafton st/Monsoon': 23, 'Baggot st upper/Mespil rd/Bank': 24, 'Talbot st/Murrays Pharmacy': 25, 
         "O'Connell St/Parnell St/AIB": 26, 'Phibsborough Rd/Enniskerry Road': 27, 'College Green/Bank Of Ireland': 28, 'Capel st/Mary street': 29}
 
-
-    def perform_action(self, action):
-            try:
-                return getattr(self, EndPointMethods[action].value)()
-            except KeyError:
-                print("[Pedestrian Model] EndPoint not found")
-            except AttributeError:
-                print("[Pedestrian Model] EndPoint cannot be resolved")
-            return Response.not_found_404("Pedestrian Model: " + action +
-                                        " not found")
-
-
-    def train_pedestrian_model(self):
+    #Endpoint
+    def trainModel(self):
         # get data from db
         collection = self.db.get_collection("Pedestrian")
         data = collection.find()
@@ -100,11 +84,13 @@ class PedestrianModel():
             response_predictions.append(obj)
         return response_predictions
 
-    def get_pedestrian_predictions(self):
+    #Endpoint
+    def getPedestrianPredictions(self):
         response_predictions = self.get_predictions(time.time())
         return Response.send_json_200(response_predictions)
 
-    def get_recommendation_pedestrian_predictions(self):
+    #Endpoint
+    def getPedestrianRecommendationFromPrediction(self):
         response_predictions = self.get_predictions(time.time())
         sortedList = sorted(response_predictions, key=lambda d: d["count"])
         lowest_count_pedestrian_data = sortedList[:5]
@@ -117,7 +103,8 @@ class PedestrianModel():
         }
         return Response.send_json_200(data)
 
-    def get_recommendation_pedestrian_future_predictions(self):
+    #Endpoint
+    def getPedestrianRecommendationFromFuturePrediction(self):
         dtime = datetime.now() + timedelta(minutes=10)
         unixtime = time.mktime(dtime.timetuple())
 
