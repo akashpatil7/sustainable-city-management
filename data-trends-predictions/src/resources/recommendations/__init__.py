@@ -3,6 +3,7 @@ from .bike import Bike
 from .aqi import Aqi
 from .pedestrian import Pedestrian
 from .bus import Bus
+from src.resources.endpointsResolver import EndPointResolver
 
 class Recommendations(Resource):
 	def __init__(self, **kwargs):
@@ -14,10 +15,10 @@ class Recommendations(Resource):
 
 	def get(self, data_indicator, action):
 		if data_indicator == 'bike':
-			return self.bike.perform_action(action)
+			return EndPointResolver.perform_action(self.bike, action)
 		if data_indicator == 'aqi':
-			return self.aqi.perform_action(action)
+			return EndPointResolver.perform_action(self.aqi, action)
 		if data_indicator == 'pedestrian':
-			return self.pedestrian.perform_action(action)
+			return EndPointResolver.perform_action(self.pedestrian, action)
 		if data_indicator == 'bus':
-			return self.bus.perform_action(action)
+			return EndPointResolver.perform_action(self.bus, action)

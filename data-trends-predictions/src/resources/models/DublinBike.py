@@ -1,21 +1,4 @@
 class DublinBike:
-    
-    # def __init__(self):
-    #     self.id = id
-    #     self.harvestTime = harvestTime
-    #     self.stationId = stationId
-    #     self.availableBikeStands = availableBikeStands
-    #     self.bikeStands = bikeStands
-    #     self.availableBikes = availableBikes
-    #     self.banking = banking
-    #     self.bonus = bonus
-    #     self.lastUpdate = lastUpdate
-    #     self.status = status
-    #     self.address = address
-    #     self.name = name
-    #     self.latitude = latitude
-    #     self.longitude = longitude
-
 
     def setId(self, id):
         self.id = id  

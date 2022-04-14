@@ -1,7 +1,6 @@
 import imp
 import pytest
 from src.app import create_app
-from src.resources.trends.bike import EndPointMethods as BikeTrendsEndPoints
 
 @pytest.fixture
 def client(monkeypatch):
@@ -15,7 +14,9 @@ def client(monkeypatch):
 	yield client
 
 def test_bike_trends_end_points(client):
-	for end_point_name, member in BikeTrendsEndPoints.__members__.items():
+	trends_end_point_names = ['getCurrentHourAverages', 'getHourlyAverageForAllStation',
+	 'getPopularityAverageHistorical', 'getPopularityAverageToday']
+	for end_point_name in trends_end_point_names:
 		print("[TEST] Bike Trends End Point: " + end_point_name)
 		response = client.get('trends/bike/' + end_point_name)
 		assert response.status_code == 200
